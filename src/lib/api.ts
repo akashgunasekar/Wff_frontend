@@ -69,6 +69,18 @@ export async function fetchEventBySlug(slug: string): Promise<Event | null> {
     const json = await res.json();
     if (json.success && json.data) {
       json.data.banner_image = resolveImageUrl(json.data.banner_image);
+      if (Array.isArray(json.data.officials)) {
+        json.data.officials = json.data.officials.map((off: any) => ({
+          ...off,
+          photo: resolveImageUrl(off.photo),
+        }));
+      }
+      if (Array.isArray(json.data.gallery)) {
+        json.data.gallery = json.data.gallery.map((img: any) => ({
+          ...img,
+          image: resolveImageUrl(img.image),
+        }));
+      }
       return json.data as Event;
     }
     return null;

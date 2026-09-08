@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { fetchEventBySlug, fetchEvents } from '@/lib/api';
+import { fetchEventBySlug, fetchEvents, resolveImageUrl } from '@/lib/api';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
@@ -40,7 +40,7 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ s
       <section className="relative w-full h-[70vh] min-h-[500px] flex items-center overflow-hidden border-b border-wff-border bg-wff-deep-navy">
         <div className="absolute inset-0 z-0">
           <img 
-            src={event.banner_image || '/assets/wff_hero_banner.png'} 
+            src={resolveImageUrl(event.banner_image) || '/assets/wff_hero_banner.png'} 
             alt={event.event_name}
             className="w-full h-full object-cover opacity-[0.15] mix-blend-overlay grayscale"
           />
@@ -98,7 +98,7 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ s
             <div className="w-full max-w-[300px] lg:max-w-[350px] shrink-0 order-1 md:order-2">
               <div className="relative aspect-[5/7] rounded-sm overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-wff-navy group">
                 <img 
-                  src={event.banner_image || '/assets/wff_hero_banner.png'} 
+                  src={resolveImageUrl(event.banner_image) || '/assets/wff_hero_banner.png'} 
                   alt={event.event_name}
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
@@ -237,7 +237,7 @@ export default async function EventDetailsPage({ params }: { params: Promise<{ s
                       {/* Portrait - Top Image */}
                       <div className="relative w-full aspect-[4/5] bg-wff-navy overflow-hidden">
                         <img 
-                          src={official.photo || '/assets/wff-india.png'} 
+                          src={resolveImageUrl(official.photo) || '/assets/wff-india.png'} 
                           alt={official.name} 
                           className="w-full h-full object-cover object-top opacity-95 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" 
                         />
