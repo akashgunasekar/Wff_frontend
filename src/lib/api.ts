@@ -4,8 +4,8 @@
 import { Event, Official, Winner, Award, ChampionshipHighlight, GalleryImage, GalleryAlbum, HeroSlide } from '../types';
 import { aboutData } from '../data/about';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || API_BASE?.replace('/api', '');
+export const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://wfftamilnadu.in/backend/api';
+export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || API_BASE.replace(/\/api\/?$/, '');
 
 /**
  * Centralized Image URL Strategy
@@ -20,9 +20,11 @@ export function resolveImageUrl(path: string | undefined | null): string | null 
  * Helper to fetch and normalize JSON from the PHP backend.
  */
 async function apiFetch<T>(endpoint: string, fallback: T): Promise<T> {
+  if (!API_BASE) return fallback;
   try {
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
     // Use ISR with a 60-second revalidation to allow CMS updates without breaking static builds
-    const res = await fetch(`${API_BASE}${endpoint}`, { next: { revalidate: 60 } });
+    const res = await fetch(`${API_BASE}${cleanEndpoint}`, { next: { revalidate: 60 } });
     if (!res.ok) {
       console.warn(`API responded with status ${res.status} for ${endpoint}`);
       return fallback;
@@ -39,6 +41,7 @@ async function apiFetch<T>(endpoint: string, fallback: T): Promise<T> {
 }
 
 export async function fetchEvents(): Promise<Event[]> {
+  if (!API_BASE) return [];
   try {
     const res = await fetch(`${API_BASE}/events/index.php`, { next: { revalidate: 60 } });
     if (!res.ok) return [];
@@ -54,6 +57,7 @@ export async function fetchEvents(): Promise<Event[]> {
 }
 
 export async function fetchEventBySlug(slug: string): Promise<Event | null> {
+  if (!API_BASE || !slug) return null;
   try {
     const res = await fetch(`${API_BASE}/events/show.php?slug=${encodeURIComponent(slug)}`, { next: { revalidate: 60 } });
     if (!res.ok) return null;
