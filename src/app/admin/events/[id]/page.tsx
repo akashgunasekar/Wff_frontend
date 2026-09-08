@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { ChevronLeft, Loader2, Save, Trash2, Plus, AlertTriangle, X, Edit3, CheckSquare, Square, Users } from 'lucide-react';
+import { resolveImageUrl } from '@/lib/api';
 
 export default function AdminEventDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -470,7 +471,7 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
                 <div className="flex gap-6 items-start">
                   <div className="w-[180px] shrink-0 border border-dashed border-black/5 bg-[#F4F5F7] flex flex-col items-center justify-center relative overflow-hidden" style={{ aspectRatio: '5/7' }}>
                     {event.banner_image ? (
-                      <img src={event.banner_image} alt="Poster preview" className="absolute inset-0 w-full h-full object-cover" />
+                      <img src={resolveImageUrl(event.banner_image) || event.banner_image} alt="Poster preview" className="absolute inset-0 w-full h-full object-cover" />
                     ) : (
                       <span className="text-xs text-[#040A12]/60">No Poster</span>
                     )}
@@ -673,7 +674,7 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
                        <div className="w-full border border-dashed border-black/5 bg-[#F4F5F7] flex items-center justify-center relative overflow-hidden" style={{aspectRatio: '12/5'}}>
                           {slide.photo ? (
                             <>
-                              <img src={slide.photo} className="w-full h-full object-contain" />
+                              <img src={resolveImageUrl(slide.photo) || slide.photo} className="w-full h-full object-contain" />
                               <label className="absolute bottom-4 right-4 bg-black/80 text-[#040A12] text-xs px-4 py-2 cursor-pointer rounded hover:bg-black uppercase font-bold tracking-widest">
                                 Replace
                                 <input type="file" className="hidden" accept="image/jpeg, image/png, image/webp" onChange={(e) => handleBannerUpload(e, idx)} />
@@ -743,7 +744,7 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
                     <div key={off.official_id} className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 bg-[#F4F5F7] border border-black/5 hover:border-[#C9A44A]/30 transition-colors">
                         <div className="flex items-center gap-4 flex-grow">
                             <div className="w-12 h-12 rounded-full bg-[#F4F5F7] overflow-hidden shrink-0 border border-black/5">
-                               <img src={off.photo || '/assets/wff-india.png'} alt={off.name} className="w-full h-full object-cover" />
+                               <img src={resolveImageUrl(off.photo) || '/assets/wff-india.png'} alt={off.name} className="w-full h-full object-cover" />
                             </div>
                             <div>
                                <div className="font-bold text-[15px] text-[#040A12]">{off.name}</div>
@@ -941,7 +942,7 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
                              {isSelected ? <CheckSquare size={20} /> : <Square size={20} />}
                           </div>
                           <div className="w-10 h-10 rounded-full bg-[#F4F5F7] overflow-hidden shrink-0 border border-black/5">
-                             <img src={official.photo || '/assets/wff-india.png'} alt={official.name} className="w-full h-full object-cover" />
+                             <img src={resolveImageUrl(official.photo) || '/assets/wff-india.png'} alt={official.name} className="w-full h-full object-cover" />
                           </div>
                           <div className="flex-grow">
                              <div className="font-bold text-[14px] text-[#040A12]">{official.name}</div>

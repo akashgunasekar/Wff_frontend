@@ -12,8 +12,13 @@ export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || API_BASE.repla
  */
 export function resolveImageUrl(path: string | undefined | null): string | null {
   if (!path || path.trim() === '') return null; 
-  if (path.startsWith('http') || path.startsWith('/assets/') || path.startsWith('/uploads/')) return path;
-  return BACKEND_URL ? `${BACKEND_URL}/${path.replace(/^\//, '')}` : path;
+  const normalized = path.replace(/\\/g, '/').trim();
+  if (normalized.startsWith('http://') || normalized.startsWith('https://')) return normalized;
+  if (normalized.startsWith('/assets/') || normalized.startsWith('assets/')) {
+    return normalized.startsWith('/') ? normalized : `/${normalized}`;
+  }
+  const cleanPath = normalized.replace(/^\//, '');
+  return BACKEND_URL ? `${BACKEND_URL}/${cleanPath}` : `/${cleanPath}`;
 }
 
 /**
