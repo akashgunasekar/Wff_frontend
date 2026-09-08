@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { AlertCircle, Search, CreditCard, CheckCircle2 } from 'lucide-react';
 import { loadRazorpay } from '@/lib/utils';
+import { API_BASE } from '@/lib/api';
 import Image from 'next/image';
 
 interface RegistrationData {
@@ -41,7 +42,7 @@ export default function RegistrationStatusClient() {
     setRegistration(null);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/registrations/show.php?registration_number=${encodeURIComponent(regNumber.trim())}`);
+      const res = await fetch(`${API_BASE}/registrations/show.php?registration_number=${encodeURIComponent(regNumber.trim())}`);
       const json = await res.json();
 
       if (!res.ok || !json.success) {
@@ -63,9 +64,9 @@ export default function RegistrationStatusClient() {
     setLoading(true);
     
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const apiBase = API_BASE;
       
-      const orderRes = await fetch(`${API_BASE}/payments/create-order.php`, {
+      const orderRes = await fetch(`${apiBase}/payments/create-order.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ registration_number: registration.registration_number })
@@ -88,7 +89,7 @@ export default function RegistrationStatusClient() {
         order_id: orderJson.data.razorpay_order_id,
         handler: async (response: any) => {
           try {
-            const verifyRes = await fetch(`${API_BASE}/payments/verify.php`, {
+            const verifyRes = await fetch(`${apiBase}/payments/verify.php`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -115,7 +116,7 @@ export default function RegistrationStatusClient() {
       const paymentObject = new (window as any).Razorpay(options);
       paymentObject.on('payment.failed', function (response: any) {
         setError(`Payment failed: ${response.error.description}`);
-        fetch(`${API_BASE}/payments/failure.php`, {
+        fetch(`${apiBase}/payments/failure.php`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

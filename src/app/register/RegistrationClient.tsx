@@ -7,7 +7,19 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { AlertCircle, CreditCard, CheckCircle2, Ticket, CheckSquare, Square, Calendar, MapPin, Trophy, ShieldCheck } from 'lucide-react';
 import { loadRazorpay } from '@/lib/utils';
+import { API_BASE } from '@/lib/api';
 import Image from 'next/image';
+
+/** Decode HTML entities like &amp; &#039; etc. to their actual characters */
+function decodeHtml(html: string): string {
+  return html
+    .replace(/&amp;/g, '&')
+    .replace(/&#0*39;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>');
+}
 
 interface RegistrationClientProps {
   initialEvents: Event[];
@@ -152,7 +164,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
         ...formData
       };
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/registrations/create.php`, {
+      const res = await fetch(`${API_BASE}/registrations/create.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -192,8 +204,8 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
     setPaymentFailed(false);
     
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
-      const orderRes = await fetch(`${API_BASE}/payments/create-order.php`, {
+      const apiBase = API_BASE;
+      const orderRes = await fetch(`${apiBase}/payments/create-order.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ registration_number: regNumber })
@@ -216,7 +228,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
         order_id: orderJson.data.razorpay_order_id,
         handler: async (response: any) => {
           try {
-            const verifyRes = await fetch(`${API_BASE}/payments/verify.php`, {
+            const verifyRes = await fetch(`${apiBase}/payments/verify.php`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -256,7 +268,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
       paymentObject.on('payment.failed', function (response: any) {
         setPaymentFailed(true);
         
-        fetch(`${API_BASE}/payments/failure.php`, {
+        fetch(`${apiBase}/payments/failure.php`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -535,7 +547,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                         </div>
                         <img src="/assets/wff_hero_banner.png" alt="Thumbnail" className="w-16 h-11 object-cover rounded-sm border border-black/10 opacity-80" />
                         <div>
-                          <h4 className="font-heading font-bold text-sm text-[#040A12] tracking-wider uppercase mb-0.5">{cat.name}</h4>
+                          <h4 className="font-heading font-bold text-sm text-[#040A12] tracking-wider uppercase mb-0.5">{decodeHtml(cat.name)}</h4>
                           <p className="text-[11px] text-[#040A12]/50 font-medium">{cat.eligibility || 'Open to all eligible athletes'}</p>
                         </div>
                       </div>
@@ -654,7 +666,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                         const fee = parseFloat(cat.entry_fee || '0');
                         return (
                           <div key={cat.id} className="flex justify-between items-center text-[13px] font-bold text-[#040A12]">
-                            <span className="uppercase tracking-wider">{cat.name}</span>
+                            <span className="uppercase tracking-wider">{decodeHtml(cat.name)}</span>
                             <span className="text-[15px]">₹ {index === 0 ? fee : fee * 0.5}</span>
                           </div>
                         );
