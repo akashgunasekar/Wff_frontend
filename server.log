@@ -1,0 +1,240 @@
+
+> frontend@0.1.0 dev
+> next dev
+
+▲ Next.js 16.3.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.3:3000
+- Environments: .env.local
+✓ Ready in 533ms
+✓ Running next.config.ts took 166ms
+
+DEBUG 1: Raw events fetched in page.tsx: [
+  { id: 3, cash_enabled: true },
+  { id: 8, cash_enabled: false },
+  { id: 9, cash_enabled: false }
+]
+ GET /register?eventId=3 200 in 1238ms (next.js: 923ms, application-code: 315ms)
+ GET /admin/events/3 200 in 1333ms (next.js: 1234ms, application-code: 98ms)
+✓ Compiled in 370ms
+DEBUG 1: Raw events fetched in page.tsx: [
+  { id: 3, cash_enabled: true },
+  { id: 8, cash_enabled: false },
+  { id: 9, cash_enabled: false }
+]
+ GET /admin/events/3 200 in 98ms (next.js: 10ms, application-code: 88ms)
+ GET /register?eventId=3 200 in 46ms (next.js: 7ms, application-code: 39ms)
+DEBUG 1: Raw events fetched in page.tsx: [
+  { id: 3, cash_enabled: true },
+  { id: 8, cash_enabled: false },
+  { id: 9, cash_enabled: false }
+]
+DEBUG 2: Event object passed into RegistrationClient (mapped): [
+  { id: 3, cash_enabled: true },
+  { id: 8, cash_enabled: false },
+  { id: 9, cash_enabled: false }
+]
+DEBUG 3: Selected event ID: undefined
+DEBUG 4: Selected event object: null
+DEBUG 5: Selected event.cash_enabled: undefined
+DEBUG 6: Cash UI condition (selectedEvent?.cash_enabled === true): false
+DEBUG 6B: Cash UI condition (selectedEvent?.cash_enabled): false
+ GET /register?event=wff-rudra-classic-2026 200 in 180ms (next.js: 9ms, application-code: 171ms)
+DEBUG 1: Raw events fetched in page.tsx: [
+  { id: 3, cash_enabled: true },
+  { id: 8, cash_enabled: false },
+  { id: 9, cash_enabled: false }
+]
+DEBUG 2: Event object passed into RegistrationClient (mapped): [
+  { id: 3, cash_enabled: true },
+  { id: 8, cash_enabled: false },
+  { id: 9, cash_enabled: false }
+]
+DEBUG 3: Selected event ID: 3
+DEBUG 4: Selected event object: { id: 3, cash_enabled: true }
+DEBUG 5: Selected event.cash_enabled: true
+DEBUG 6: Cash UI condition (selectedEvent?.cash_enabled === true): true
+DEBUG 6B: Cash UI condition (selectedEvent?.cash_enabled): true
+ GET /register?eventId=3 200 in 143ms (next.js: 10ms, application-code: 133ms)
+ GET /admin/events/3 200 in 78ms (next.js: 15ms, application-code: 63ms)
+ GET /register?eventId=3 200 in 81ms (next.js: 48ms, application-code: 33ms)
+✓ Compiled in 64ms
+ GET /admin/events/3 200 in 106ms (next.js: 7ms, application-code: 99ms)
+ GET /register?eventId=3 200 in 107ms (next.js: 48ms, application-code: 59ms)
+✓ Compiled in 86ms
+ GET /admin/events/3 200 in 37ms (next.js: 8ms, application-code: 29ms)
+ GET /register?eventId=3 200 in 90ms (next.js: 17ms, application-code: 73ms)
+ GET /register?eventId=3 200 in 143ms (next.js: 30ms, application-code: 113ms)
+ GET /admin/events/3 200 in 149ms (next.js: 10ms, application-code: 140ms)
+ GET /admin/events/3 200 in 90ms (next.js: 15ms, application-code: 76ms)
+ GET /admin/events/3 200 in 81ms (next.js: 6ms, application-code: 75ms)
+ GET /admin/events/3 200 in 75ms (next.js: 6ms, application-code: 69ms)
+ GET /register?eventId=3 200 in 122ms (next.js: 9ms, application-code: 112ms)
+ GET / 200 in 144ms (next.js: 42ms, application-code: 102ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /register 200 in 31ms (next.js: 3ms, application-code: 28ms)
+ GET /events 200 in 106ms (next.js: 26ms, application-code: 80ms)
+ GET /events/wff-rudra-classic-2026 200 in 559ms (next.js: 497ms, application-code: 62ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /register?eventId=3 200 in 38ms (next.js: 4ms, application-code: 34ms)
+✓ Compiled in 406ms
+ GET /register?eventId=3 200 in 98ms (next.js: 12ms, application-code: 86ms)
+ GET /admin/events/3 200 in 46ms (next.js: 11ms, application-code: 35ms)
+ GET / 200 in 110ms (next.js: 14ms, application-code: 96ms)
+ GET / 200 in 227ms (next.js: 12ms, application-code: 215ms)
+ GET / 200 in 194ms (next.js: 3ms, application-code: 191ms)
+ GET / 200 in 203ms (next.js: 3ms, application-code: 200ms)
+ GET / 200 in 282ms (next.js: 4ms, application-code: 278ms)
+ GET / 200 in 207ms (next.js: 4ms, application-code: 203ms)
+ GET / 200 in 253ms (next.js: 18ms, application-code: 235ms)
+ GET / 200 in 319ms (next.js: 3ms, application-code: 316ms)
+ GET / 200 in 459ms (next.js: 4ms, application-code: 455ms)
+ GET / 200 in 396ms (next.js: 10ms, application-code: 386ms)
+ GET /admin 200 in 62ms (next.js: 47ms, application-code: 15ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /admin 200 in 92ms (next.js: 4ms, application-code: 88ms)
+ GET /admin 200 in 209ms (next.js: 11ms, application-code: 198ms)
+ GET /admin 200 in 154ms (next.js: 5ms, application-code: 149ms)
+ GET /admin 200 in 136ms (next.js: 4ms, application-code: 132ms)
+ GET /admin 200 in 164ms (next.js: 3ms, application-code: 161ms)
+ GET /admin 200 in 354ms (next.js: 5ms, application-code: 349ms)
+ GET /admin 200 in 86ms (next.js: 4ms, application-code: 81ms)
+ GET /admin 200 in 128ms (next.js: 2ms, application-code: 125ms)
+ GET /admin 200 in 139ms (next.js: 4ms, application-code: 135ms)
+ GET /admin 200 in 154ms (next.js: 13ms, application-code: 141ms)
+ GET /admin 200 in 108ms (next.js: 4ms, application-code: 105ms)
+ GET /admin 200 in 153ms (next.js: 5ms, application-code: 149ms)
+ GET /admin 200 in 123ms (next.js: 3ms, application-code: 120ms)
+ GET /admin/registrations 200 in 40ms (next.js: 28ms, application-code: 11ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /admin/registrations 200 in 120ms (next.js: 15ms, application-code: 105ms)
+ GET /admin/registrations 200 in 112ms (next.js: 3ms, application-code: 109ms)
+ GET /admin/registrations 200 in 172ms (next.js: 28ms, application-code: 144ms)
+ GET /admin/events 200 in 41ms (next.js: 28ms, application-code: 13ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /admin/events/3 200 in 20ms (next.js: 8ms, application-code: 11ms)
+ GET / 200 in 232ms (next.js: 19ms, application-code: 213ms)
+ GET /events 200 in 33ms (next.js: 4ms, application-code: 29ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /register?eventId=3 200 in 28ms (next.js: 4ms, application-code: 24ms)
+ GET /admin/events 200 in 26ms (next.js: 9ms, application-code: 17ms)
+ GET /admin/events/3 200 in 20ms (next.js: 7ms, application-code: 13ms)
+ GET /admin/events 200 in 12ms (next.js: 3ms, application-code: 9ms)
+ GET /admin/events/8 200 in 23ms (next.js: 7ms, application-code: 16ms)
+ GET /register?eventId=3 200 in 157ms (next.js: 16ms, application-code: 141ms)
+ GET /events 200 in 22ms (next.js: 3ms, application-code: 19ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /events/wff-natural-league-tamil-nadu-2026 200 in 63ms (next.js: 10ms, application-code: 53ms)
+ GET /register?eventId=8 200 in 35ms (next.js: 8ms, application-code: 26ms)
+ GET /register?eventId=8 200 in 80ms (next.js: 7ms, application-code: 73ms)
+ GET /admin/events/8 200 in 77ms (next.js: 11ms, application-code: 65ms)
+ GET /admin/registrations 200 in 16ms (next.js: 4ms, application-code: 11ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /admin/events 200 in 25ms (next.js: 5ms, application-code: 20ms)
+ GET /admin/events/8 200 in 26ms (next.js: 8ms, application-code: 18ms)
+ GET /register?eventId=8 200 in 96ms (next.js: 5ms, application-code: 91ms)
+ GET /events 200 in 25ms (next.js: 3ms, application-code: 22ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /events/wff-natural-league-tamil-nadu-2026 200 in 40ms (next.js: 8ms, application-code: 31ms)
+ GET /register?eventId=8 200 in 21ms (next.js: 1.9ms, application-code: 19ms)
+✓ Compiled in 709ms
+ GET /register?eventId=8 200 in 104ms (next.js: 8ms, application-code: 96ms)
+ GET /admin/events/8 200 in 41ms (next.js: 8ms, application-code: 34ms)
+ GET /register?eventId=8 200 in 145ms (next.js: 16ms, application-code: 129ms)
+ GET /admin/events/8 200 in 51ms (next.js: 10ms, application-code: 41ms)
+ GET /admin 200 in 43ms (next.js: 20ms, application-code: 24ms)
+ GET /admin 200 in 83ms (next.js: 2ms, application-code: 81ms)
+ GET /admin 200 in 87ms (next.js: 3ms, application-code: 84ms)
+ GET /admin 200 in 62ms (next.js: 2ms, application-code: 60ms)
+ GET /admin 200 in 104ms (next.js: 1.8ms, application-code: 102ms)
+ GET /admin 200 in 141ms (next.js: 3ms, application-code: 139ms)
+ GET /admin 200 in 107ms (next.js: 3ms, application-code: 104ms)
+ GET /admin/registrations 200 in 20ms (next.js: 9ms, application-code: 11ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /admin/events 200 in 91ms (next.js: 46ms, application-code: 45ms)
+ GET /admin/categories 200 in 152ms (next.js: 121ms, application-code: 31ms)
+ GET /admin/events 200 in 29ms (next.js: 2ms, application-code: 26ms)
+ GET /admin/registrations 200 in 99ms (next.js: 20ms, application-code: 79ms)
+ GET /admin 200 in 82ms (next.js: 60ms, application-code: 21ms)
+ GET /admin/events 200 in 90ms (next.js: 65ms, application-code: 25ms)
+ GET /admin/events/3 200 in 77ms (next.js: 51ms, application-code: 26ms)
+ GET /admin/events 200 in 32ms (next.js: 19ms, application-code: 13ms)
+ GET /admin/events/8 200 in 23ms (next.js: 7ms, application-code: 16ms)
+ GET /admin/events 200 in 23ms (next.js: 5ms, application-code: 18ms)
+ GET /admin 200 in 19ms (next.js: 5ms, application-code: 14ms)
+ GET /admin 200 in 101ms (next.js: 7ms, application-code: 94ms)
+ GET / 200 in 200ms (next.js: 42ms, application-code: 158ms)
+ GET / 200 in 124ms (next.js: 7ms, application-code: 117ms)
+ GET /admin/gallery 200 in 104ms (next.js: 70ms, application-code: 34ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /admin/gallery/5 200 in 1675ms (next.js: 1660ms, application-code: 15ms)
+ GET /admin/gallery 200 in 258ms (next.js: 223ms, application-code: 35ms)
+ GET /admin/gallery/6 200 in 199ms (next.js: 184ms, application-code: 15ms)
+ GET /admin/gallery 200 in 32ms (next.js: 15ms, application-code: 17ms)
+ GET / 200 in 263ms (next.js: 105ms, application-code: 158ms)
+ GET / 200 in 180ms (next.js: 9ms, application-code: 171ms)
+[browser] Image with src "/uploads/events/event_8dcfb1097c661e7c451324d80d3da877.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /admin/registrations 200 in 109ms (next.js: 61ms, application-code: 48ms)
+ GET /admin/homepage 200 in 92ms (next.js: 74ms, application-code: 18ms)
+ GET /admin/categories 200 in 283ms (next.js: 235ms, application-code: 48ms)
+ GET /admin/categories 200 in 157ms (next.js: 21ms, application-code: 137ms)
+ GET /admin/officials 200 in 273ms (next.js: 179ms, application-code: 94ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[browser] Image with src "/uploads/officials/official_e51b81287c24952f362ad166071c7693.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/uploads/officials/official_4d077cb34a09031714f624de70688248.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/uploads/officials/official_aa414d3c311c631496f854fc980408a1.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+ GET /admin/champions 200 in 121ms (next.js: 89ms, application-code: 32ms)
+ GET /admin/gallery 200 in 42ms (next.js: 18ms, application-code: 23ms)
+ GET /admin/gallery/7 200 in 55ms (next.js: 16ms, application-code: 39ms)
+ GET /admin/gallery 200 in 38ms (next.js: 19ms, application-code: 19ms)
+ GET /admin/gallery/8 200 in 31ms (next.js: 11ms, application-code: 21ms)
+ GET /admin/gallery 200 in 52ms (next.js: 28ms, application-code: 24ms)
+ GET /admin/registrations 200 in 32ms (next.js: 9ms, application-code: 23ms)
+ GET /admin 200 in 53ms (next.js: 40ms, application-code: 13ms)
+ GET / 200 in 218ms (next.js: 8ms, application-code: 210ms)
+ GET /admin/officials 200 in 28ms (next.js: 12ms, application-code: 16ms)
+ GET / 200 in 196ms (next.js: 17ms, application-code: 179ms)
+ GET /events 200 in 154ms (next.js: 55ms, application-code: 99ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /register?eventId=3 200 in 54ms (next.js: 30ms, application-code: 25ms)
+ GET / 200 in 206ms (next.js: 27ms, application-code: 178ms)
+ GET /admin/registrations 200 in 20ms (next.js: 5ms, application-code: 14ms)
+ GET /admin 200 in 37ms (next.js: 11ms, application-code: 26ms)
+ GET /admin/registrations 200 in 66ms (next.js: 18ms, application-code: 48ms)
+ GET /admin/events 200 in 215ms (next.js: 195ms, application-code: 20ms)
+ GET /admin/events/3 200 in 139ms (next.js: 111ms, application-code: 28ms)
+ GET /admin/events 200 in 40ms (next.js: 15ms, application-code: 25ms)
+ GET /admin/events/3 200 in 34ms (next.js: 6ms, application-code: 28ms)
+ GET /admin/events 200 in 39ms (next.js: 13ms, application-code: 27ms)
+ GET /admin/events/8 200 in 41ms (next.js: 11ms, application-code: 31ms)
+ GET /register 200 in 58ms (next.js: 16ms, application-code: 42ms)
+ GET /admin/events 200 in 38ms (next.js: 12ms, application-code: 25ms)
+ GET /admin/events/3 200 in 25ms (next.js: 9ms, application-code: 16ms)
+ GET /admin/events 200 in 18ms (next.js: 3ms, application-code: 15ms)
+ GET /admin/events/8 200 in 26ms (next.js: 8ms, application-code: 18ms)
+ GET /admin/events 200 in 20ms (next.js: 6ms, application-code: 14ms)
+ GET /events 200 in 97ms (next.js: 4ms, application-code: 94ms)
+ GET /register?eventId=3 200 in 58ms (next.js: 17ms, application-code: 41ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /events 200 in 78ms (next.js: 13ms, application-code: 66ms)
+ GET /events/wff-natural-league-tamil-nadu-2026 200 in 209ms (next.js: 89ms, application-code: 120ms)
+ GET /register?eventId=8 200 in 29ms (next.js: 5ms, application-code: 24ms)
+ GET /admin/events 200 in 112ms (next.js: 21ms, application-code: 91ms)
+ GET /register?eventId=8 200 in 62ms (next.js: 5ms, application-code: 58ms)
+ GET / 200 in 76ms (next.js: 6ms, application-code: 70ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET / 200 in 145ms (next.js: 12ms, application-code: 133ms)
+ GET /events 200 in 45ms (next.js: 14ms, application-code: 32ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /events/wff-rudra-classic-2026 200 in 51ms (next.js: 11ms, application-code: 40ms)
+ GET /register?eventId=3 200 in 40ms (next.js: 6ms, application-code: 34ms)
+ GET /admin/registrations 200 in 39ms (next.js: 16ms, application-code: 23ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /events 200 in 41ms (next.js: 8ms, application-code: 33ms)
+ GET /events/wff-natural-league-tamil-nadu-2026 200 in 53ms (next.js: 12ms, application-code: 41ms)
+ GET /register?eventId=8 200 in 36ms (next.js: 6ms, application-code: 29ms)
+ GET /admin/events 200 in 26ms (next.js: 6ms, application-code: 21ms)
+ GET /admin/events/8 200 in 31ms (next.js: 13ms, application-code: 19ms)
+ GET /register?eventId=8 200 in 105ms (next.js: 14ms, application-code: 92ms)
+ GET /admin/registrations 200 in 48ms (next.js: 18ms, application-code: 30ms)

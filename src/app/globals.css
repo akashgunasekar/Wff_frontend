@@ -1,26 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* ═══════════════════════════════════════════════
+   WFF TAMIL NADU — CHAMPIONSHIP EDITORIAL
+   Design System Tokens
+   ═══════════════════════════════════════════════ */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@theme {
+  /* Typography */
+  --font-body: "Barlow", sans-serif;
+  --font-display: "Barlow Condensed", sans-serif;
+  --font-signature: "Great Vibes", cursive;
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-display);
+
+  /* Color System */
+  --color-wff-bg: var(--bg);
+  --color-wff-surface: var(--surface);
+  --color-wff-elevated: var(--elevated);
+  --color-wff-navy: var(--navy);
+  --color-wff-deep-navy: var(--deep-navy);
+  --color-wff-gold: var(--gold);
+  --color-wff-gold-light: var(--gold-light);
+  --color-wff-text-primary: var(--text-primary);
+  --color-wff-text-body: var(--text-body);
+  --color-wff-muted: var(--muted);
+  --color-wff-border: var(--border-color);
+
+  /* Animations */
+  --animate-fade-up: fadeUp 0.6s ease-out forwards;
+  --animate-ticker: ticker 25s linear infinite;
+
+  @keyframes fadeUp {
+    0% { opacity: 0; transform: translateY(16px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ═══════════════════════════════════════════════
+   Light Theme (Default)
+   ═══════════════════════════════════════════════ */
+
+@layer base {
+  :root {
+    --bg: #F5F6F8;
+    --surface: #FFFFFF;
+    --elevated: #FFFFFF;
+    --navy: #061426;
+    --deep-navy: #081A2E;
+    --gold: #C9A44A;
+    --gold-light: #DDBE72;
+    --text-primary: #061426;
+    --text-body: #3B4A5E;
+    --muted: #64748B;
+    --border-color: #DCE2E8;
+  }
+
+  /* ═══════════════════════════════════════════════
+     Dark Theme — Midnight Championship Night
+     ═══════════════════════════════════════════════ */
+
+  .dark {
+    --bg: #040A12;
+    --surface: #081220;
+    --elevated: #0C1A2C;
+    --navy: #0A1526;
+    --deep-navy: #040A12;
+    --gold: #C9A44A;
+    --gold-light: #DDBE72;
+    --text-primary: #F0F2F5;
+    --text-body: #8A96A8;
+    --muted: #64748B;
+    --border-color: rgba(255, 255, 255, 0.10);
+  }
+
+  * {
+    border-color: var(--border-color);
+  }
+
+  /* Body */
+  body {
+    background-color: var(--bg);
+    color: var(--text-body);
+    font-family: "Barlow", sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Headings — Barlow Condensed */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Barlow Condensed", sans-serif;
+    color: var(--text-primary);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  h1 { font-weight: 700; }
+}
+
+/* ═══════════════════════════════════════════════
+   Typography Utilities
+   ═══════════════════════════════════════════════ */
+
+@layer utilities {
+  .font-display {
+    font-family: "Barlow Condensed", sans-serif;
+  }
+
+  .font-body {
+    font-family: "Barlow", sans-serif;
+  }
+
+  /* Championship Label — micro typography */
+  .championship-label {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* Section number */
+  .section-number {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+  }
+
+  /* Gold rule */
+  .gold-rule {
+    width: 48px;
+    height: 1px;
+    background-color: var(--gold);
+  }
+
+  .gold-rule-vertical {
+    width: 1px;
+    height: 48px;
+    background-color: var(--gold);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   Reduced Motion
+   ═══════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

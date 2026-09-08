@@ -1,0 +1,3763 @@
+
+> frontend@0.1.0 dev
+> next dev
+
+▲ Next.js 16.3.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.2:3000
+- Environments: .env.local
+✓ Ready in 459ms
+✓ Running next.config.ts took 29ms
+
+ GET /admin/homepage 200 in 778ms (next.js: 371ms, application-code: 407ms)
+ GET / 200 in 791ms (next.js: 408ms, application-code: 382ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff_hero_banner.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /admin/homepage 200 in 54ms (next.js: 9ms, application-code: 45ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+ GET /admin/homepage 200 in 62ms (next.js: 13ms, application-code: 48ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+ GET / 200 in 108ms (next.js: 5ms, application-code: 104ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+ GET / 200 in 89ms (next.js: 8ms, application-code: 81ms)
+[browser] Image with src "/assets/wff_hero_banner.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff_hero_banner.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+ GET /admin/homepage 200 in 57ms (next.js: 12ms, application-code: 45ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://127.0.0.1:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+✓ Compiled in 401ms
+ GET /admin/homepage 200 in 27ms (next.js: 5ms, application-code: 22ms)
+ GET / 200 in 87ms (next.js: 15ms, application-code: 72ms)
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+✓ Compiled in 378ms
+ GET /admin/homepage 200 in 44ms (next.js: 9ms, application-code: 35ms)
+ GET / 200 in 98ms (next.js: 8ms, application-code: 90ms)
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+ GET /admin/homepage 200 in 24ms (next.js: 4ms, application-code: 20ms)
+ GET / 200 in 91ms (next.js: 9ms, application-code: 82ms)
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+ GET /admin/homepage 200 in 58ms (next.js: 3ms, application-code: 55ms)
+ GET / 200 in 63ms (next.js: 23ms, application-code: 40ms)
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+ GET / 200 in 138ms (next.js: 18ms, application-code: 120ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+ GET /admin/homepage 200 in 48ms (next.js: 5ms, application-code: 43ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+ GET / 200 in 88ms (next.js: 6ms, application-code: 82ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff_hero_banner.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+[browser] Image with src "/assets/wff_hero_banner.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+ GET / 200 in 138ms (next.js: 15ms, application-code: 123ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_13c13a4962e972832f4c14f4f6f4b97d.png hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+⨯ upstream image http://localhost:8000/uploads/hero/hero_c21890ee9213238d4e5bb459a4dbd0bf.jpg hostname resolved to private IP ["::1","127.0.0.1"] If this is expected and you understand SSRF risk, use images.dangerouslyAllowLocalIP = true to continue.
+ GET /admin/homepage 200 in 84ms (next.js: 12ms, application-code: 72ms)
+ GET / 200 in 74ms (next.js: 34ms, application-code: 40ms)
+ GET / 200 in 135ms (next.js: 19ms, application-code: 116ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET / 200 in 82ms (next.js: 7ms, application-code: 75ms)
+[browser] Image with src "/assets/wff_hero_banner.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff_hero_banner.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+ GET /about 200 in 64ms (next.js: 36ms, application-code: 28ms)
+ GET /admin/events 200 in 51ms (next.js: 34ms, application-code: 16ms)
+ GET / 200 in 62ms (next.js: 9ms, application-code: 53ms)
+ GET /events 200 in 36ms (next.js: 26ms, application-code: 10ms)
+ GET /events 200 in 51ms (next.js: 4ms, application-code: 47ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /admin/events/3 200 in 883ms (next.js: 867ms, application-code: 16ms)
+ GET /events 200 in 195ms (next.js: 160ms, application-code: 35ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET / 200 in 68ms (next.js: 12ms, application-code: 56ms)
+ GET /events/wff-rudra-classic-2026 200 in 597ms (next.js: 565ms, application-code: 32ms)
+ GET /events/wff-rudra-classic-2026 200 in 70ms (next.js: 7ms, application-code: 63ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET / 200 in 96ms (next.js: 33ms, application-code: 64ms)
+ GET /events 200 in 27ms (next.js: 7ms, application-code: 20ms)
+ GET / 200 in 46ms (next.js: 3ms, application-code: 42ms)
+[browser] Image with src "/assets/wff_hero_banner.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+ GET /events 200 in 18ms (next.js: 4ms, application-code: 14ms)
+ GET /about 200 in 104ms (next.js: 90ms, application-code: 14ms)
+ GET /events 200 in 18ms (next.js: 4ms, application-code: 15ms)
+ GET / 200 in 39ms (next.js: 4ms, application-code: 35ms)
+ GET / 200 in 43ms (next.js: 4ms, application-code: 39ms)
+ GET /events/akash-gunasekar 200 in 43ms (next.js: 10ms, application-code: 33ms)
+ GET /register?eventId=6 200 in 129ms (next.js: 116ms, application-code: 13ms)
+ GET /admin 200 in 97ms (next.js: 83ms, application-code: 14ms)
+ GET /admin/registrations 200 in 102ms (next.js: 88ms, application-code: 14ms)
+ GET /admin/registrations/4 200 in 1378ms (next.js: 1365ms, application-code: 13ms)
+ GET /admin/events 200 in 23ms (next.js: 6ms, application-code: 17ms)
+✓ Compiled in 533ms
+ GET /admin/events 200 in 72ms (next.js: 45ms, application-code: 27ms)
+ GET /register?eventId=6 200 in 76ms (next.js: 12ms, application-code: 64ms)
+✓ Compiled in 953ms
+ GET /admin/events 200 in 46ms (next.js: 27ms, application-code: 19ms)
+ GET /register?eventId=6 200 in 47ms (next.js: 4ms, application-code: 43ms)
+ GET /admin/events 200 in 113ms (next.js: 17ms, application-code: 97ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /admin/events/3 200 in 26ms (next.js: 12ms, application-code: 14ms)
+ GET /register?eventId=6 200 in 92ms (next.js: 14ms, application-code: 77ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET / 200 in 57ms (next.js: 16ms, application-code: 41ms)
+[browser] Image with src "/assets/wff_hero_banner.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+ GET /events/wff-rudra-classic-2026 200 in 50ms (next.js: 18ms, application-code: 31ms)
+ GET /events/wff-rudra-classic-2026 200 in 86ms (next.js: 7ms, application-code: 79ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /events/wff-rudra-classic-2026 200 in 70ms (next.js: 26ms, application-code: 44ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /events/wff-rudra-classic-2026 200 in 56ms (next.js: 6ms, application-code: 50ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /events/wff-rudra-classic-2026 200 in 50ms (next.js: 6ms, application-code: 44ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /register?eventId=3 200 in 26ms (next.js: 4ms, application-code: 21ms)
+ GET /events 200 in 43ms (next.js: 26ms, application-code: 17ms)
+ GET /about 200 in 34ms (next.js: 18ms, application-code: 15ms)
+ GET / 200 in 109ms (next.js: 5ms, application-code: 104ms)
+[browser] Image with src "/assets/wff_hero_banner.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+ GET / 200 in 102ms (next.js: 6ms, application-code: 97ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff_hero_banner.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+ GET /events/wff-rudra-classic-2026 200 in 36ms (next.js: 9ms, application-code: 27ms)
+ GET /register?eventId=3 200 in 29ms (next.js: 5ms, application-code: 24ms)
+ GET / 200 in 49ms (next.js: 7ms, application-code: 41ms)
+ GET /admin/events/3 200 in 66ms (next.js: 11ms, application-code: 56ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /admin/events 200 in 23ms (next.js: 6ms, application-code: 16ms)
+ GET /admin/events 200 in 22ms (next.js: 4ms, application-code: 18ms)
+ GET /admin/events 200 in 21ms (next.js: 5ms, application-code: 16ms)
+ GET /admin/events/6 200 in 25ms (next.js: 8ms, application-code: 17ms)
+⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /admin/events/6 200 in 1728ms (next.js: 970ms, application-code: 758ms)
+ GET / 200 in 1923ms (next.js: 890ms, application-code: 1033ms)
+ GET / 200 in 897ms (next.js: 6ms, application-code: 891ms)
+ GET / 200 in 835ms (next.js: 39ms, application-code: 796ms)
+ GET /admin/events/6 200 in 847ms (next.js: 5ms, application-code: 841ms)
+ GET /admin/events/6 200 in 393ms (next.js: 6ms, application-code: 386ms)
+✓ Compiled in 590ms
+ GET /admin/events/6 200 in 54ms (next.js: 15ms, application-code: 39ms)
+ GET / 200 in 154ms (next.js: 7ms, application-code: 148ms)
+✓ Compiled in 246ms
+ GET /admin/events/6 200 in 27ms (next.js: 8ms, application-code: 19ms)
+ GET / 200 in 83ms (next.js: 7ms, application-code: 76ms)
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /admin/events/6 200 in 118ms (next.js: 38ms, application-code: 79ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /admin/categories 200 in 304ms (next.js: 285ms, application-code: 18ms)
+ GET /admin/events 200 in 28ms (next.js: 12ms, application-code: 16ms)
+ GET /admin/events/3 200 in 28ms (next.js: 12ms, application-code: 16ms)
+ GET /admin/categories 200 in 28ms (next.js: 8ms, application-code: 20ms)
+ GET /admin/events 200 in 27ms (next.js: 8ms, application-code: 19ms)
+ GET /admin/events/6 200 in 26ms (next.js: 9ms, application-code: 17ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET / 200 in 132ms (next.js: 25ms, application-code: 107ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /events/akash-gunasekar 200 in 70ms (next.js: 37ms, application-code: 33ms)
+ GET /events/akash-gunasekar 200 in 50ms (next.js: 7ms, application-code: 43ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /admin/officials 200 in 105ms (next.js: 59ms, application-code: 45ms)
+ GET /admin/officials 200 in 25ms (next.js: 5ms, application-code: 21ms)
+ GET /admin/events 200 in 28ms (next.js: 8ms, application-code: 20ms)
+ GET /admin/events/6 200 in 27ms (next.js: 10ms, application-code: 16ms)
+ GET /events/akash-gunasekar 200 in 69ms (next.js: 7ms, application-code: 62ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /events/akash-gunasekar 200 in 49ms (next.js: 7ms, application-code: 42ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /events/akash-gunasekar 200 in 53ms (next.js: 1.5ms, application-code: 51ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /admin/categories 200 in 23ms (next.js: 3ms, application-code: 20ms)
+ GET /admin/officials 200 in 23ms (next.js: 5ms, application-code: 19ms)
+ GET /admin/officials 200 in 84ms (next.js: 6ms, application-code: 78ms)
+ GET /events/akash-gunasekar 200 in 50ms (next.js: 16ms, application-code: 35ms)
+✓ Compiled in 184ms
+ GET /admin/officials 200 in 88ms (next.js: 10ms, application-code: 79ms)
+ GET /events/akash-gunasekar 200 in 55ms (next.js: 8ms, application-code: 47ms)
+ GET /admin/officials 200 in 100ms (next.js: 19ms, application-code: 81ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /admin/events 200 in 24ms (next.js: 7ms, application-code: 17ms)
+ GET /admin/events/6 200 in 32ms (next.js: 18ms, application-code: 14ms)
+ GET /events/akash-gunasekar 200 in 58ms (next.js: 8ms, application-code: 50ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /events/akash-gunasekar 200 in 60ms (next.js: 7ms, application-code: 53ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /admin/categories 200 in 25ms (next.js: 9ms, application-code: 17ms)
+ GET /admin/officials 200 in 24ms (next.js: 6ms, application-code: 17ms)
+ GET /admin/categories 200 in 21ms (next.js: 5ms, application-code: 16ms)
+ GET /admin/officials 200 in 20ms (next.js: 4ms, application-code: 17ms)
+ GET /admin/champions 200 in 48ms (next.js: 35ms, application-code: 14ms)
+[browser] Image with src "https://i.pinimg.com/736x/a5/d9/a3/a5d9a30335b9bce57e4ad7664fcb5736.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+ GET /admin/gallery 200 in 41ms (next.js: 26ms, application-code: 16ms)
+ GET /admin/homepage 200 in 32ms (next.js: 18ms, application-code: 14ms)
+ GET /admin/gallery 200 in 34ms (next.js: 8ms, application-code: 25ms)
+ GET / 200 in 60ms (next.js: 7ms, application-code: 53ms)
+[browser] Image with src "/assets/wff_hero_banner.png" has "fill" and a height value of 0. This is likely because the parent element of the image has not been styled to have a set height.
+ GET /events 200 in 41ms (next.js: 26ms, application-code: 15ms)
+ GET / 200 in 47ms (next.js: 6ms, application-code: 41ms)
+ GET /events 200 in 18ms (next.js: 5ms, application-code: 13ms)
+ GET /events 200 in 20ms (next.js: 5ms, application-code: 15ms)
+ GET / 200 in 75ms (next.js: 16ms, application-code: 59ms)
+✓ Compiled in 126ms
+✓ Compiled in 54ms
+ GET /admin/gallery 200 in 97ms (next.js: 9ms, application-code: 88ms)
+ GET / 200 in 125ms (next.js: 39ms, application-code: 86ms)
+ GET /admin/gallery 200 in 84ms (next.js: 18ms, application-code: 67ms)
+ GET / 200 in 85ms (next.js: 41ms, application-code: 44ms)
+ GET /admin/gallery 200 in 56ms (next.js: 36ms, application-code: 20ms)
+ GET / 200 in 58ms (next.js: 6ms, application-code: 52ms)
+ GET /admin/gallery 200 in 75ms (next.js: 49ms, application-code: 26ms)
+ GET / 200 in 78ms (next.js: 9ms, application-code: 69ms)
+ GET / 200 in 156ms (next.js: 21ms, application-code: 135ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /gallery 200 in 51ms (next.js: 34ms, application-code: 17ms)
+ GET /events/akash-gunasekar 200 in 44ms (next.js: 16ms, application-code: 28ms)
+ GET /events 200 in 29ms (next.js: 8ms, application-code: 21ms)
+ GET /events 200 in 27ms (next.js: 11ms, application-code: 16ms)
+ GET / 200 in 71ms (next.js: 18ms, application-code: 53ms)
+ GET /events 200 in 20ms (next.js: 5ms, application-code: 15ms)
+ GET /admin/events 200 in 33ms (next.js: 12ms, application-code: 21ms)
+ GET /admin/categories 200 in 28ms (next.js: 10ms, application-code: 18ms)
+ GET /admin/registrations 200 in 35ms (next.js: 24ms, application-code: 11ms)
+ GET /admin 200 in 38ms (next.js: 23ms, application-code: 15ms)
+ GET /admin/registrations 200 in 21ms (next.js: 4ms, application-code: 17ms)
+ GET /admin/registrations/6 200 in 40ms (next.js: 26ms, application-code: 13ms)
+ GET /admin 200 in 34ms (next.js: 6ms, application-code: 28ms)
+ GET /admin/registrations 200 in 23ms (next.js: 8ms, application-code: 16ms)
+ GET /admin/registrations/6 200 in 25ms (next.js: 9ms, application-code: 17ms)
+ GET /admin/registrations 200 in 22ms (next.js: 6ms, application-code: 16ms)
+ GET /admin 200 in 24ms (next.js: 8ms, application-code: 16ms)
+ GET /admin/registrations 200 in 24ms (next.js: 7ms, application-code: 17ms)
+ GET /admin 200 in 24ms (next.js: 7ms, application-code: 17ms)
+✓ Compiled in 106ms
+ GET /admin 200 in 98ms (next.js: 13ms, application-code: 86ms)
+ GET / 200 in 89ms (next.js: 52ms, application-code: 37ms)
+⨯ ./src/app/events/page.tsx:2:1
+Error: Module not found: Can't resolve './EventsClient'
+  [90m1 |[0m [36mimport[0m { fetchEvents } [36mfrom[0m [32m'@/lib/api'[0m;
+[31m[1m>[0m [90m2 |[0m [36mimport[0m { [33mEventsClient[0m } [36mfrom[0m [32m'./EventsClient'[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m3 |[0m
+  [90m4 |[0m [36mexport[0m [36mconst[0m metadata = {
+  [90m5 |[0m   title: [32m'Events | WFF Tamil Nadu'[0m,
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/app/events/page.tsx:2:1
+Error: Module not found: Can't resolve './EventsClient'
+  [90m1 |[0m [36mimport[0m { fetchEvents } [36mfrom[0m [32m'@/lib/api'[0m;
+[31m[1m>[0m [90m2 |[0m [36mimport[0m { [33mEventsClient[0m } [36mfrom[0m [32m'./EventsClient'[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m3 |[0m
+  [90m4 |[0m [36mexport[0m [36mconst[0m metadata = {
+  [90m5 |[0m   title: [32m'Events | WFF Tamil Nadu'[0m,
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+✓ Compiled in 163ms
+ GET /admin 200 in 70ms (next.js: 50ms, application-code: 21ms)
+ GET / 200 in 74ms (next.js: 8ms, application-code: 67ms)
+[browser] ./src/app/events/page.tsx:2:1
+Error: Module not found: Can't resolve './EventsClient'
+  1 | import { fetchEvents } from '@/lib/api';
+> 2 | import { EventsClient } from './EventsClient';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export const metadata = {
+  5 |   title: 'Events | WFF Tamil Nadu',
+
+https://nextjs.org/docs/messages/module-not-found 
+    at push.console.error (src/components/theme-provider.tsx:13:15)
+  11 |       return;
+  12 |     }
+> 13 |     origError.apply(console, args);
+     |               ^
+  14 |   };
+  15 | }
+  16 | (src/components/theme-provider.tsx:13:15)
+ GET / 200 in 104ms (next.js: 8ms, application-code: 96ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /events 200 in 35ms (next.js: 18ms, application-code: 17ms)
+ GET /events/akash-gunasekar 200 in 36ms (next.js: 10ms, application-code: 26ms)
+[browser] ./src/app/events/page.tsx:2:1
+Error: Module not found: Can't resolve './EventsClient'
+  1 | import { fetchEvents } from '@/lib/api';
+> 2 | import { EventsClient } from './EventsClient';
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export const metadata = {
+  5 |   title: 'Events | WFF Tamil Nadu',
+
+https://nextjs.org/docs/messages/module-not-found 
+    at push.console.error (src/components/theme-provider.tsx:13:15)
+  11 |       return;
+  12 |     }
+> 13 |     origError.apply(console, args);
+     |               ^
+  14 |   };
+  15 | }
+  16 | (src/components/theme-provider.tsx:13:15)
+ GET /admin/events 200 in 26ms (next.js: 8ms, application-code: 18ms)
+ GET /admin/events/6 200 in 33ms (next.js: 20ms, application-code: 13ms)
+ GET /events/akash-gunasekar 200 in 55ms (next.js: 8ms, application-code: 47ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /events/akash-gunasekar 200 in 53ms (next.js: 5ms, application-code: 49ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /events 200 in 26ms (next.js: 6ms, application-code: 20ms)
+ GET /events 200 in 48ms (next.js: 3ms, application-code: 44ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff_hero_banner.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /events 200 in 44ms (next.js: 5ms, application-code: 38ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff_hero_banner.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /events 200 in 35ms (next.js: 1.9ms, application-code: 33ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff_hero_banner.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /admin/events/6 200 in 51ms (next.js: 9ms, application-code: 42ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /events 200 in 49ms (next.js: 7ms, application-code: 41ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff_hero_banner.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /events 200 in 48ms (next.js: 7ms, application-code: 41ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff_hero_banner.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /events 200 in 47ms (next.js: 7ms, application-code: 40ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff_hero_banner.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 48ms (next.js: 8ms, application-code: 40ms)
+ GET /events 200 in 24ms (next.js: 7ms, application-code: 17ms)
+ GET /events 200 in 118ms (next.js: 17ms, application-code: 101ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff_hero_banner.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /events 200 in 95ms (next.js: 25ms, application-code: 70ms)
+ GET /admin/events/6 200 in 39ms (next.js: 12ms, application-code: 27ms)
+✓ Compiled in 123ms
+ GET /events 200 in 82ms (next.js: 7ms, application-code: 75ms)
+ GET /admin/events/6 200 in 39ms (next.js: 14ms, application-code: 24ms)
+ GET /admin/events/6 200 in 28ms (next.js: 6ms, application-code: 22ms)
+ GET /events 200 in 72ms (next.js: 13ms, application-code: 59ms)
+✓ Compiled in 112ms
+ GET /events 200 in 132ms (next.js: 17ms, application-code: 115ms)
+ GET /admin/events/6 200 in 77ms (next.js: 13ms, application-code: 63ms)
+ GET /admin/events/6 200 in 118ms (next.js: 30ms, application-code: 88ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /admin/events 200 in 51ms (next.js: 29ms, application-code: 22ms)
+ GET /events 200 in 77ms (next.js: 7ms, application-code: 71ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff_hero_banner.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 68ms (next.js: 8ms, application-code: 60ms)
+ GET /admin/events 200 in 76ms (next.js: 11ms, application-code: 65ms)
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET /admin/registrations 200 in 29ms (next.js: 12ms, application-code: 17ms)
+ GET /admin 200 in 28ms (next.js: 13ms, application-code: 15ms)
+ GET /admin/registrations 200 in 25ms (next.js: 6ms, application-code: 19ms)
+ GET /admin 200 in 21ms (next.js: 4ms, application-code: 16ms)
+ GET /admin/registrations 200 in 24ms (next.js: 4ms, application-code: 19ms)
+ GET /admin 200 in 19ms (next.js: 4ms, application-code: 15ms)
+ GET /admin/homepage 200 in 30ms (next.js: 14ms, application-code: 16ms)
+ GET / 200 in 117ms (next.js: 5ms, application-code: 112ms)
+[browser] Uncaught Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <link>
+    <script>
+    <script>
+    <RootLayout>
+      <html lang="en" suppressHydrationWarning={true}>
+        <head>
+        <body className="font-sans ..." suppressHydrationWarning={true}>
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange={true}>
+            <J attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange={true}>
+              <V attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange={true}>
+                <script>
+                <div>
+                <Header>
+                  <header className="sticky top...">
+                    <div className="max-w-[144...">
+                      <LinkComponent>
+                      <nav>
+                      <div className="flex items...">
+                        <img>
+                        <button onClick={function onClick} className="w-9 h-9 fl..." aria-label="Toggle theme">
+                          <Sun size={16} strokeWidth={1.5}>
+                            <svg
+                              ref={null}
+                              xmlns="http://www.w3.org/2000/svg"
+                              width={16}
+                              height={16}
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth={1.5}
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
++                             className="lucide lucide-sun"
+-                             className="lucide lucide-moon"
+                              aria-hidden="true"
+                            >
++                             <circle cx="12" cy="12" r="4">
+-                             <path
+-                               d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268..."
+-                             >
+                              ...
+                        ...
+                ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at circle (<anonymous>)
+    at Array.map (<anonymous>)
+    at Header (src/components/layout/Header.tsx:75:33)
+    at RootLayout (src/app/layout.tsx:33:11)
+  73 |             aria-label="Toggle theme"
+  74 |           >
+> 75 |             {theme === "dark" ? <Sun size={16} strokeWidth={1.5} /> : <Moon size={16} strokeWidth={1.5} />}
+     |                                 ^
+  76 |           </button>
+  77 |
+  78 |           {/* Register CTA */}
+[browser] Image with src "/assets/wff-india.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff-international.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[browser] Image with src "/assets/wff_hero_banner.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+✓ Compiled in 128ms
+ GET /admin/homepage 200 in 86ms (next.js: 14ms, application-code: 72ms)
+ GET / 200 in 78ms (next.js: 41ms, application-code: 37ms)
+✓ Compiled in 928ms
+ GET /admin/homepage 200 in 118ms (next.js: 66ms, application-code: 52ms)
+ GET / 200 in 154ms (next.js: 14ms, application-code: 140ms)
+ GET /admin/homepage 200 in 93ms (next.js: 70ms, application-code: 23ms)
+ GET / 200 in 98ms (next.js: 35ms, application-code: 63ms)
+ GET /events 200 in 338ms (next.js: 283ms, application-code: 55ms)
+ GET /admin/events 200 in 196ms (next.js: 182ms, application-code: 14ms)
+ GET /events 200 in 165ms (next.js: 14ms, application-code: 150ms)
+[browser] Image with src "/assets/wff_hero_banner.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/uploads/events/event_075823d8bb1ed847093fd2c753aaa348.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /admin/events/3 200 in 72ms (next.js: 57ms, application-code: 15ms)
+ GET /events 200 in 61ms (next.js: 5ms, application-code: 57ms)
+[browser] Image with src "/uploads/events/event_075823d8bb1ed847093fd2c753aaa348.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /register?eventId=7 200 in 77ms (next.js: 52ms, application-code: 25ms)
+ GET /admin/events 200 in 25ms (next.js: 7ms, application-code: 18ms)
+ GET /admin/events/7 200 in 28ms (next.js: 14ms, application-code: 14ms)
+ GET /register?eventId=7 200 in 92ms (next.js: 4ms, application-code: 88ms)
+ GET /events 200 in 30ms (next.js: 7ms, application-code: 24ms)
+ GET /events/akash-gunasekar 200 in 65ms (next.js: 37ms, application-code: 28ms)
+ GET / 200 in 73ms (next.js: 7ms, application-code: 66ms)
+ GET /events 200 in 29ms (next.js: 2ms, application-code: 27ms)
+ GET /about 200 in 70ms (next.js: 55ms, application-code: 14ms)
+ GET /association 200 in 66ms (next.js: 51ms, application-code: 16ms)
+ GET /gallery 200 in 44ms (next.js: 28ms, application-code: 15ms)
+ GET / 200 in 62ms (next.js: 18ms, application-code: 44ms)
+ GET /events 200 in 39ms (next.js: 8ms, application-code: 31ms)
+ GET / 200 in 42ms (next.js: 10ms, application-code: 32ms)
+ GET /about 200 in 30ms (next.js: 8ms, application-code: 22ms)
+ GET /association 200 in 28ms (next.js: 6ms, application-code: 22ms)
+ GET /about 200 in 27ms (next.js: 6ms, application-code: 21ms)
+ GET /association 200 in 28ms (next.js: 5ms, application-code: 23ms)
+ GET /gallery 200 in 28ms (next.js: 7ms, application-code: 21ms)
+ GET /contact 200 in 70ms (next.js: 53ms, application-code: 16ms)
+ GET /events 200 in 32ms (next.js: 6ms, application-code: 27ms)
+ GET /register?eventId=3 200 in 38ms (next.js: 6ms, application-code: 32ms)
+ GET /events 200 in 83ms (next.js: 20ms, application-code: 63ms)
+ GET /register?eventId=3 200 in 31ms (next.js: 6ms, application-code: 26ms)
+ GET /registration-status 200 in 1490ms (next.js: 1429ms, application-code: 62ms)
+[browser] Uncaught Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <link>
+    <script>
+    <script>
+    <RootLayout>
+      <html lang="en" suppressHydrationWarning={true}>
+        <head>
+        <body className="font-sans ..." suppressHydrationWarning={true}>
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange={true}>
+            <J attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange={true}>
+              <V attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange={true}>
+                <script>
+                <div>
+                <Header>
+                  <header className="sticky top...">
+                    <div className="max-w-[144...">
+                      <LinkComponent>
+                      <nav>
+                      <div className="flex items...">
+                        <img>
+                        <button onClick={function onClick} className="w-9 h-9 fl..." aria-label="Toggle theme">
+                          <Sun size={16} strokeWidth={1.5}>
+                            <svg
+                              ref={null}
+                              xmlns="http://www.w3.org/2000/svg"
+                              width={16}
+                              height={16}
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth={1.5}
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
++                             className="lucide lucide-sun"
+-                             className="lucide lucide-moon"
+                              aria-hidden="true"
+                            >
++                             <circle cx="12" cy="12" r="4">
+-                             <path
+-                               d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268..."
+-                             >
+                              ...
+                        ...
+                ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at circle (<anonymous>)
+    at Array.map (<anonymous>)
+    at Header (src/components/layout/Header.tsx:71:33)
+    at RootLayout (src/app/layout.tsx:33:11)
+  69 |             aria-label="Toggle theme"
+  70 |           >
+> 71 |             {theme === "dark" ? <Sun size={16} strokeWidth={1.5} /> : <Moon size={16} strokeWidth={1.5} />}
+     |                                 ^
+  72 |           </button>
+  73 |
+  74 |           {/* Register CTA */}
+ GET /register?eventId=3 200 in 59ms (next.js: 7ms, application-code: 53ms)
+✓ Compiled in 793ms
+ GET /admin/events/7 200 in 312ms (next.js: 18ms, application-code: 294ms)
+ GET /register?eventId=3 200 in 229ms (next.js: 71ms, application-code: 157ms)
+✓ Compiled in 274ms
+ GET /admin/events/7 200 in 91ms (next.js: 64ms, application-code: 27ms)
+ GET /register?eventId=3 200 in 94ms (next.js: 8ms, application-code: 86ms)
+ GET /register?eventId=3 200 in 94ms (next.js: 7ms, application-code: 87ms)
+ GET /admin/events/7 200 in 43ms (next.js: 12ms, application-code: 31ms)
+ GET /register?eventId=3 200 in 50ms (next.js: 3ms, application-code: 47ms)
+ GET /admin/events/7 200 in 28ms (next.js: 5ms, application-code: 23ms)
+ GET /register?eventId=3 200 in 86ms (next.js: 10ms, application-code: 76ms)
+ GET /admin/events/7 200 in 43ms (next.js: 13ms, application-code: 31ms)
+ GET /admin/events/7 200 in 34ms (next.js: 7ms, application-code: 27ms)
+ GET /register?eventId=3 200 in 76ms (next.js: 7ms, application-code: 69ms)
+✓ Compiled in 56ms
+ GET /register?eventId=3 200 in 119ms (next.js: 25ms, application-code: 94ms)
+ GET /admin/events/7 200 in 56ms (next.js: 12ms, application-code: 44ms)
+ GET /register?eventId=3 200 in 132ms (next.js: 15ms, application-code: 117ms)
+ GET /events/wff-rudra-classic-2026 200 in 190ms (next.js: 27ms, application-code: 163ms)
+ GET /register?eventId=3 200 in 39ms (next.js: 8ms, application-code: 31ms)
+ GET /register?eventId=3 200 in 34ms (next.js: 6ms, application-code: 28ms)
+ GET / 200 in 83ms (next.js: 16ms, application-code: 67ms)
+ GET /events/akash-gunasekar 200 in 43ms (next.js: 7ms, application-code: 36ms)
+ GET /register?eventId=7 200 in 38ms (next.js: 7ms, application-code: 30ms)
+ GET / 200 in 67ms (next.js: 7ms, application-code: 61ms)
+ GET /about 200 in 28ms (next.js: 11ms, application-code: 17ms)
+ GET /about 200 in 20ms (next.js: 2ms, application-code: 18ms)
+ GET /admin/registrations 200 in 94ms (next.js: 64ms, application-code: 30ms)
+ GET /admin 200 in 40ms (next.js: 29ms, application-code: 12ms)
+ GET /admin/registrations 200 in 26ms (next.js: 7ms, application-code: 19ms)
+ GET /admin/registrations 200 in 104ms (next.js: 20ms, application-code: 84ms)
+ GET /admin/events 200 in 28ms (next.js: 11ms, application-code: 17ms)
+ GET /admin/categories 200 in 34ms (next.js: 20ms, application-code: 14ms)
+ GET /admin/officials 200 in 41ms (next.js: 25ms, application-code: 17ms)
+ GET /admin/champions 200 in 32ms (next.js: 20ms, application-code: 13ms)
+[browser] Image with src "https://i.pinimg.com/736x/a5/d9/a3/a5d9a30335b9bce57e4ad7664fcb5736.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+ GET /admin/gallery 200 in 23ms (next.js: 11ms, application-code: 13ms)
+ GET /admin/homepage 200 in 19ms (next.js: 7ms, application-code: 13ms)
+ GET /admin/settings 200 in 46ms (next.js: 35ms, application-code: 11ms)
+ GET /admin/events 200 in 15ms (next.js: 3ms, application-code: 12ms)
+ GET /events 200 in 50ms (next.js: 15ms, application-code: 35ms)
+ GET /register?eventId=7 200 in 48ms (next.js: 11ms, application-code: 38ms)
+ GET /events/akash-gunasekar 200 in 38ms (next.js: 8ms, application-code: 30ms)
+ GET /register?eventId=7 200 in 76ms (next.js: 38ms, application-code: 38ms)
+✓ Compiled in 142ms
+ GET /admin/events 200 in 56ms (next.js: 35ms, application-code: 21ms)
+ GET /register?eventId=7 200 in 64ms (next.js: 8ms, application-code: 56ms)
+✓ Compiled in 210ms
+ GET /admin/events 200 in 73ms (next.js: 11ms, application-code: 62ms)
+ GET /register?eventId=7 200 in 29ms (next.js: 3ms, application-code: 26ms)
+ GET /events 200 in 84ms (next.js: 22ms, application-code: 62ms)
+ GET /events/wff-rudra-classic-2026 200 in 61ms (next.js: 24ms, application-code: 36ms)
+ GET /about 200 in 36ms (next.js: 12ms, application-code: 24ms)
+ GET / 200 in 87ms (next.js: 10ms, application-code: 77ms)
+ GET /events 200 in 34ms (next.js: 9ms, application-code: 25ms)
+ GET /events/akash-gunasekar 200 in 53ms (next.js: 8ms, application-code: 45ms)
+ GET /events/akash-gunasekar 200 in 134ms (next.js: 7ms, application-code: 127ms)
+ GET /admin/events/7 200 in 26ms (next.js: 10ms, application-code: 16ms)
+✓ Compiled in 291ms
+ GET /admin/events/7 200 in 62ms (next.js: 17ms, application-code: 45ms)
+ GET /events/akash-gunasekar 200 in 220ms (next.js: 27ms, application-code: 193ms)
+✓ Compiled in 85ms
+✓ Compiled in 73ms
+✓ Compiled in 68ms
+✓ Compiled in 593ms
+ GET /admin/events/7 200 in 81ms (next.js: 58ms, application-code: 23ms)
+ GET /events/akash-gunasekar 200 in 83ms (next.js: 28ms, application-code: 55ms)
+ GET /admin/events/7 200 in 91ms (next.js: 31ms, application-code: 60ms)
+ GET /events/akash-gunasekar 200 in 225ms (next.js: 29ms, application-code: 196ms)
+ GET /events 200 in 50ms (next.js: 9ms, application-code: 40ms)
+ GET /register?eventId=3 200 in 40ms (next.js: 10ms, application-code: 30ms)
+ GET / 200 in 69ms (next.js: 7ms, application-code: 63ms)
+ GET /events 200 in 32ms (next.js: 5ms, application-code: 27ms)
+ GET /about 200 in 19ms (next.js: 5ms, application-code: 14ms)
+ GET /association 200 in 30ms (next.js: 11ms, application-code: 19ms)
+ GET /admin/champions 200 in 28ms (next.js: 7ms, application-code: 20ms)
+[browser] Image with src "https://i.pinimg.com/736x/a5/d9/a3/a5d9a30335b9bce57e4ad7664fcb5736.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+ GET /admin/gallery 200 in 27ms (next.js: 7ms, application-code: 20ms)
+ GET /admin/homepage 200 in 27ms (next.js: 8ms, application-code: 19ms)
+ GET /admin/officials 200 in 26ms (next.js: 8ms, application-code: 19ms)
+ GET /admin 200 in 65ms (next.js: 35ms, application-code: 30ms)
+ GET /admin/registrations 200 in 27ms (next.js: 8ms, application-code: 19ms)
+ GET /admin 200 in 24ms (next.js: 7ms, application-code: 17ms)
+ GET /admin/homepage 200 in 29ms (next.js: 8ms, application-code: 20ms)
+ GET /admin/settings 200 in 28ms (next.js: 8ms, application-code: 20ms)
+ GET /association 200 in 85ms (next.js: 8ms, application-code: 77ms)
+ GET /gallery 200 in 37ms (next.js: 14ms, application-code: 24ms)
+ GET / 200 in 67ms (next.js: 6ms, application-code: 61ms)
+✓ Compiled in 153ms
+ GET /admin/settings 200 in 78ms (next.js: 51ms, application-code: 27ms)
+ GET / 200 in 89ms (next.js: 11ms, application-code: 78ms)
+✓ Compiled in 273ms
+ GET /admin/settings 200 in 137ms (next.js: 100ms, application-code: 37ms)
+ GET / 200 in 146ms (next.js: 15ms, application-code: 131ms)
+✓ Compiled in 73ms
+ GET /admin/settings 200 in 83ms (next.js: 61ms, application-code: 22ms)
+ GET / 200 in 95ms (next.js: 12ms, application-code: 83ms)
+ GET /admin/settings 200 in 114ms (next.js: 19ms, application-code: 95ms)
+ GET /admin/events 200 in 27ms (next.js: 9ms, application-code: 19ms)
+ GET /admin/events/7 200 in 34ms (next.js: 19ms, application-code: 16ms)
+ GET / 200 in 138ms (next.js: 9ms, application-code: 129ms)
+ GET /events/akash-gunasekar 200 in 53ms (next.js: 21ms, application-code: 32ms)
+ GET /events/akash-gunasekar 200 in 178ms (next.js: 28ms, application-code: 149ms)
+ GET /register?eventId=7 200 in 41ms (next.js: 9ms, application-code: 32ms)
+ GET /association 200 in 26ms (next.js: 8ms, application-code: 18ms)
+ GET /admin/officials 200 in 24ms (next.js: 9ms, application-code: 16ms)
+ GET /admin/events 200 in 43ms (next.js: 14ms, application-code: 29ms)
+ GET /admin/categories 200 in 32ms (next.js: 12ms, application-code: 20ms)
+ GET /admin/officials 200 in 26ms (next.js: 7ms, application-code: 19ms)
+ GET /admin/champions 200 in 27ms (next.js: 8ms, application-code: 19ms)
+[browser] Image with src "https://i.pinimg.com/736x/a5/d9/a3/a5d9a30335b9bce57e4ad7664fcb5736.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+ GET /admin/events 200 in 71ms (next.js: 30ms, application-code: 41ms)
+ GET /admin/events/7 200 in 26ms (next.js: 10ms, application-code: 16ms)
+ GET /admin 200 in 40ms (next.js: 14ms, application-code: 26ms)
+ GET /admin/registrations 200 in 20ms (next.js: 6ms, application-code: 14ms)
+ GET /admin/homepage 200 in 44ms (next.js: 18ms, application-code: 26ms)
+ GET / 200 in 129ms (next.js: 23ms, application-code: 106ms)
+ GET /admin/champions 200 in 67ms (next.js: 40ms, application-code: 27ms)
+ GET /admin/gallery 200 in 26ms (next.js: 9ms, application-code: 17ms)
+ GET /admin/champions 200 in 24ms (next.js: 6ms, application-code: 18ms)
+ GET /admin/gallery 200 in 22ms (next.js: 4ms, application-code: 19ms)
+✓ Compiled in 402ms
+ GET /admin/gallery 200 in 113ms (next.js: 19ms, application-code: 93ms)
+ GET / 200 in 97ms (next.js: 41ms, application-code: 56ms)
+ GET /admin/gallery 200 in 112ms (next.js: 14ms, application-code: 97ms)
+ GET / 200 in 110ms (next.js: 61ms, application-code: 49ms)
+[browser] ./src/app/events/[slug]/page.tsx:7:1
+Error: Export Facebook doesn't exist in target module
+   5 | ...ntainer';
+   6 | ...;
+>  7 | ...y, Info, AlertTriangle, CheckCircle2, Star, Target, FileText, HelpCircle, Instagram, Fa...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | ...ventActionBox';
+   9 | ...nerSlider';
+  10 | ...Accordion';
+
+The export Facebook was not found in module [project]/node_modules/lucide-react/dist/esm/lucide-react.mjs [app-rsc] (ecmascript).
+Did you mean to import Webhook?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist. 
+    at push.console.error (src/components/theme-provider.tsx:13:15)
+  11 |       return;
+  12 |     }
+> 13 |     origError.apply(console, args);
+     |               ^
+  14 |   };
+  15 | }
+  16 | (src/components/theme-provider.tsx:13:15)
+[browser] ./src/app/events/[slug]/page.tsx:7:1
+Error: Export Instagram doesn't exist in target module
+   5 | ...ntainer';
+   6 | ...;
+>  7 | ...y, Info, AlertTriangle, CheckCircle2, Star, Target, FileText, HelpCircle, Instagram, Fa...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | ...ventActionBox';
+   9 | ...nerSlider';
+  10 | ...Accordion';
+
+The export Instagram was not found in module [project]/node_modules/lucide-react/dist/esm/lucide-react.mjs [app-rsc] (ecmascript).
+Did you mean to import Star?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist. 
+    at push.console.error (src/components/theme-provider.tsx:13:15)
+  11 |       return;
+  12 |     }
+> 13 |     origError.apply(console, args);
+     |               ^
+  14 |   };
+  15 | }
+  16 | (src/components/theme-provider.tsx:13:15)
+[browser] ./src/app/events/[slug]/page.tsx:7:1
+Error: Export Youtube doesn't exist in target module
+   5 | ...ntainer';
+   6 | ...;
+>  7 | ...y, Info, AlertTriangle, CheckCircle2, Star, Target, FileText, HelpCircle, Instagram, Fa...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | ...ventActionBox';
+   9 | ...nerSlider';
+  10 | ...Accordion';
+
+The export Youtube was not found in module [project]/node_modules/lucide-react/dist/esm/lucide-react.mjs [app-rsc] (ecmascript).
+Did you mean to import Route?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist. 
+    at push.console.error (src/components/theme-provider.tsx:13:15)
+  11 |       return;
+  12 |     }
+> 13 |     origError.apply(console, args);
+     |               ^
+  14 |   };
+  15 | }
+  16 | (src/components/theme-provider.tsx:13:15)
+ GET /admin/officials 200 in 203ms (next.js: 181ms, application-code: 21ms)
+[browser] ./src/app/events/[slug]/page.tsx:7:1
+Error: Export Facebook doesn't exist in target module
+   5 | ...ntainer';
+   6 | ...;
+>  7 | ...y, Info, AlertTriangle, CheckCircle2, Star, Target, FileText, HelpCircle, Instagram, Fa...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | ...ventActionBox';
+   9 | ...nerSlider';
+  10 | ...Accordion';
+
+The export Facebook was not found in module [project]/node_modules/lucide-react/dist/esm/lucide-react.mjs [app-rsc] (ecmascript).
+Did you mean to import Webhook?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist. 
+    at push.console.error (src/components/theme-provider.tsx:13:15)
+  11 |       return;
+  12 |     }
+> 13 |     origError.apply(console, args);
+     |               ^
+  14 |   };
+  15 | }
+  16 | (src/components/theme-provider.tsx:13:15)
+[browser] ./src/app/events/[slug]/page.tsx:7:1
+Error: Export Instagram doesn't exist in target module
+   5 | ...ntainer';
+   6 | ...;
+>  7 | ...y, Info, AlertTriangle, CheckCircle2, Star, Target, FileText, HelpCircle, Instagram, Fa...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | ...ventActionBox';
+   9 | ...nerSlider';
+  10 | ...Accordion';
+
+The export Instagram was not found in module [project]/node_modules/lucide-react/dist/esm/lucide-react.mjs [app-rsc] (ecmascript).
+Did you mean to import Star?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist. 
+    at push.console.error (src/components/theme-provider.tsx:13:15)
+  11 |       return;
+  12 |     }
+> 13 |     origError.apply(console, args);
+     |               ^
+  14 |   };
+  15 | }
+  16 | (src/components/theme-provider.tsx:13:15)
+[browser] ./src/app/events/[slug]/page.tsx:7:1
+Error: Export Youtube doesn't exist in target module
+   5 | ...ntainer';
+   6 | ...;
+>  7 | ...y, Info, AlertTriangle, CheckCircle2, Star, Target, FileText, HelpCircle, Instagram, Fa...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   8 | ...ventActionBox';
+   9 | ...nerSlider';
+  10 | ...Accordion';
+
+The export Youtube was not found in module [project]/node_modules/lucide-react/dist/esm/lucide-react.mjs [app-rsc] (ecmascript).
+Did you mean to import Route?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist. 
+    at push.console.error (src/components/theme-provider.tsx:13:15)
+  11 |       return;
+  12 |     }
+> 13 |     origError.apply(console, args);
+     |               ^
+  14 |   };
+  15 | }
+  16 | (src/components/theme-provider.tsx:13:15)
+ GET / 200 in 241ms (next.js: 102ms, application-code: 138ms)
+ GET / 200 in 97ms (next.js: 5ms, application-code: 92ms)
+[browser] Image with src "/assets/wff-india.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 83ms (next.js: 4ms, application-code: 79ms)
+[browser] Image with src "/assets/wff-india.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 80ms (next.js: 3ms, application-code: 77ms)
+[browser] Image with src "/assets/wff-india.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 183ms (next.js: 18ms, application-code: 164ms)
+[browser] Image with src "/assets/wff-india.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /admin/officials 200 in 69ms (next.js: 5ms, application-code: 64ms)
+ GET / 200 in 225ms (next.js: 38ms, application-code: 187ms)
+[browser] Image with src "/assets/wff-india.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /admin/homepage 200 in 188ms (next.js: 169ms, application-code: 19ms)
+ GET /admin/settings 200 in 121ms (next.js: 108ms, application-code: 13ms)
+ GET /admin/settings 200 in 57ms (next.js: 4ms, application-code: 53ms)
+✓ Compiled in 478ms
+ GET / 200 in 33ms (next.js: 5ms, application-code: 28ms)
+ GET / 200 in 184ms (next.js: 17ms, application-code: 167ms)
+ GET /admin/settings 200 in 50ms (next.js: 10ms, application-code: 40ms)
+ GET /admin/officials 200 in 34ms (next.js: 13ms, application-code: 21ms)
+[browser] Image with src "/uploads/officials/official_3355cebeea23a45e9a927299c3232617.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+ GET / 200 in 108ms (next.js: 8ms, application-code: 100ms)
+[browser] Image with src "/assets/wff-india.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 86ms (next.js: 6ms, application-code: 80ms)
+[browser] Image with src "/assets/wff-india.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 88ms (next.js: 4ms, application-code: 84ms)
+[browser] Image with src "/assets/wff-india.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 81ms (next.js: 7ms, application-code: 74ms)
+[browser] Image with src "/assets/wff-india.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 80ms (next.js: 4ms, application-code: 76ms)
+[browser] Image with src "/assets/wff-india.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /admin/events 200 in 25ms (next.js: 8ms, application-code: 17ms)
+ GET /admin/events/7 200 in 30ms (next.js: 13ms, application-code: 17ms)
+ GET / 200 in 131ms (next.js: 10ms, application-code: 122ms)
+[browser] Image with src "/assets/wff-india.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /events 200 in 37ms (next.js: 8ms, application-code: 29ms)
+ GET /events/akash-gunasekar 200 in 64ms (next.js: 31ms, application-code: 34ms)
+ GET /admin/events/7 200 in 45ms (next.js: 10ms, application-code: 35ms)
+ GET / 200 in 42ms (next.js: 4ms, application-code: 38ms)
+ GET /association 200 in 28ms (next.js: 11ms, application-code: 17ms)
+ GET /gallery 200 in 24ms (next.js: 6ms, application-code: 18ms)
+ GET /admin/settings 200 in 78ms (next.js: 41ms, application-code: 37ms)
+ GET /gallery 200 in 86ms (next.js: 10ms, application-code: 76ms)
+ GET /gallery 200 in 45ms (next.js: 6ms, application-code: 39ms)
+ GET /events 200 in 49ms (next.js: 8ms, application-code: 41ms)
+ GET /about 200 in 35ms (next.js: 8ms, application-code: 27ms)
+ GET / 200 in 83ms (next.js: 4ms, application-code: 79ms)
+ GET /register 200 in 32ms (next.js: 6ms, application-code: 26ms)
+ GET /events 200 in 58ms (next.js: 6ms, application-code: 52ms)
+[browser] Image with src "/assets/wff_hero_banner.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/uploads/events/event_075823d8bb1ed847093fd2c753aaa348.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 43ms (next.js: 4ms, application-code: 39ms)
+ GET /events 200 in 28ms (next.js: 4ms, application-code: 25ms)
+ GET / 200 in 48ms (next.js: 5ms, application-code: 43ms)
+ GET /register 200 in 32ms (next.js: 5ms, application-code: 27ms)
+ GET /events 200 in 61ms (next.js: 9ms, application-code: 52ms)
+[browser] Image with src "/uploads/events/event_075823d8bb1ed847093fd2c753aaa348.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /register?eventId=3 200 in 34ms (next.js: 5ms, application-code: 30ms)
+ GET /events 200 in 41ms (next.js: 9ms, application-code: 31ms)
+ GET /events/akash-gunasekar 200 in 39ms (next.js: 7ms, application-code: 32ms)
+ GET /register?eventId=7 200 in 36ms (next.js: 6ms, application-code: 30ms)
+ GET /events 200 in 33ms (next.js: 7ms, application-code: 25ms)
+ GET /events/wff-rudra-classic-2026 200 in 52ms (next.js: 12ms, application-code: 40ms)
+ GET /admin/settings 200 in 84ms (next.js: 16ms, application-code: 68ms)
+ GET /events/wff-rudra-classic-2026 200 in 89ms (next.js: 47ms, application-code: 42ms)
+✓ Compiled in 582ms
+ GET /admin/settings 200 in 78ms (next.js: 9ms, application-code: 69ms)
+ GET /events/wff-rudra-classic-2026 200 in 40ms (next.js: 6ms, application-code: 34ms)
+ GET /admin/settings 200 in 88ms (next.js: 17ms, application-code: 71ms)
+ GET /events/wff-rudra-classic-2026 200 in 36ms (next.js: 8ms, application-code: 29ms)
+✓ Compiled in 85ms
+ GET /admin/settings 200 in 84ms (next.js: 5ms, application-code: 80ms)
+ GET /events/wff-rudra-classic-2026 200 in 59ms (next.js: 8ms, application-code: 51ms)
+ GET /admin/settings 200 in 80ms (next.js: 8ms, application-code: 72ms)
+ GET /events/wff-rudra-classic-2026 200 in 47ms (next.js: 6ms, application-code: 41ms)
+ GET / 200 in 150ms (next.js: 41ms, application-code: 109ms)
+ GET /admin/gallery 200 in 33ms (next.js: 18ms, application-code: 15ms)
+ GET /admin/gallery/3 200 in 551ms (next.js: 536ms, application-code: 15ms)
+ GET /admin/gallery 200 in 206ms (next.js: 192ms, application-code: 13ms)
+ GET / 200 in 230ms (next.js: 105ms, application-code: 125ms)
+[browser] Image with src "/uploads/gallery/c086f9924c7064fea544a2d189223f3d.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /admin/gallery/3 200 in 72ms (next.js: 58ms, application-code: 14ms)
+ GET /gallery 200 in 70ms (next.js: 51ms, application-code: 19ms)
+ GET /gallery 200 in 50ms (next.js: 4ms, application-code: 46ms)
+ GET /admin/gallery 200 in 24ms (next.js: 7ms, application-code: 17ms)
+ GET /admin/gallery/2 200 in 27ms (next.js: 11ms, application-code: 16ms)
+ GET /gallery 200 in 52ms (next.js: 8ms, application-code: 44ms)
+ GET /gallery 200 in 56ms (next.js: 7ms, application-code: 49ms)
+ GET /gallery 200 in 49ms (next.js: 6ms, application-code: 43ms)
+ GET /admin/gallery 200 in 21ms (next.js: 5ms, application-code: 16ms)
+ GET /gallery 200 in 42ms (next.js: 5ms, application-code: 37ms)
+ GET /gallery 200 in 38ms (next.js: 2ms, application-code: 35ms)
+ GET /gallery 200 in 32ms (next.js: 2.0ms, application-code: 30ms)
+ GET /gallery 200 in 30ms (next.js: 1.9ms, application-code: 28ms)
+ GET /gallery 200 in 36ms (next.js: 2.0ms, application-code: 34ms)
+ GET /gallery 200 in 48ms (next.js: 7ms, application-code: 41ms)
+ GET /gallery 200 in 40ms (next.js: 4ms, application-code: 36ms)
+ GET /gallery 200 in 28ms (next.js: 1.9ms, application-code: 26ms)
+ GET /gallery 200 in 29ms (next.js: 2ms, application-code: 27ms)
+ GET /gallery 200 in 41ms (next.js: 5ms, application-code: 36ms)
+ GET / 200 in 67ms (next.js: 6ms, application-code: 61ms)
+ GET /gallery 200 in 54ms (next.js: 8ms, application-code: 45ms)
+ GET /gallery 200 in 53ms (next.js: 9ms, application-code: 44ms)
+ GET /admin/gallery 200 in 60ms (next.js: 6ms, application-code: 54ms)
+ GET /gallery 200 in 43ms (next.js: 7ms, application-code: 36ms)
+ GET /gallery 200 in 37ms (next.js: 3ms, application-code: 35ms)
+ GET /gallery 200 in 44ms (next.js: 4ms, application-code: 40ms)
+ GET /gallery 200 in 43ms (next.js: 4ms, application-code: 39ms)
+ GET /gallery 200 in 43ms (next.js: 4ms, application-code: 39ms)
+ GET /gallery 200 in 39ms (next.js: 3ms, application-code: 36ms)
+ GET /gallery 200 in 59ms (next.js: 4ms, application-code: 54ms)
+ GET /gallery 200 in 40ms (next.js: 3ms, application-code: 37ms)
+ GET /gallery 200 in 46ms (next.js: 3ms, application-code: 43ms)
+ GET /gallery 200 in 51ms (next.js: 7ms, application-code: 44ms)
+ GET /gallery 200 in 34ms (next.js: 3ms, application-code: 31ms)
+ GET /gallery 200 in 34ms (next.js: 2ms, application-code: 32ms)
+ GET / 200 in 37ms (next.js: 4ms, application-code: 33ms)
+ GET /gallery 200 in 44ms (next.js: 6ms, application-code: 38ms)
+ GET /gallery 200 in 97ms (next.js: 16ms, application-code: 81ms)
+ GET /gallery 200 in 46ms (next.js: 9ms, application-code: 37ms)
+ GET / 200 in 72ms (next.js: 6ms, application-code: 66ms)
+ GET /contact 200 in 58ms (next.js: 33ms, application-code: 25ms)
+ GET /about 200 in 36ms (next.js: 20ms, application-code: 16ms)
+ GET /association 200 in 36ms (next.js: 22ms, application-code: 14ms)
+ GET /about 200 in 22ms (next.js: 4ms, application-code: 17ms)
+ GET /events 200 in 45ms (next.js: 20ms, application-code: 24ms)
+ GET / 200 in 41ms (next.js: 6ms, application-code: 35ms)
+ GET /events 200 in 31ms (next.js: 5ms, application-code: 26ms)
+ GET /about 200 in 24ms (next.js: 4ms, application-code: 20ms)
+ GET /association 200 in 28ms (next.js: 4ms, application-code: 24ms)
+ GET /gallery 200 in 27ms (next.js: 8ms, application-code: 19ms)
+ GET /contact 200 in 29ms (next.js: 8ms, application-code: 21ms)
+ GET / 200 in 110ms (next.js: 17ms, application-code: 94ms)
+✓ Compiled in 538ms
+ GET /admin/gallery 200 in 175ms (next.js: 138ms, application-code: 37ms)
+ GET / 200 in 200ms (next.js: 27ms, application-code: 174ms)
+ GET /admin/gallery 200 in 98ms (next.js: 71ms, application-code: 26ms)
+ GET / 200 in 103ms (next.js: 20ms, application-code: 83ms)
+✓ Compiled in 379ms
+ GET / 200 in 92ms (next.js: 10ms, application-code: 82ms)
+ GET /admin/gallery 200 in 30ms (next.js: 7ms, application-code: 23ms)
+ GET /admin/gallery 200 in 84ms (next.js: 18ms, application-code: 66ms)
+ GET / 200 in 84ms (next.js: 48ms, application-code: 36ms)
+ GET /admin/gallery 200 in 112ms (next.js: 18ms, application-code: 94ms)
+ GET /admin/settings 200 in 33ms (next.js: 16ms, application-code: 17ms)
+ GET / 200 in 184ms (next.js: 17ms, application-code: 167ms)
+[browser] Image with src "/assets/wff_hero_banner.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /contact 200 in 68ms (next.js: 38ms, application-code: 30ms)
+ GET /gallery 200 in 35ms (next.js: 15ms, application-code: 20ms)
+ GET / 200 in 51ms (next.js: 8ms, application-code: 43ms)
+✓ Compiled in 498ms
+ GET /admin/settings 200 in 120ms (next.js: 13ms, application-code: 107ms)
+ GET / 200 in 117ms (next.js: 69ms, application-code: 48ms)
+ GET / 200 in 270ms (next.js: 26ms, application-code: 244ms)
+ GET /admin/settings 200 in 34ms (next.js: 6ms, application-code: 28ms)
+ GET / 200 in 242ms (next.js: 10ms, application-code: 231ms)
+ GET /admin/settings 200 in 45ms (next.js: 5ms, application-code: 40ms)
+ GET / 200 in 227ms (next.js: 21ms, application-code: 205ms)
+✓ Compiled in 217ms
+ GET /admin/settings 200 in 40ms (next.js: 6ms, application-code: 34ms)
+ GET / 200 in 190ms (next.js: 86ms, application-code: 105ms)
+✓ Compiled in 105ms
+ GET /admin/settings 200 in 122ms (next.js: 87ms, application-code: 35ms)
+ GET / 200 in 126ms (next.js: 23ms, application-code: 103ms)
+✓ Compiled in 170ms
+ GET /admin/settings 200 in 106ms (next.js: 11ms, application-code: 96ms)
+ GET / 200 in 54ms (next.js: 8ms, application-code: 46ms)
+ GET /admin/settings 200 in 27ms (next.js: 4ms, application-code: 23ms)
+ GET / 200 in 121ms (next.js: 14ms, application-code: 107ms)
+✓ Compiled in 217ms
+ GET /admin/settings 200 in 143ms (next.js: 25ms, application-code: 117ms)
+ GET / 200 in 144ms (next.js: 92ms, application-code: 52ms)
+✓ Compiled in 665ms
+ GET /admin/settings 200 in 80ms (next.js: 52ms, application-code: 28ms)
+ GET / 200 in 93ms (next.js: 11ms, application-code: 81ms)
+✓ Compiled in 852ms
+ GET /admin/settings 200 in 131ms (next.js: 13ms, application-code: 118ms)
+ GET / 200 in 136ms (next.js: 70ms, application-code: 66ms)
+✓ Compiled in 224ms
+ GET /admin/settings 200 in 40ms (next.js: 6ms, application-code: 34ms)
+ GET / 200 in 155ms (next.js: 6ms, application-code: 149ms)
+ GET / 200 in 238ms (next.js: 17ms, application-code: 221ms)
+[browser] Image with src "/uploads/gallery/aa243d5fee23c3a5685b74ef92854ca9.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+✓ Compiled in 326ms
+ GET /admin/settings 200 in 32ms (next.js: 6ms, application-code: 26ms)
+ GET / 200 in 79ms (next.js: 5ms, application-code: 74ms)
+✓ Compiled in 247ms
+ GET /admin/settings 200 in 138ms (next.js: 3ms, application-code: 135ms)
+ GET / 200 in 116ms (next.js: 2ms, application-code: 113ms)
+✓ Compiled in 166ms
+ GET /admin/settings 200 in 126ms (next.js: 95ms, application-code: 31ms)
+ GET / 200 in 132ms (next.js: 14ms, application-code: 119ms)
+✓ Compiled in 143ms
+ GET /admin/settings 200 in 98ms (next.js: 70ms, application-code: 28ms)
+ GET / 200 in 105ms (next.js: 14ms, application-code: 90ms)
+ GET /gallery 200 in 118ms (next.js: 70ms, application-code: 48ms)
+ GET / 200 in 179ms (next.js: 9ms, application-code: 170ms)
+[browser] Image with src "/uploads/gallery/5c020997359874735f429374d1f97bea.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/uploads/gallery/4b709556f193321fc93029ef611a70ba.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /gallery 200 in 41ms (next.js: 15ms, application-code: 26ms)
+ GET /contact 200 in 48ms (next.js: 23ms, application-code: 26ms)
+ GET / 200 in 43ms (next.js: 5ms, application-code: 39ms)
+✓ Compiled in 312ms
+ GET /admin/settings 200 in 138ms (next.js: 11ms, application-code: 127ms)
+ GET / 200 in 215ms (next.js: 28ms, application-code: 187ms)
+ GET / 200 in 185ms (next.js: 14ms, application-code: 172ms)
+[browser] Image with src "https://i.pinimg.com/736x/a5/d9/a3/a5d9a30335b9bce57e4ad7664fcb5736.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /gallery 200 in 89ms (next.js: 45ms, application-code: 44ms)
+ GET / 200 in 68ms (next.js: 10ms, application-code: 58ms)
+✓ Compiled in 109ms
+ GET /admin/settings 200 in 27ms (next.js: 5ms, application-code: 22ms)
+ GET / 200 in 82ms (next.js: 11ms, application-code: 71ms)
+ GET / 200 in 205ms (next.js: 11ms, application-code: 194ms)
+[browser] Image with src "https://i.pinimg.com/736x/a5/d9/a3/a5d9a30335b9bce57e4ad7664fcb5736.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /admin/settings 200 in 52ms (next.js: 4ms, application-code: 48ms)
+ GET /admin/gallery 200 in 30ms (next.js: 15ms, application-code: 15ms)
+ GET /admin/gallery/4 200 in 42ms (next.js: 28ms, application-code: 14ms)
+ GET / 200 in 117ms (next.js: 12ms, application-code: 105ms)
+ GET / 200 in 107ms (next.js: 5ms, application-code: 102ms)
+[browser] Image with src "/assets/wff_hero_banner_2.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 106ms (next.js: 5ms, application-code: 101ms)
+[browser] Image with src "/assets/wff_hero_banner_2.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 100ms (next.js: 3ms, application-code: 97ms)
+[browser] Image with src "/assets/wff_hero_banner_2.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 130ms (next.js: 4ms, application-code: 127ms)
+[browser] Image with src "/assets/wff_hero_banner_2.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 93ms (next.js: 2ms, application-code: 91ms)
+[browser] Image with src "/assets/wff_hero_banner_2.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/uploads/gallery/cc6f2743c8112bf9baf8292c10c32b68.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /gallery 200 in 23ms (next.js: 4ms, application-code: 18ms)
+ GET /gallery 200 in 48ms (next.js: 5ms, application-code: 43ms)
+ GET / 200 in 43ms (next.js: 4ms, application-code: 39ms)
+✓ Compiled in 502ms
+ GET /admin/gallery/4 200 in 61ms (next.js: 21ms, application-code: 40ms)
+✓ Compiled in 165ms
+Compaction failed: Failed to compact database
+
+Caused by:
+    0: Failed to merge database files for family 2
+    1: Failed to write compressed value block
+    2: Failed to write block data
+    3: failed to write to file `/Users/akash/Desktop/wff-tn-2026/frontend/.next/dev/cache/turbopack/v16.3.4-299180d3/00000633.sst`: No space left on device (os error 28)
+Persisting is disabled for this session due to an unrecoverable error. Stopping the background persisting process.
+✓ Compiled in 903ms
+ GET /admin/gallery/4 200 in 55ms (next.js: 12ms, application-code: 43ms)
+✓ Compiled in 89ms
+ GET /admin/gallery/4 200 in 37ms (next.js: 7ms, application-code: 30ms)
+✓ Compiled in 303ms
+ GET /admin/gallery/4 200 in 83ms (next.js: 31ms, application-code: 52ms)
+✓ Compiled in 259ms
+ GET /admin/gallery/4 200 in 120ms (next.js: 46ms, application-code: 74ms)
+✓ Compiled in 173ms
+ GET /admin/gallery/4 200 in 73ms (next.js: 28ms, application-code: 46ms)
+ GET /admin/gallery/4 200 in 27ms (next.js: 6ms, application-code: 21ms)
+✓ Compiled in 82ms
+ GET /admin/gallery/4 200 in 44ms (next.js: 13ms, application-code: 31ms)
+✓ Compiled in 179ms
+ GET / 200 in 264ms (next.js: 31ms, application-code: 233ms)
+[browser] Image with src "/assets/wff_hero_banner.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /events 200 in 50ms (next.js: 20ms, application-code: 30ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /about 200 in 39ms (next.js: 18ms, application-code: 21ms)
+ GET /association 200 in 29ms (next.js: 13ms, application-code: 16ms)
+ GET /gallery 200 in 36ms (next.js: 14ms, application-code: 22ms)
+ GET /contact 200 in 37ms (next.js: 15ms, application-code: 22ms)
+ GET / 200 in 46ms (next.js: 5ms, application-code: 41ms)
+ GET /admin/gallery/4 200 in 35ms (next.js: 9ms, application-code: 26ms)
+ GET / 200 in 110ms (next.js: 19ms, application-code: 91ms)
+ GET / 200 in 276ms (next.js: 33ms, application-code: 242ms)
+[Error: ENOSPC: no space left on device, write] {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+⨯ uncaughtException: [Error: ENOSPC: no space left on device, write] {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+⨯ uncaughtException:  Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+ GET /events 200 in 44ms (next.js: 7ms, application-code: 37ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+⨯ uncaughtException:  Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to update prerender cache for dbcf5c6e2d1301b7aa4ba1a8bfb4d0b17d51aca3785b6d2afd075f5d798e6f81 Error: ENOSPC: no space left on device, open '/Users/akash/Desktop/wff-tn-2026/frontend/.next/dev/cache/fetch-cache/dbcf5c6e2d1301b7aa4ba1a8bfb4d0b17d51aca3785b6d2afd075f5d798e6f81'
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'open',
+  path: '/Users/akash/Desktop/wff-tn-2026/frontend/.next/dev/cache/fetch-cache/dbcf5c6e2d1301b7aa4ba1a8bfb4d0b17d51aca3785b6d2afd075f5d798e6f81'
+}
+Failed to update prerender cache for b41a973c9458bdb8291495ed7492c9a1782b197eacf15b1bd7db8932b12e5eef Error: ENOSPC: no space left on device, open '/Users/akash/Desktop/wff-tn-2026/frontend/.next/dev/cache/fetch-cache/b41a973c9458bdb8291495ed7492c9a1782b197eacf15b1bd7db8932b12e5eef'
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'open',
+  path: '/Users/akash/Desktop/wff-tn-2026/frontend/.next/dev/cache/fetch-cache/b41a973c9458bdb8291495ed7492c9a1782b197eacf15b1bd7db8932b12e5eef'
+}
+Failed to update prerender cache for 1eaf0d0eeb34f21c61a66e899cd7a431fc75c1bb108352247452402f6998939a Error: ENOSPC: no space left on device, open '/Users/akash/Desktop/wff-tn-2026/frontend/.next/dev/cache/fetch-cache/1eaf0d0eeb34f21c61a66e899cd7a431fc75c1bb108352247452402f6998939a'
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'open',
+  path: '/Users/akash/Desktop/wff-tn-2026/frontend/.next/dev/cache/fetch-cache/1eaf0d0eeb34f21c61a66e899cd7a431fc75c1bb108352247452402f6998939a'
+}
+Failed to update prerender cache for 353bb4ec7854c6890c26edc88b6bd8e93451d65b134255d33d57265315086d13 Error: ENOSPC: no space left on device, open '/Users/akash/Desktop/wff-tn-2026/frontend/.next/dev/cache/fetch-cache/353bb4ec7854c6890c26edc88b6bd8e93451d65b134255d33d57265315086d13'
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'open',
+  path: '/Users/akash/Desktop/wff-tn-2026/frontend/.next/dev/cache/fetch-cache/353bb4ec7854c6890c26edc88b6bd8e93451d65b134255d33d57265315086d13'
+}
+Failed to update prerender cache for dca6fb133e52dbf9f44ac838b5542e978349b3d4fe29ad574cd383bb373a0ee0 Error: ENOSPC: no space left on device, open '/Users/akash/Desktop/wff-tn-2026/frontend/.next/dev/cache/fetch-cache/dca6fb133e52dbf9f44ac838b5542e978349b3d4fe29ad574cd383bb373a0ee0'
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'open',
+  path: '/Users/akash/Desktop/wff-tn-2026/frontend/.next/dev/cache/fetch-cache/dca6fb133e52dbf9f44ac838b5542e978349b3d4fe29ad574cd383bb373a0ee0'
+}
+ GET / 200 in 62ms (next.js: 4ms, application-code: 57ms)
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+⨯ uncaughtException:  Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+⨯ Error: The destination stream closed early.
+    at ignore-listed frames {
+  digest: '2824358753'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+⨯ uncaughtException: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+⨯ uncaughtException:  Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  syscall: 'write',
+  code: 'ENOSPC'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+Failed to flush logs to file: Error: ENOSPC: no space left on device, write
+    at ignore-listed frames {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'write'
+}
+ GET /register?eventId=3 200 in 393ms (next.js: 199ms, application-code: 195ms)
+ GET /register?eventId=3 200 in 122ms (next.js: 8ms, application-code: 115ms)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <SegmentViewNode type="page" pagePath="register/p...">
+      <SegmentTrieNode>
+      <RegisterPage>
+        <main className="min-h-scre...">
+          <Container>
+            <div className="mx-auto px...">
+              <div>
+              <Suspense fallback={<div>}>
+                <RegistrationClient initialEvents={[...]}>
+                  <div className="flex flex-...">
+                    <div className="flex-grow ...">
+                      <div>
+                      <section>
+                      <section>
+                        <div>
+                        <div className="bg-wff-sur...">
+                          <div className="grid grid-...">
+                            <div>
+                            <div>
+                            <div>
+                              <label>
+                              <_c type="email" name="email" value="" onChange={function handleInputChange} ...>
+                                <input
+                                  type="email"
+                                  className="flex h-12 w-full rounded-md border px-4 py-2 text-sm text-wff-text-primar..."
+                                  ref={null}
+                                  name="email"
+                                  value=""
+                                  onChange={function handleInputChange}
+                                  placeholder="For receipt"
+                                  required={true}
+-                                 style={{background-image:"url(\"data...",background-repeat:"no-repeat",background-size:"20px", ...}}
+-                                 data-temp-mail-org="0"
+                                >
+                            ...
+                          ...
+                      ...
+                    ...
+    ...
+ 
+    at push.console.error (src/components/theme-provider.tsx:13:15)
+  11 |       return;
+  12 |     }
+> 13 |     origError.apply(console, args);
+     |               ^
+  14 |   };
+  15 | }
+  16 | (src/components/theme-provider.tsx:13:15)
+ GET / 200 in 91ms (next.js: 6ms, application-code: 85ms)
+ GET /admin/gallery/4 200 in 160ms (next.js: 42ms, application-code: 118ms)
+ GET /admin/gallery 200 in 26ms (next.js: 11ms, application-code: 15ms)
+[browser] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+ GET /admin/gallery/4 200 in 28ms (next.js: 7ms, application-code: 21ms)
+✓ Compiled in 309ms
+ GET /admin/gallery/4 200 in 309ms (next.js: 4ms, application-code: 305ms)
+ GET / 200 in 259ms (next.js: 9ms, application-code: 250ms)
+ GET /admin/gallery 200 in 49ms (next.js: 16ms, application-code: 33ms)
+ GET /admin 200 in 25ms (next.js: 13ms, application-code: 12ms)
+ GET /admin/registrations 200 in 29ms (next.js: 14ms, application-code: 16ms)
+ GET /admin/events 200 in 36ms (next.js: 17ms, application-code: 19ms)
+ GET /admin/registrations 200 in 22ms (next.js: 4ms, application-code: 18ms)
+ GET /admin 200 in 32ms (next.js: 12ms, application-code: 19ms)
+ GET /admin 200 in 30ms (next.js: 5ms, application-code: 25ms)
+ GET /admin 200 in 86ms (next.js: 69ms, application-code: 17ms)
+ GET / 200 in 89ms (next.js: 7ms, application-code: 82ms)
+
+thread 'tokio-rt-worker' (7774820) panicked at crates/next-napi-bindings/src/next_api/turbopack_ctx.rs:425:29:
+Failed to open /var/folders/x5/0_g57j7x45b24yvt8485z_gh0000gn/T/next-panic-7df3b50ec649d30c476c0a4472fb7ba6.log
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread 'tokio-rt-worker' (7734856) panicked at crates/next-napi-bindings/src/next_api/turbopack_ctx.rs:372:51:
+called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+
+thread 'tokio-rt-worker' (7803883) panicked at crates/next-napi-bindings/src/next_api/turbopack_ctx.rs:372:51:
+called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+
+thread 'tokio-rt-worker' (7774820) panicked at crates/next-napi-bindings/src/next_api/turbopack_ctx.rs:372:51:
+called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+
+thread 'tokio-rt-worker' (7753147) panicked at crates/next-napi-bindings/src/next_api/turbopack_ctx.rs:372:51:
+called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+⨯ [Error: Panic in async function] { code: 'GenericFailure' }
+
+thread 'tokio-rt-worker' (7772709) panicked at crates/next-napi-bindings/src/next_api/turbopack_ctx.rs:372:51:
+called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+
+thread 'tokio-rt-worker' (7734856) panicked at crates/next-napi-bindings/src/next_api/turbopack_ctx.rs:372:51:
+called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+
+thread 'tokio-rt-worker' (7803882) panicked at crates/next-napi-bindings/src/next_api/turbopack_ctx.rs:372:51:
+called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+ GET /admin 500 in 1202ms (next.js: 1054ms, application-code: 147ms)
+[browser] Uncaught Error: Panic in async function
+Error: Panic in async function
+
+
+thread 'tokio-rt-worker' (7803882) panicked at crates/next-napi-bindings/src/next_api/turbopack_ctx.rs:372:51:
+called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+⨯ [Error: Panic in async function] { code: 'GenericFailure' }
+ GET /admin 500 in 54ms (next.js: 31ms, application-code: 23ms)
+[browser] Uncaught Error: Panic in async function
+Error: Panic in async function
+
+
+thread 'tokio-rt-worker' (7753147) panicked at crates/next-napi-bindings/src/next_api/turbopack_ctx.rs:372:51:
+called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+⨯ [Error: Panic in async function] { code: 'GenericFailure' }
+ GET / 500 in 22ms (next.js: 8ms, application-code: 14ms)
+[browser] Uncaught Error: Panic in async function
+Error: Panic in async function
+
+
+thread 'tokio-rt-worker' (7772709) panicked at crates/next-napi-bindings/src/next_api/turbopack_ctx.rs:372:51:
+called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+
+thread 'tokio-rt-worker' (7734856) panicked at crates/next-napi-bindings/src/next_api/turbopack_ctx.rs:372:51:
+called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+
+thread 'tokio-rt-worker' (7821306) panicked at crates/next-napi-bindings/src/next_api/turbopack_ctx.rs:372:51:
+called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+⨯ [Error: Panic in async function] { code: 'GenericFailure' }
+ GET / 500 in 38ms (next.js: 21ms, application-code: 17ms)
+[browser] Uncaught Error: Panic in async function
+Error: Panic in async function
+
+
+thread 'tokio-rt-worker' (7734856) panicked at crates/next-napi-bindings/src/next_api/turbopack_ctx.rs:372:51:
+called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+⨯ [Error: Panic in async function] { code: 'GenericFailure' }
+ GET /admin 500 in 22ms (next.js: 9ms, application-code: 12ms)
+[browser] Uncaught Error: Panic in async function
+Error: Panic in async function
+
+
+thread 'tokio-rt-worker' (7821306) panicked at crates/next-napi-bindings/src/next_api/turbopack_ctx.rs:372:51:
+called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+⨯ [Error: Panic in async function] { code: 'GenericFailure' }
+ GET /admin 500 in 20ms (next.js: 9ms, application-code: 11ms)
+[browser] Uncaught Error: Panic in async function
+Error: Panic in async function
+
+
+thread 'tokio-rt-worker' (7774820) panicked at crates/next-napi-bindings/src/next_api/turbopack_ctx.rs:372:51:
+called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+⨯ [Error: Panic in async function] { code: 'GenericFailure' }
+ HEAD / 500 in 65ms (next.js: 33ms, application-code: 33ms)
+
+thread 'tokio-rt-worker' (7772709) panicked at crates/next-napi-bindings/src/next_api/turbopack_ctx.rs:372:51:
+called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+⨯ [Error: Panic in async function] { code: 'GenericFailure' }
+ GET / 500 in 13ms (next.js: 4ms, application-code: 9ms)
+
+thread 'tokio-rt-worker' (7777679) panicked at crates/next-napi-bindings/src/next_api/turbopack_ctx.rs:372:51:
+called `Result::unwrap()` on an `Err` value: PoisonError { .. }
+⨯ [Error: Panic in async function] { code: 'GenericFailure' }
+ GET / 500 in 175ms (next.js: 88ms, application-code: 86ms)
