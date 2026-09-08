@@ -48,13 +48,13 @@ export default function GalleryClient({ albums }: { albums: GalleryAlbum[] }) {
     return (
       <div className="py-16 min-h-[50vh]">
         <Container>
-          <button 
+          <button
             onClick={() => setActiveAlbum(null)}
             className="flex items-center gap-2 text-wff-gold font-bold uppercase tracking-widest mb-10 hover:text-white transition-colors"
           >
             <ArrowLeft size={20} /> Back to Albums
           </button>
-          
+
           <div className="mb-12">
             <h2 className="font-heading text-4xl md:text-5xl text-white uppercase tracking-wider mb-4">{activeAlbum.title}</h2>
             <div className="flex items-center gap-2 text-wff-muted font-medium">
@@ -66,8 +66,8 @@ export default function GalleryClient({ albums }: { albums: GalleryAlbum[] }) {
           {/* Masonry/Grid for Images */}
           <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
             {activeAlbum.images && activeAlbum.images.map((image: any) => (
-              <div 
-                key={image.id} 
+              <div
+                key={image.id}
                 className="break-inside-avoid rounded-xl overflow-hidden cursor-pointer group relative border border-wff-border dark:border-white/5"
                 onClick={() => setLightboxImage(image)}
               >
@@ -76,15 +76,15 @@ export default function GalleryClient({ albums }: { albums: GalleryAlbum[] }) {
                     {image.caption || "View Image"}
                   </span>
                 </div>
-                <img 
-                  src={image.image || '/assets/wff_hero_banner.png'} 
+                <img
+                  src={image.image || '/assets/wff_hero_banner.png'}
                   alt={image.caption || "Gallery Image"}
                   className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
                 />
               </div>
             ))}
           </div>
-          
+
           {(!activeAlbum.images || activeAlbum.images.length === 0) && (
             <div className="text-center py-20 text-wff-muted">
               <p>This album has no images yet.</p>
@@ -95,14 +95,14 @@ export default function GalleryClient({ albums }: { albums: GalleryAlbum[] }) {
         {/* Lightbox Overlay */}
         {lightboxImage && (
           <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 animate-in fade-in duration-300">
-            <button 
+            <button
               onClick={() => setLightboxImage(null)}
               className="absolute top-6 right-6 p-2 rounded-full bg-white/10 hover:bg-wff-gold text-white transition-colors"
             >
               <X size={32} />
             </button>
-            <img 
-              src={lightboxImage.image || '/assets/wff_hero_banner.png'} 
+            <img
+              src={lightboxImage.image || '/assets/wff_hero_banner.png'}
               alt={lightboxImage.caption || "Gallery"}
               className="max-w-full max-h-[85vh] object-contain rounded shadow-2xl border border-white/10"
             />
@@ -119,17 +119,17 @@ export default function GalleryClient({ albums }: { albums: GalleryAlbum[] }) {
       <Container>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {albums.map((album) => (
-            <div 
-              key={album.id} 
+            <div
+              key={album.id}
               onClick={() => openAlbum(album)}
               className="bg-wff-surface border border-wff-border dark:border-wff-gold/10 rounded-2xl overflow-hidden group cursor-pointer hover:shadow-[0_15px_30px_rgba(0,0,0,0.3)] transition-all duration-500 hover:-translate-y-2 relative"
             >
               <div className="absolute top-0 left-0 w-full h-1 bg-gold-gradient opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30"></div>
-              
+
               <div className="h-64 relative overflow-hidden">
                 {album.cover_image ? (
-                  <img 
-                    src={album.cover_image || '/assets/wff_hero_banner.png'} 
+                  <img
+                    src={album.cover_image || '/assets/wff_hero_banner.png'}
                     alt={album.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100"
                   />
@@ -139,7 +139,7 @@ export default function GalleryClient({ albums }: { albums: GalleryAlbum[] }) {
                   </div>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#030810] via-black/20 to-transparent"></div>
-                
+
                 {loading && (
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-40 backdrop-blur-sm">
                     <div className="w-8 h-8 border-2 border-wff-gold border-t-transparent rounded-full animate-spin"></div>

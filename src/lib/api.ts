@@ -4,7 +4,7 @@
 import { Event, Official, Winner, Award, ChampionshipHighlight, GalleryImage, GalleryAlbum, HeroSlide } from '../types';
 import { aboutData } from '../data/about';
 
-export const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://wfftamilnadu.in/backend/api';
+export const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in';
 export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || API_BASE.replace(/\/api\/?$/, '');
 
 /**

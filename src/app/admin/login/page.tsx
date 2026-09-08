@@ -16,7 +16,7 @@ export default function AdminLoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    
+
     if (!email.trim() || !password) {
       setError('Email and password are required.');
       return;
@@ -31,17 +31,17 @@ export default function AdminLoginPage() {
         body: JSON.stringify({ email, password }),
         credentials: 'include' // crucial for saving the session cookie
       });
-      
+
       const contentType = res.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         throw new Error("Server returned an invalid response (not JSON). Please check the API base URL.");
       }
       const json = await res.json();
-      
+
       if (!res.ok || !json.success) {
         throw new Error(json.message || "Invalid email or password.");
       }
-      
+
       // Force hard navigation to /admin to re-trigger AuthProvider fetch
       window.location.href = '/admin';
     } catch (err: any) {
@@ -75,11 +75,11 @@ export default function AdminLoginPage() {
               <label className="block text-[10px] font-display tracking-widest uppercase text-[var(--muted)] mb-2">
                 Admin Email
               </label>
-              <Input 
-                type="email" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                required 
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
                 placeholder="admin@wfftn.com"
               />
             </div>
@@ -88,18 +88,18 @@ export default function AdminLoginPage() {
               <label className="block text-[10px] font-display tracking-widest uppercase text-[var(--muted)] mb-2">
                 Password
               </label>
-              <Input 
-                type="password" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
-                required 
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
 
-            <Button 
-              type="submit" 
-              disabled={loading} 
-              variant="gold" 
+            <Button
+              type="submit"
+              disabled={loading}
+              variant="gold"
               className="w-full h-12 uppercase tracking-widest shadow-[0_4px_20px_rgba(198,161,91,0.2)] mt-2"
             >
               {loading ? 'Signing in...' : 'Login'}

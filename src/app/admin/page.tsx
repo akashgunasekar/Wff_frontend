@@ -47,7 +47,7 @@ export default function AdminDashboardPage() {
           </div>
         ))}
       </div>
-      
+
       <div className="bg-[var(--surface)] border border-[var(--border-color)] p-8 text-center min-h-[400px] flex flex-col items-center justify-center">
         <LayoutDashboard size={48} className="text-[var(--border-color)] mb-4" strokeWidth={1} />
         <h2 className="font-display text-2xl uppercase tracking-widest text-[var(--text-primary)] mb-2">Welcome, {user.name}</h2>
