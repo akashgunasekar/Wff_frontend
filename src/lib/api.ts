@@ -4,14 +4,17 @@
 import { Event, Official, Winner, Award, ChampionshipHighlight, GalleryImage, GalleryAlbum, HeroSlide } from '../types';
 import { aboutData } from '../data/about';
 
-export const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in';
-export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || API_BASE.replace(/\/api\/?$/, '');
+export const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
+
+export const BACKEND_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL || API_BASE.replace(/\/api\/?$/, '');
 
 /**
  * Centralized Image URL Strategy
  */
 export function resolveImageUrl(path: string | undefined | null): string | null {
-  if (!path || path.trim() === '') return null; 
+  if (!path || path.trim() === '') return null;
   const normalized = path.replace(/\\/g, '/').trim();
   if (normalized.startsWith('http://') || normalized.startsWith('https://')) return normalized;
   if (normalized.startsWith('/assets/') || normalized.startsWith('assets/')) {
@@ -142,7 +145,7 @@ export async function fetchAwards(): Promise<Award[]> {
   if (sections && sections['wff_standard'] && sections['wff_standard'].content) {
     try {
       return JSON.parse(sections['wff_standard'].content) as Award[];
-    } catch(e) {
+    } catch (e) {
       return [];
     }
   }
@@ -154,7 +157,7 @@ export async function fetchHighlights(): Promise<ChampionshipHighlight[]> {
   if (sections && sections['why_compete'] && sections['why_compete'].content) {
     try {
       return JSON.parse(sections['why_compete'].content) as ChampionshipHighlight[];
-    } catch(e) {
+    } catch (e) {
       return [];
     }
   }
