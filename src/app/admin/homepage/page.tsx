@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Loader2, Save, AlertTriangle, Plus, Trash2, Edit2, MoveUp, MoveDown } from 'lucide-react';
+import { resolveImageUrl } from '@/lib/api';
 
 export default function AdminHomepagePage() {
   const [loading, setLoading] = useState(true);
@@ -67,7 +68,7 @@ export default function AdminHomepagePage() {
 
   const getImageUrl = (url: string | null) => {
     if (!url) return '/assets/wff_hero_banner.png';
-    return url;
+    return resolveImageUrl(url) || '/assets/wff_hero_banner.png';
   };
 
   // HERO ACTIONS

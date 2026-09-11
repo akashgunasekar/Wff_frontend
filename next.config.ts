@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         source: '/api/:path*',
         destination: 'https://api.wfftamilnadu.in/api/:path*',
       },
+      {
+        source: '/uploads/:path*',
+        destination: 'https://api.wfftamilnadu.in/uploads/:path*',
+      },
     ];
   },
 };

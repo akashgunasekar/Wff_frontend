@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { HeroSlide } from '@/types';
 import { ChevronLeft, ChevronRight, MapPin, Calendar, Dumbbell, Users, Trophy, ShieldCheck, ArrowRight } from 'lucide-react';
 import { Container } from '@/components/ui/Container';
+import { resolveImageUrl } from '@/lib/api';
 
 interface HeroSectionProps {
   slides: HeroSlide[];
@@ -35,7 +36,7 @@ export function HeroSection({ slides }: HeroSectionProps) {
   
   const getImageUrl = (url: string | null) => {
     if (!url) return '/assets/wff_hero_banner.png';
-    return url;
+    return resolveImageUrl(url) || '/assets/wff_hero_banner.png';
   };
 
   const renderTitle = (title: string) => {
