@@ -23,7 +23,7 @@ export default function AdminLoginPage() {
     }
 
     setLoading(true);
-    const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
     try {
       const res = await fetch(`${API_BASE}/admin/auth/login.php`, {
         method: 'POST',

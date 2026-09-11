@@ -5,10 +5,12 @@ import { Event, Official, Winner, Award, ChampionshipHighlight, GalleryImage, Ga
 import { aboutData } from '../data/about';
 
 export const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
+  typeof window === 'undefined'
+    ? (process.env.INTERNAL_API_URL || 'https://api.wfftamilnadu.in/api')
+    : (process.env.NEXT_PUBLIC_API_BASE_URL || '/api');
 
 export const BACKEND_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL || API_BASE.replace(/\/api\/?$/, '');
+  process.env.NEXT_PUBLIC_BACKEND_URL || 'https://api.wfftamilnadu.in';
 
 /**
  * Centralized Image URL Strategy
