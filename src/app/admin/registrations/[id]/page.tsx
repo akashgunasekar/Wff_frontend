@@ -23,7 +23,7 @@ export default function AdminRegistrationDetail({ params }: { params: Promise<{ 
   const fetchDetail = async () => {
     setLoading(true);
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/registrations/show.php?id=${resolvedParams.id}`, {
         credentials: 'include'
       });
@@ -40,7 +40,7 @@ export default function AdminRegistrationDetail({ params }: { params: Promise<{ 
   const updateStatus = async (newStatus: string) => {
     setUpdating(true);
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/registrations/status.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

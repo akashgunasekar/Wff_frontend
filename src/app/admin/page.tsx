@@ -13,7 +13,7 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+        const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
         const res = await fetch(`${API_BASE}/admin/dashboard/stats.php`, { credentials: 'include' });
         const json = await res.json();
         if (json.success) {

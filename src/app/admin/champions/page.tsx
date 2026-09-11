@@ -44,7 +44,7 @@ export default function AdminChampionsPage() {
     setLoading(true);
     setError('');
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/champions/index.php`, {
         credentials: 'include'
       });
@@ -72,7 +72,7 @@ export default function AdminChampionsPage() {
     setFormError('');
     
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const endpoint = modalMode === 'create' ? '/admin/champions/create.php' : '/admin/champions/update.php';
       const res = await fetch(`${API_BASE}${endpoint}`, {
         method: 'POST',
@@ -97,7 +97,7 @@ export default function AdminChampionsPage() {
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure you want to delete this champion?')) return;
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/champions/delete.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

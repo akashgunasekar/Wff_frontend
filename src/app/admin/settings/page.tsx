@@ -15,7 +15,7 @@ export default function AdminSettingsPage() {
 
   const fetchSettings = useCallback(async () => {
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/settings/index.php`, { credentials: 'include' });
       const json = await res.json();
       if (json.success) {
@@ -41,7 +41,7 @@ export default function AdminSettingsPage() {
     setSuccess('');
     
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/settings/update.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

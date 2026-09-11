@@ -44,7 +44,7 @@ export default function AdminEventsPage() {
     setLoading(true);
     setError('');
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const params = new URLSearchParams();
       if (status) params.append('status', status);
       
@@ -86,7 +86,7 @@ export default function AdminEventsPage() {
   const handleDelete = async (id: number, name: string) => {
     if (!window.confirm(`Are you sure you want to delete "${name}"? This action cannot be undone.`)) return;
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/events/delete.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -107,7 +107,7 @@ export default function AdminEventsPage() {
     setCreateError('');
     
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       
       let banner_image = '';
       if (createPosterFile) {

@@ -54,7 +54,7 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
 
   const fetchEvent = useCallback(async () => {
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/events/show.php?id=${resolvedParams.id}`, {
         credentials: 'include'
       });
@@ -109,7 +109,7 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
     setError('');
     setSuccess('');
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/events/update.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -140,7 +140,7 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
     if (!confirm("Are you sure you want to delete this event? This cannot be undone.")) return;
     setDeleting(true);
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/events/delete.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -177,7 +177,7 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
       const endpoint = isEdit ? 'update.php' : 'create.php';
       const payload = { ...catForm, event_id: event.id, id: editingCat?.id };
       
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/event-categories/${endpoint}`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
         body: JSON.stringify(payload)
@@ -199,7 +199,7 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
   const handleDeleteCategory = async (categoryId: number) => {
     if (!confirm("Remove this category from the event? Cannot be undone.")) return;
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/event-categories/delete.php`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
         body: JSON.stringify({ id: categoryId })
@@ -221,7 +221,7 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
     setMasterLoading(true);
     setMasterError('');
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/categories/index.php`, { credentials: 'include' });
       const json = await res.json();
       if (json.success) {
@@ -246,7 +246,7 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
   const handleAttachMasters = async () => {
     setMasterSaving(true);
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/event-categories/attach-master.php`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
         body: JSON.stringify({ event_id: event.id, master_ids: selectedMasterIds })
@@ -284,7 +284,7 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
         availability: pricingForm[parseInt(id)].availability
       }));
       
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/event-categories/update-pricing.php`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
         body: JSON.stringify({ event_id: event.id, pricing: pricingArray })
@@ -308,7 +308,7 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
     setShowOfficialModal(true);
     setOfficialLoading(true);
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/officials/index.php`, { credentials: 'include' });
       const json = await res.json();
       if (json.success) {
@@ -330,7 +330,7 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
   const handleUpdateOfficialsList = async (newList: any[]) => {
      setOfficialUpdating(true);
      try {
-       const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+       const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
        const res = await fetch(`${API_BASE}/admin/events/update-officials.php`, {
          method: 'POST', headers: {'Content-Type': 'application/json'}, credentials: 'include',
          body: JSON.stringify({ event_id: event.id, officials: newList })
@@ -357,7 +357,7 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
           return { official_id: id, role: 'Judge', display_order: index };
        });
 
-       const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+       const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
        const res = await fetch(`${API_BASE}/admin/events/update-officials.php`, {
          method: 'POST', headers: {'Content-Type': 'application/json'}, credentials: 'include',
          body: JSON.stringify({ event_id: event.id, officials: newOfficials })
@@ -486,7 +486,7 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
                           const formData = new FormData();
                           formData.append('image', file);
                           try {
-                            const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+                            const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
                             const res = await fetch(`${API_BASE}/admin/events/upload-poster.php`, {
                               method: 'POST',
                               body: formData,

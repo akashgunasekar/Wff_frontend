@@ -31,7 +31,7 @@ export default function AdminCategoriesPage() {
 
   const fetchCategories = useCallback(async () => {
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/categories/index.php`, {
         credentials: 'include'
       });
@@ -77,7 +77,7 @@ export default function AdminCategoriesPage() {
         id: editingCat?.id
       };
       
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/categories/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -103,7 +103,7 @@ export default function AdminCategoriesPage() {
     if (!confirm("Are you sure? This does NOT affect existing events using this category, but will remove it from the reusable library.")) return;
     
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/categories/delete.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

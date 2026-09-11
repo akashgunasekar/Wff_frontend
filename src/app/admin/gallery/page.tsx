@@ -24,7 +24,7 @@ export default function AdminGalleryPage() {
   const fetchAlbums = useCallback(async () => {
     setLoading(true);
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/gallery/index.php`, { credentials: 'include' });
       const json = await res.json();
       if (json.success) setAlbums(json.data);
@@ -48,7 +48,7 @@ export default function AdminGalleryPage() {
     e.preventDefault();
     setSaving(true);
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const endpoint = editingAlbum ? 'update.php' : 'create.php';
       const payload = editingAlbum ? { ...form, id: editingAlbum.id, cover_image: editingAlbum.cover_image } : form;
       
@@ -77,7 +77,7 @@ export default function AdminGalleryPage() {
   const handleDelete = async (id: number) => {
     if (!confirm("Delete this album? This will permanently delete all its images.")) return;
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/gallery/delete.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

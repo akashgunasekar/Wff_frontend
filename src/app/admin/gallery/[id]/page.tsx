@@ -30,7 +30,7 @@ export default function AdminGalleryDetailPage({ params }: { params: Promise<{ i
 
   const fetchAlbum = useCallback(async () => {
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/gallery/show.php?id=${resolvedParams.id}`, { credentials: 'include' });
       const json = await res.json();
       if (json.success) setAlbum(json.data);
@@ -50,7 +50,7 @@ export default function AdminGalleryDetailPage({ params }: { params: Promise<{ i
   }, [fetchAlbum]);
 
   const processQueue = async (queue: UploadItem[]) => {
-    const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
     let refreshNeeded = false;
 
     for (const item of queue) {
@@ -138,7 +138,7 @@ export default function AdminGalleryDetailPage({ params }: { params: Promise<{ i
   const handleDeleteImage = async (imageId: number) => {
     if (!confirm("Permanently delete this image?")) return;
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/gallery/images/delete.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -155,7 +155,7 @@ export default function AdminGalleryDetailPage({ params }: { params: Promise<{ i
 
   const handleSetCover = async (imageUrl: string) => {
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const payload = {
         id: album.id,
         title: album.title,

@@ -43,7 +43,7 @@ export default function AdminRegistrationsPage() {
     setLoading(true);
     setError('');
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const params = new URLSearchParams({
         page: page.toString(),
         limit: limit.toString(),
@@ -83,7 +83,7 @@ export default function AdminRegistrationsPage() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+        const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
         const res = await fetch(`${API_BASE}/admin/events/index.php`, { credentials: 'include' });
         const json = await res.json();
         if (json.success) setEvents(json.data);
@@ -95,7 +95,7 @@ export default function AdminRegistrationsPage() {
   }, []);
 
   const handleExport = () => {
-    const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
     const params = new URLSearchParams({
       status,
       payment_status: paymentStatus,
@@ -135,7 +135,7 @@ export default function AdminRegistrationsPage() {
   const handleDelete = async (id: number, name: string) => {
     if (!window.confirm(`Are you sure you want to delete the registration for "${name}"? This action cannot be undone.`)) return;
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/registrations/delete.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -153,7 +153,7 @@ export default function AdminRegistrationsPage() {
   const handleCollectCash = async (id: number, name: string) => {
     if (!window.confirm(`Confirm that WFF staff has physically received cash for "${name}"? This will mark the registration as Paid.`)) return;
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
       const res = await fetch(`${API_BASE}/admin/registrations/collect-cash.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
