@@ -57,7 +57,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
   
   const [successData, setSuccessData] = useState<any>(null);
   const [paymentFailed, setPaymentFailed] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<'online' | 'cash'>('cash');
+  const [paymentMethod, setPaymentMethod] = useState<'online' | 'cash'>('online');
 
   // Derived Values
   const selectedCategories = useMemo(() => {
@@ -694,20 +694,20 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                     <div className="bg-[#F8F9FA] p-8 border-t border-black/5">
                       <div className="text-[11px] uppercase tracking-[0.2em] text-[#040A12]/60 font-bold mb-4">Payment Method</div>
                       <div className="flex flex-col gap-3">
-                        {/* <label className={`flex items-center gap-3 p-4 border rounded cursor-pointer transition-colors ${paymentMethod === 'online' ? 'bg-white border-[#C9A44A]' : 'bg-white border-black/10'}`}>
+                        <label className={`flex items-center gap-3 p-4 border rounded cursor-pointer transition-colors ${paymentMethod === 'online' ? 'bg-white border-[#C9A44A]' : 'bg-white border-black/10'}`}>
                           <input type="radio" name="paymentMethod" value="online" checked={paymentMethod === 'online'} onChange={() => setPaymentMethod('online')} className="accent-[#C9A44A]" />
                           <div className="flex flex-col">
                             <span className="font-bold text-[#040A12] text-sm">Online Payment (UPI / Card)</span>
                             <span className="text-xs text-[#040A12]/50">Instant confirmation</span>
                           </div>
-                        </label> */}
-                        <label className={`flex items-center gap-3 p-4 border rounded cursor-pointer transition-colors ${paymentMethod === 'cash' ? 'bg-white border-[#C9A44A]' : 'bg-white border-black/10'}`}>
+                        </label>
+                        {/* <label className={`flex items-center gap-3 p-4 border rounded cursor-pointer transition-colors ${paymentMethod === 'cash' ? 'bg-white border-[#C9A44A]' : 'bg-white border-black/10'}`}>
                           <input type="radio" name="paymentMethod" value="cash" checked={paymentMethod === 'cash'} onChange={() => setPaymentMethod('cash')} className="accent-[#C9A44A]" />
                           <div className="flex flex-col">
                             <span className="font-bold text-[#040A12] text-sm">Cash at Desk</span>
                             <span className="text-xs text-[#040A12]/50">Pay in person. Ticket pending until cash is collected.</span>
                           </div>
-                        </label>
+                        </label> */}
                       </div>
                     </div>
                   )}
