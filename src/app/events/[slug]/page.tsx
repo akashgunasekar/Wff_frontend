@@ -9,17 +9,17 @@ import EventActionBox from '@/components/ui/EventActionBox';
 import WinnerSlider from '@/components/ui/WinnerSlider';
 import FaqAccordion from '@/components/ui/FaqAccordion';
 
-export async function generateStaticParams() {
-  try {
-    const events = await fetchEvents();
-    if (!events || !Array.isArray(events)) return [];
-    return events.filter(e => e?.slug).map((event) => ({
-      slug: event.slug,
-    }));
-  } catch (error) {
-    console.error('generateStaticParams error:', error);
-    return [];
-  }
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params;
+  const event = await fetchEventBySlug(resolvedParams.slug);
+  if (!event) return { title: 'Event Not Found | WFF Tamil Nadu' };
+  return {
+    title: `${event.event_name} | WFF Tamil Nadu`,
+    description: event.subtitle || event.description || 'Championship Event',
+  };
 }
 
 export default async function EventDetailsPage({ params }: { params: Promise<{ slug: string }> }) {

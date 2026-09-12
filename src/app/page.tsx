@@ -16,6 +16,9 @@ import { WinnersSection } from '@/components/sections/WinnersSection';
 import { GallerySection } from '@/components/sections/GallerySection';
 import { CtaSection } from '@/components/sections/CtaSection';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function Home() {
   const [
     heroSlides,

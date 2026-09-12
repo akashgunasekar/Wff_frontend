@@ -1,6 +1,9 @@
 import { fetchEvents } from '@/lib/api';
 import { EventsClient } from './EventsClient';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata = {
   title: 'Events | WFF Tamil Nadu',
   description: 'Championships, competitions and official WFF events in Tamil Nadu.',

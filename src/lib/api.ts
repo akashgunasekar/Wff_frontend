@@ -33,8 +33,7 @@ async function apiFetch<T>(endpoint: string, fallback: T): Promise<T> {
   if (!API_BASE) return fallback;
   try {
     const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-    // Use ISR with a 60-second revalidation to allow CMS updates without breaking static builds
-    const res = await fetch(`${API_BASE}${cleanEndpoint}`, { next: { revalidate: 60 } });
+    const res = await fetch(`${API_BASE}${cleanEndpoint}`, { cache: 'no-store' });
     if (!res.ok) {
       console.warn(`API responded with status ${res.status} for ${endpoint}`);
       return fallback;
@@ -53,7 +52,7 @@ async function apiFetch<T>(endpoint: string, fallback: T): Promise<T> {
 export async function fetchEvents(): Promise<Event[]> {
   if (!API_BASE) return [];
   try {
-    const res = await fetch(`${API_BASE}/events/index.php`, { next: { revalidate: 60 } });
+    const res = await fetch(`${API_BASE}/events/index.php`, { cache: 'no-store' });
     if (!res.ok) return [];
     const json = await res.json();
     if (json.success && json.data) {
@@ -69,7 +68,7 @@ export async function fetchEvents(): Promise<Event[]> {
 export async function fetchEventBySlug(slug: string): Promise<Event | null> {
   if (!API_BASE || !slug) return null;
   try {
-    const res = await fetch(`${API_BASE}/events/show.php?slug=${encodeURIComponent(slug)}`, { next: { revalidate: 60 } });
+    const res = await fetch(`${API_BASE}/events/show.php?slug=${encodeURIComponent(slug)}`, { cache: 'no-store' });
     if (!res.ok) return null;
     const json = await res.json();
     if (json.success && json.data) {
