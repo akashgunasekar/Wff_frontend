@@ -9,6 +9,7 @@ import { AlertCircle, CreditCard, CheckCircle2, Ticket, CheckSquare, Square, Cal
 import { loadRazorpay } from '@/lib/utils';
 import { API_BASE } from '@/lib/api';
 import Image from 'next/image';
+import Link from 'next/link';
 
 /** Decode HTML entities like &amp; &#039; etc. to their actual characters */
 function decodeHtml(html: string): string {
@@ -716,7 +717,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                     <span className="font-heading font-bold text-3xl md:text-4xl text-[#040A12]">₹ {pricing.total}</span>
                   </div>
                   
-                  <div className="p-8 bg-white space-y-6">
+                  <div className="p-8 bg-white space-y-5">
                     <Button 
                       onClick={submitRegistration} 
                       disabled={loading || selectedCategoryIds.length === 0} 
@@ -725,11 +726,31 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                       {loading ? 'Processing...' : paymentMethod === 'online' ? 'Proceed to Payment →' : 'Complete Registration →'}
                     </Button>
                     
-                    <div className="flex items-start justify-center gap-4 mt-2 text-[#040A12]/50">
+                    <p className="text-[11px] text-[#040A12]/70 text-center leading-relaxed">
+                      By proceeding, you agree to WFF Tamil Nadu&apos;s{' '}
+                      <Link href="/terms-and-conditions" target="_blank" className="text-[#C9A44A] underline hover:text-[#040A12] font-semibold">
+                        Terms &amp; Conditions
+                      </Link>
+                      ,{' '}
+                      <Link href="/cancellation-refund-policy" target="_blank" className="text-[#C9A44A] underline hover:text-[#040A12] font-semibold">
+                        Cancellation &amp; Refund Policy
+                      </Link>
+                      , and{' '}
+                      <Link href="/privacy-policy" target="_blank" className="text-[#C9A44A] underline hover:text-[#040A12] font-semibold">
+                        Privacy Policy
+                      </Link>
+                      .
+                    </p>
+
+                    <div className="text-center pt-2 border-t border-black/5 text-[11px] text-[#040A12]/60">
+                      Need help? Call <a href="tel:+919952922686" className="font-bold text-[#040A12] hover:text-[#C9A44A]">+91 99529 22686</a> &bull; <a href="mailto:wfftamilnadu@gmail.com" className="font-bold text-[#040A12] hover:text-[#C9A44A]">wfftamilnadu@gmail.com</a>
+                    </div>
+                    
+                    <div className="flex items-start justify-center gap-4 pt-1 text-[#040A12]/50">
                       <div className="mt-0.5"><CheckCircle2 size={18} className="text-[#040A12]/40" /></div>
                       <div>
                         <div className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#040A12]">Your information is secure</div>
-                        <div className="text-[11px] mt-1.5 font-medium leading-[1.6]">All data is encrypted and sent directly to the official WFF backend.</div>
+                        <div className="text-[11px] mt-1 font-medium leading-[1.6]">All data is encrypted and processed through official, secure channels.</div>
                       </div>
                     </div>
                   </div>
