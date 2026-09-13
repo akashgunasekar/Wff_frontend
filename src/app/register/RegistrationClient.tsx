@@ -701,13 +701,13 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                             <span className="text-xs text-[#040A12]/50">Instant confirmation</span>
                           </div>
                         </label>
-                        {/* <label className={`flex items-center gap-3 p-4 border rounded cursor-pointer transition-colors ${paymentMethod === 'cash' ? 'bg-white border-[#C9A44A]' : 'bg-white border-black/10'}`}>
+                        <label className={`flex items-center gap-3 p-4 border rounded cursor-pointer transition-colors ${paymentMethod === 'cash' ? 'bg-white border-[#C9A44A]' : 'bg-white border-black/10'}`}>
                           <input type="radio" name="paymentMethod" value="cash" checked={paymentMethod === 'cash'} onChange={() => setPaymentMethod('cash')} className="accent-[#C9A44A]" />
                           <div className="flex flex-col">
                             <span className="font-bold text-[#040A12] text-sm">Cash at Desk</span>
                             <span className="text-xs text-[#040A12]/50">Pay in person. Ticket pending until cash is collected.</span>
                           </div>
-                        </label> */}
+                        </label>
                       </div>
                     </div>
                   )}
