@@ -20,7 +20,7 @@ export function Header() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-50 bg-[var(--surface)]/95 backdrop-blur-sm border-b border-[var(--border-color)]">
+    <header className="sticky top-0 z-50 bg-wff-surface/95 backdrop-blur-sm border-b border-wff-border">
       <div className="max-w-[1440px] mx-auto px-6 h-[72px] flex items-center justify-between">
 
         {/* Spacer for perfect desktop centering */}
@@ -99,7 +99,9 @@ export function Header() {
 
       {/* Mobile Navigation Drawer */}
       {mobileOpen && (
-        <div className="lg:hidden fixed inset-0 top-[72px] bg-[var(--surface)] z-50">
+        <div 
+          className="lg:hidden absolute top-full left-0 w-full h-[calc(100vh-72px)] overflow-y-auto bg-wff-surface border-t border-wff-border"
+        >
           <div className="h-full flex flex-col px-6 pt-8">
             <nav className="flex flex-col gap-1">
               {navLinks.map((link, i) => (
@@ -107,7 +109,7 @@ export function Header() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-4 py-4 border-b border-[var(--border-color)] group"
+                  className="flex items-center gap-4 py-4 border-b border-wff-border group"
                 >
                   <span className="font-display text-[11px] tracking-[0.12em] text-[var(--gold)] font-medium">
                     {String(i + 1).padStart(2, '0')}
