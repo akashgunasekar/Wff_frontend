@@ -35,7 +35,7 @@ export default function AdminAuthProvider({ children }: { children: React.ReactN
   const pathname = usePathname();
 
   const checkAuth = useCallback(async () => {
-    const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
+    const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
     try {
       const res = await fetch(`${API_BASE}/admin/auth/me.php`, {
         credentials: 'include',
@@ -74,7 +74,7 @@ export default function AdminAuthProvider({ children }: { children: React.ReactN
 
   const logout = async () => {
     setLoading(true);
-    const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
+    const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
     try {
       await fetch(`${API_BASE}/admin/auth/logout.php`, {
         method: 'POST',
