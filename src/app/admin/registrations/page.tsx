@@ -171,82 +171,84 @@ export default function AdminRegistrationsPage() {
   return (
     <AdminShell title="Registrations">
       <div className="bg-[var(--surface)] border border-[var(--border-color)] p-4 md:p-6 mb-6">
-        <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4 items-end">
-          <div className="flex-1 w-full">
-            <label className="block text-xs font-display tracking-widest uppercase text-[var(--muted)] mb-2">Search</label>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)] w-4 h-4" />
-              <Input 
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                placeholder="Name, Phone, Email, Reg #" 
-                className="pl-10"
-              />
+        <form onSubmit={handleSearch} className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 items-end">
+            <div className="sm:col-span-2 lg:col-span-2 xl:col-span-1">
+              <label className="block text-xs font-display tracking-widest uppercase text-[var(--muted)] mb-2">Search</label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)] w-4 h-4" />
+                <Input 
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  placeholder="Name, Phone, Email, Reg #" 
+                  className="pl-10"
+                />
+              </div>
             </div>
-          </div>
-          
-          <div className="w-full md:w-48">
-            <label className="block text-xs font-display tracking-widest uppercase text-[var(--muted)] mb-2">Registration</label>
-            <Select value={status} onChange={e => { setStatus(e.target.value); setPage(1); }}>
-              <option value="">All Statuses</option>
-              <option value="pending">Pending</option>
-              <option value="payment_pending">Payment Pending</option>
-              <option value="paid">Paid</option>
-              <option value="confirmed">Confirmed</option>
-              <option value="cancelled">Cancelled</option>
-              <option value="rejected">Rejected</option>
-            </Select>
-          </div>
-          
-          <div className="w-full md:w-48">
-            <label className="block text-xs font-display tracking-widest uppercase text-[var(--muted)] mb-2">Payment</label>
-            <Select value={paymentStatus} onChange={e => { setPaymentStatus(e.target.value); setPage(1); }}>
-              <option value="">All Payments</option>
-              <option value="created">Created</option>
-              <option value="authorized">Authorized</option>
-              <option value="captured">Captured</option>
-              <option value="failed">Failed</option>
-              <option value="refunded">Refunded</option>
-            </Select>
-          </div>
-          
-          <div className="w-full md:w-48">
-            <label className="block text-xs font-display tracking-widest uppercase text-[var(--muted)] mb-2">Event</label>
-            <Select value={eventId} onChange={e => { setEventId(e.target.value); setPage(1); }}>
-              <option value="">All Events</option>
-              {events.map(ev => (
-                <option key={ev.id} value={ev.id}>{ev.event_name}</option>
-              ))}
-            </Select>
-          </div>
-          
-          <div className="w-full md:w-48">
-            <label className="block text-xs font-display tracking-widest uppercase text-[var(--muted)] mb-2">Payment Method</label>
-            <Select value={paymentMethod} onChange={e => { setPaymentMethod(e.target.value); setPage(1); }}>
-              <option value="">All Methods</option>
-              <option value="online">Online (Razorpay)</option>
-              <option value="cash">Cash</option>
-            </Select>
-          </div>
-          
-          <div className="w-full md:w-36">
-            <label className="block text-xs font-display tracking-widest uppercase text-[var(--muted)] mb-2">From Date</label>
-            <Input type="date" value={fromDate} onChange={e => { setFromDate(e.target.value); setPage(1); }} />
-          </div>
-          
-          <div className="w-full md:w-36">
-            <label className="block text-xs font-display tracking-widest uppercase text-[var(--muted)] mb-2">To Date</label>
-            <Input type="date" value={toDate} onChange={e => { setToDate(e.target.value); setPage(1); }} />
-          </div>
-          
-          <div className="flex gap-2 w-full md:w-auto">
-            <Button type="submit" variant="primary" className="flex-1 md:flex-none uppercase tracking-widest text-xs h-10 px-6">
-              Apply
-            </Button>
-            <Button type="button" variant="secondary" onClick={handleExport} className="flex-1 md:flex-none uppercase tracking-widest text-xs h-10 px-4 border-[var(--gold)] text-[var(--gold)] hover:bg-[var(--gold)] hover:text-black">
-              <Download className="w-4 h-4 mr-2" />
-              Export Excel
-            </Button>
+            
+            <div>
+              <label className="block text-xs font-display tracking-widest uppercase text-[var(--muted)] mb-2">Registration</label>
+              <Select value={status} onChange={e => { setStatus(e.target.value); setPage(1); }}>
+                <option value="">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="payment_pending">Payment Pending</option>
+                <option value="paid">Paid</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="rejected">Rejected</option>
+              </Select>
+            </div>
+            
+            <div>
+              <label className="block text-xs font-display tracking-widest uppercase text-[var(--muted)] mb-2">Payment</label>
+              <Select value={paymentStatus} onChange={e => { setPaymentStatus(e.target.value); setPage(1); }}>
+                <option value="">All Payments</option>
+                <option value="created">Created</option>
+                <option value="authorized">Authorized</option>
+                <option value="captured">Captured</option>
+                <option value="failed">Failed</option>
+                <option value="refunded">Refunded</option>
+              </Select>
+            </div>
+            
+            <div>
+              <label className="block text-xs font-display tracking-widest uppercase text-[var(--muted)] mb-2">Event</label>
+              <Select value={eventId} onChange={e => { setEventId(e.target.value); setPage(1); }}>
+                <option value="">All Events</option>
+                {events.map(ev => (
+                  <option key={ev.id} value={ev.id}>{ev.event_name}</option>
+                ))}
+              </Select>
+            </div>
+            
+            <div>
+              <label className="block text-xs font-display tracking-widest uppercase text-[var(--muted)] mb-2">Payment Method</label>
+              <Select value={paymentMethod} onChange={e => { setPaymentMethod(e.target.value); setPage(1); }}>
+                <option value="">All Methods</option>
+                <option value="online">Online (Razorpay)</option>
+                <option value="cash">Cash</option>
+              </Select>
+            </div>
+            
+            <div>
+              <label className="block text-xs font-display tracking-widest uppercase text-[var(--muted)] mb-2">From Date</label>
+              <Input type="date" value={fromDate} onChange={e => { setFromDate(e.target.value); setPage(1); }} />
+            </div>
+            
+            <div>
+              <label className="block text-xs font-display tracking-widest uppercase text-[var(--muted)] mb-2">To Date</label>
+              <Input type="date" value={toDate} onChange={e => { setToDate(e.target.value); setPage(1); }} />
+            </div>
+            
+            <div className="sm:col-span-2 lg:col-span-2 xl:col-span-3 flex flex-wrap sm:flex-nowrap items-center justify-end gap-3 pt-2 sm:pt-0">
+              <Button type="submit" variant="primary" className="flex-1 sm:flex-none uppercase tracking-widest text-xs h-12 px-6 whitespace-nowrap">
+                Apply
+              </Button>
+              <Button type="button" variant="secondary" onClick={handleExport} className="flex-1 sm:flex-none uppercase tracking-widest text-xs h-12 px-5 border-[var(--gold)] text-[var(--gold)] hover:bg-[var(--gold)] hover:text-black whitespace-nowrap">
+                <Download className="w-4 h-4 mr-2" />
+                Export Excel
+              </Button>
+            </div>
           </div>
         </form>
       </div>
