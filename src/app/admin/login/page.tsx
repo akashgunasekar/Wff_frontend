@@ -33,14 +33,16 @@ export default function AdminLoginPage() {
         credentials: 'include' // crucial for saving the session cookie
       });
 
-      const contentType = res.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        throw new Error("Server returned an invalid response (not JSON). Please check the API base URL.");
+      let json: any = null;
+      try {
+        json = await res.json();
+      } catch {
+        const text = await res.text().catch(() => '');
+        throw new Error(text || `Server returned error status ${res.status}`);
       }
-      const json = await res.json();
 
-      if (!res.ok || !json.success) {
-        throw new Error(json.message || "Invalid email or password.");
+      if (!res.ok || !json?.success) {
+        throw new Error(json?.message || `Login failed (${res.status})`);
       }
 
       // Force hard navigation to /admin to re-trigger AuthProvider fetch
