@@ -28,6 +28,35 @@ const AuthContext = createContext<AuthContextType>({
 
 export const useAdminAuth = () => useContext(AuthContext);
 
+// Stable global reference for CSRF Token
+let globalCsrfToken: string | null = typeof window !== 'undefined' ? sessionStorage.getItem('admin_csrf_token') : null;
+
+if (typeof window !== 'undefined' && !(window as any).__admin_fetch_patched) {
+  (window as any).__admin_fetch_patched = true;
+  const originalFetch = window.fetch;
+  window.fetch = async (...args) => {
+    let [resource, config] = args;
+    const url = typeof resource === 'string' ? resource : resource instanceof Request ? resource.url : '';
+    
+    if (url.includes('/api/admin/') || url.includes('/admin/')) {
+      const method = config?.method?.toUpperCase() || (resource instanceof Request ? resource.method?.toUpperCase() : 'GET') || 'GET';
+      if (method !== 'GET' && method !== 'OPTIONS') {
+        const token = globalCsrfToken || (typeof window !== 'undefined' ? sessionStorage.getItem('admin_csrf_token') : null);
+        if (token) {
+          config = config || {};
+          const headers = new Headers(config.headers || (resource instanceof Request ? resource.headers : {}));
+          if (!headers.has('X-CSRF-Token')) {
+            headers.set('X-CSRF-Token', token);
+          }
+          config.headers = headers;
+          args[1] = config;
+        }
+      }
+    }
+    return originalFetch(...args);
+  };
+}
+
 export default function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AdminUser | null>(null);
   const [loading, setLoading] = useState(true);
@@ -46,6 +75,12 @@ export default function AdminAuthProvider({ children }: { children: React.ReactN
         const json = await res.json().catch(() => null);
         if (json?.success && json?.data) {
           setUser(json.data);
+          if (json.data.csrf_token) {
+            globalCsrfToken = json.data.csrf_token;
+            if (typeof window !== 'undefined') {
+              sessionStorage.setItem('admin_csrf_token', json.data.csrf_token);
+            }
+          }
           if (pathname === '/admin/login') {
             router.replace('/admin');
           }
@@ -82,6 +117,10 @@ export default function AdminAuthProvider({ children }: { children: React.ReactN
       });
     } catch (error) {
       console.error("Logout error", error);
+    }
+    globalCsrfToken = null;
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('admin_csrf_token');
     }
     setUser(null);
     router.replace('/admin/login');

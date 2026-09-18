@@ -1,5 +1,7 @@
 import AdminAuthProvider from './AdminAuthProvider';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Administration | WFF Tamil Nadu',
   robots: 'noindex, nofollow'
