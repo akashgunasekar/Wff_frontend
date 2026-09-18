@@ -4,6 +4,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { TopAnnouncementBar } from "@/components/layout/TopAnnouncementBar";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { FooterWrapper } from "@/components/layout/FooterWrapper";
+import { AnnouncementWrapper } from "@/components/layout/AnnouncementWrapper";
 
 export const metadata: Metadata = {
   title: "WFF Tamil Nadu | Bodybuilding & Fitness Federation",
@@ -29,12 +31,16 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <TopAnnouncementBar />
+          <AnnouncementWrapper>
+            <TopAnnouncementBar />
+          </AnnouncementWrapper>
           <Header />
           <main className="flex-1 flex flex-col">
             {children}
           </main>
-          <Footer />
+          <FooterWrapper>
+            <Footer />
+          </FooterWrapper>
         </ThemeProvider>
       </body>
     </html>

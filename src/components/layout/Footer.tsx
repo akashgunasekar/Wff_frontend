@@ -85,6 +85,7 @@ export async function Footer() {
                 <Link
                   key={link.href}
                   href={link.href}
+                  prefetch={false}
                   className="font-body text-[14px] text-white/75 hover:text-[#C9A44A] hover:translate-x-1 transition-all duration-200"
                 >
                   {link.label}
@@ -104,6 +105,7 @@ export async function Footer() {
                 <Link
                   key={link.href}
                   href={link.href}
+                  prefetch={false}
                   className="font-body text-[14px] text-white/75 hover:text-[#C9A44A] hover:translate-x-1 transition-all duration-200"
                 >
                   {link.label}
