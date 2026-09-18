@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, createContext, useContext } from 'react';
+import { useEffect, useState, createContext, useContext, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 
@@ -16,9 +16,15 @@ interface AuthContextType {
   user: AdminUser | null;
   loading: boolean;
   logout: () => void;
+  checkAuth: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType>({ user: null, loading: true, logout: () => {} });
+const AuthContext = createContext<AuthContextType>({ 
+  user: null, 
+  loading: true, 
+  logout: () => {},
+  checkAuth: async () => {}
+});
 
 export const useAdminAuth = () => useContext(AuthContext);
 
@@ -28,37 +34,7 @@ export default function AdminAuthProvider({ children }: { children: React.ReactN
   const router = useRouter();
   const pathname = usePathname();
 
-  useEffect(() => {
-    checkAuth();
-  }, [pathname]);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && user?.csrf_token) {
-      const originalFetch = window.fetch;
-      window.fetch = async (...args) => {
-        let [resource, config] = args;
-        
-        if (typeof resource === 'string' && resource.includes('/api/admin/')) {
-          const method = config?.method?.toUpperCase() || 'GET';
-          if (method !== 'GET' && method !== 'OPTIONS') {
-            config = config || {};
-            config.headers = {
-              ...config.headers,
-              'X-CSRF-Token': user.csrf_token || ''
-            };
-            args[1] = config;
-          }
-        }
-        return originalFetch(...args);
-      };
-
-      return () => {
-        window.fetch = originalFetch;
-      };
-    }
-  }, [user]);
-
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
     try {
       const res = await fetch(`${API_BASE}/admin/auth/me.php`, {
@@ -66,24 +42,23 @@ export default function AdminAuthProvider({ children }: { children: React.ReactN
         cache: 'no-store'
       });
       
-      const contentType = res.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        throw new Error("Invalid response");
+      if (res.ok) {
+        const json = await res.json().catch(() => null);
+        if (json?.success && json?.data) {
+          setUser(json.data);
+          if (pathname === '/admin/login') {
+            router.replace('/admin');
+          }
+          setLoading(false);
+          return;
+        }
       }
-      const json = await res.json();
       
-      if (res.ok && json.success) {
-        setUser(json.data);
-        if (pathname === '/admin/login') {
-          router.replace('/admin');
-        }
-      } else {
-        setUser(null);
-        if (pathname !== '/admin/login') {
-          router.replace('/admin/login');
-        }
+      setUser(null);
+      if (pathname !== '/admin/login') {
+        router.replace('/admin/login');
       }
-    } catch (error) {
+    } catch {
       setUser(null);
       if (pathname !== '/admin/login') {
         router.replace('/admin/login');
@@ -91,7 +66,11 @@ export default function AdminAuthProvider({ children }: { children: React.ReactN
     } finally {
       setLoading(false);
     }
-  };
+  }, [pathname, router]);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   const logout = async () => {
     setLoading(true);
@@ -118,8 +97,7 @@ export default function AdminAuthProvider({ children }: { children: React.ReactN
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, logout }}>
-      {/* We render over the public layout using fixed inset-0 */}
+    <AuthContext.Provider value={{ user, loading, logout, checkAuth }}>
       <div className="fixed inset-0 z-[100] bg-[var(--surface)] overflow-y-auto">
         {children}
       </div>
