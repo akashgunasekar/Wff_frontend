@@ -33,7 +33,7 @@ export function HeroSection({ slides }: HeroSectionProps) {
   }, [next, slides.length]);
 
   if (!slide) return null;
-  
+
   const getImageUrl = (url: string | null) => {
     if (!url) return '/assets/wff_hero_banner.png';
     return resolveImageUrl(url) || '/assets/wff_hero_banner.png';
@@ -44,7 +44,7 @@ export function HeroSection({ slides }: HeroSectionProps) {
     let line1 = '';
     let line2 = title;
     let line3 = '';
-    
+
     if (words.length >= 3 && title.toUpperCase().includes('WFF')) {
       line1 = words[0];
       const lastWord = words[words.length - 1];
@@ -62,9 +62,9 @@ export function HeroSection({ slides }: HeroSectionProps) {
 
     return (
       <h1 className="font-heading font-extrabold uppercase leading-[0.88] tracking-[-0.02em] mb-6 drop-shadow-2xl flex flex-col items-start">
-        {line1 && <span className="text-white text-[46px] sm:text-[60px] lg:text-[76px] xl:text-[92px]">{line1}</span>}
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] text-[46px] sm:text-[60px] lg:text-[76px] xl:text-[92px]">{line2}</span>
-        {line3 && <span className="text-white text-[46px] sm:text-[60px] lg:text-[76px] xl:text-[92px]">{line3}</span>}
+        {line1 && <span className="text-white text-[46px] sm:text-[60px] lg:text-[76px] xl:text-[50px]">{line1}</span>}
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] text-[46px] sm:text-[60px] lg:text-[76px] xl:text-[50px]">{line2}</span>
+        {line3 && <span className="text-white text-[46px] sm:text-[60px] lg:text-[76px] xl:text-[50px]">{line3}</span>}
       </h1>
     );
   };
@@ -91,7 +91,7 @@ export function HeroSection({ slides }: HeroSectionProps) {
 
       <div className="max-w-[1440px] mx-auto px-6 md:px-8 relative z-10 w-full h-full flex flex-col justify-center pt-20 pb-32">
         <div className="w-full max-w-[700px] flex flex-col items-start text-left">
-          
+
           {/* Eyebrow */}
           {slide.subtitle && (
             <div className="flex items-center gap-4 mb-4">
@@ -113,7 +113,7 @@ export function HeroSection({ slides }: HeroSectionProps) {
           )}
 
           {/* Date & Location */}
-          <div className="flex flex-col sm:flex-row items-start gap-8 sm:gap-12 mb-12 border-l-2 border-[#C9A44A]/30 pl-6">
+          <div className="flex flex-col sm:flex-row items-start gap-6 sm:gap-6 mb-12 border-l-2 border-[#C9A44A]/30 pl-6">
             {slide.date && (
               <div className="flex items-start gap-4">
                 <Calendar size={24} className="text-[#C9A44A] mt-0.5 shrink-0" strokeWidth={1.5} />
@@ -146,7 +146,7 @@ export function HeroSection({ slides }: HeroSectionProps) {
               Register Now
               <ArrowRight size={18} strokeWidth={2} className="ml-3" />
             </Link>
-            
+
             <Link
               href="/events"
               className="w-full sm:w-auto inline-flex items-center justify-center h-14 px-10 border border-white/30 text-white font-heading font-bold text-[14px] tracking-[0.15em] uppercase hover:bg-white/10 hover:border-white/50 backdrop-blur-sm transition-all duration-300"
@@ -165,25 +165,25 @@ export function HeroSection({ slides }: HeroSectionProps) {
             <div className="flex flex-col items-start gap-3">
               <Dumbbell size={24} className="text-[#C9A44A]" strokeWidth={1.5} />
               <span className="font-heading font-bold text-[10px] tracking-[0.15em] uppercase text-white/90 leading-[1.3]">
-                Natural<br/>Athletes
+                Natural<br />Athletes
               </span>
             </div>
             <div className="flex flex-col items-start gap-3">
               <Users size={24} className="text-[#C9A44A]" strokeWidth={1.5} />
               <span className="font-heading font-bold text-[10px] tracking-[0.15em] uppercase text-white/90 leading-[1.3]">
-                Real<br/>- People
+                Real<br />- People
               </span>
             </div>
             <div className="flex flex-col items-start gap-3">
               <Trophy size={24} className="text-[#C9A44A]" strokeWidth={1.5} />
               <span className="font-heading font-bold text-[10px] tracking-[0.15em] uppercase text-white/90 leading-[1.3]">
-                Clean<br/>Competition
+                Clean<br />Competition
               </span>
             </div>
             <div className="flex flex-col items-start gap-3">
               <ShieldCheck size={24} className="text-[#C9A44A]" strokeWidth={1.5} />
               <span className="font-heading font-bold text-[10px] tracking-[0.15em] uppercase text-white/90 leading-[1.3]">
-                A Stronger<br/>Tomorrow
+                A Stronger<br />Tomorrow
               </span>
             </div>
           </div>
@@ -194,20 +194,20 @@ export function HeroSection({ slides }: HeroSectionProps) {
       {slides.length > 1 && (
         <div className="absolute right-0 bottom-0 z-30 flex items-center">
           <div className="font-heading font-bold tracking-[0.2em] text-[13px] hidden sm:block mr-8">
-             <span className="text-white">{String(current + 1).padStart(2, '0')}</span> 
-             <span className="text-white/30 mx-2">/</span> 
-             <span className="text-white/50">{String(slides.length).padStart(2, '0')}</span>
+            <span className="text-white">{String(current + 1).padStart(2, '0')}</span>
+            <span className="text-white/30 mx-2">/</span>
+            <span className="text-white/50">{String(slides.length).padStart(2, '0')}</span>
           </div>
           <div className="flex">
-            <button 
-              onClick={prev} 
+            <button
+              onClick={prev}
               className="w-16 h-16 flex items-center justify-center bg-[#040A12]/90 backdrop-blur-md border-t border-l border-white/5 text-white/70 hover:bg-[#C9A44A] hover:text-[#040A12] transition-colors"
               aria-label="Previous slide"
             >
               <ChevronLeft size={24} strokeWidth={1.5} />
             </button>
-            <button 
-              onClick={next} 
+            <button
+              onClick={next}
               className="w-16 h-16 flex items-center justify-center bg-[#040A12]/90 backdrop-blur-md border-t border-l border-white/5 text-white/70 hover:bg-[#C9A44A] hover:text-[#040A12] transition-colors"
               aria-label="Next slide"
             >
