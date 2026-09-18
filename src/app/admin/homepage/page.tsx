@@ -37,7 +37,7 @@ export default function AdminHomepagePage() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       
       const [heroRes, annRes, secRes, eventsRes] = await Promise.all([
         fetch(`${API_BASE}/admin/homepage/hero/index.php`, { credentials: 'include' }),
@@ -80,7 +80,7 @@ export default function AdminHomepagePage() {
 
     setUploadingImage(true);
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/admin/homepage/hero/upload.php`, {
         method: 'POST',
         credentials: 'include',
@@ -109,7 +109,7 @@ export default function AdminHomepagePage() {
           payload.display_fee = heroForm.display_fee.toString();
       }
       
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/admin/homepage/hero/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -131,7 +131,7 @@ export default function AdminHomepagePage() {
   const handleDeleteHero = async (id: number) => {
     if (!confirm("Delete this hero slide?")) return;
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/admin/homepage/hero/delete.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -154,7 +154,7 @@ export default function AdminHomepagePage() {
       const endpoint = editingAnn ? 'update.php' : 'create.php';
       const payload = editingAnn ? { ...annForm, id: editingAnn.id } : annForm;
       
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/admin/homepage/announcements/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -176,7 +176,7 @@ export default function AdminHomepagePage() {
   const handleDeleteAnn = async (id: number) => {
     if (!confirm("Delete this announcement?")) return;
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/admin/homepage/announcements/delete.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -195,7 +195,7 @@ export default function AdminHomepagePage() {
   const handleSaveSection = async (sectionKey: string, payload: any) => {
     setSectionSaving(sectionKey);
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/admin/homepage/sections/update.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
