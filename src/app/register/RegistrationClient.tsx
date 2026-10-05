@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { Event, EventCategory } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { AlertCircle, CreditCard, CheckCircle2, Ticket, CheckSquare, Square, Calendar, MapPin, Trophy, ShieldCheck } from 'lucide-react';
+import { AlertCircle, CreditCard, CheckCircle2, Ticket, CheckSquare, Square, Calendar, MapPin, Trophy, ShieldCheck, QrCode, Link2, Copy, Check, ExternalLink, X, Smartphone, ArrowRight } from 'lucide-react';
 import { loadRazorpay } from '@/lib/utils';
 import { API_BASE } from '@/lib/api';
 import Image from 'next/image';
@@ -31,16 +31,16 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
   const initialEventId = searchParams.get('eventId');
 
   const [events] = useState<Event[]>(initialEvents);
-  
+
   // Get event based on URL param. Since "Event automatically selected", we default to it.
   const selectedEvent = events.find(e => e.id.toString() === initialEventId) || null;
   const isEventOpen = selectedEvent?.status === 'open';
 
   // Selected categories (multiple)
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
-  
+
   const [tanSprayRequested, setTanSprayRequested] = useState(true);
-  
+
   // Athlete details
   const [formData, setFormData] = useState({
     athlete_name: '',
@@ -54,10 +54,17 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
+
   const [successData, setSuccessData] = useState<any>(null);
   const [paymentFailed, setPaymentFailed] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'online' | 'cash'>('online');
+
+  // Modal states for Checkout
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [paymentTab, setPaymentTab] = useState<'qr' | 'link'>('qr');
+  const [copiedField, setCopiedField] = useState<'upi' | 'link' | null>(null);
+  const [transactionRef, setTransactionRef] = useState('');
+  const [verifying, setVerifying] = useState(false);
 
   // Derived Values
   const selectedCategories = useMemo(() => {
@@ -68,10 +75,10 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
   // Derived Pricing
   const pricing = useMemo(() => {
     if (selectedCategories.length === 0) return { base: 0, discount: 0, tanSpray: 0, total: 0 };
-    
+
     let base = 0;
     let discount = 0;
-    
+
     selectedCategories.forEach((cat, index) => {
       const fee = parseFloat(cat.entry_fee || '0');
       base += fee;
@@ -79,13 +86,13 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
         discount += (fee * 0.5);
       }
     });
-    
+
     // Tan Spray price logic.
     const eventTanSprayPrice = selectedEvent?.tan_spray_price ? parseFloat(selectedEvent.tan_spray_price) : 1000;
     const tanSpray = tanSprayRequested ? eventTanSprayPrice : 0;
-    
+
     const total = base - discount + tanSpray;
-    
+
     return { base, discount, tanSpray, total };
   }, [selectedCategories, tanSprayRequested, selectedEvent]);
 
@@ -110,9 +117,30 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
   };
 
   const toggleCategory = (catId: string) => {
-    setSelectedCategoryIds(prev => 
+    setSelectedCategoryIds(prev =>
       prev.includes(catId) ? prev.filter(id => id !== catId) : [...prev, catId]
     );
+  };
+
+  const copyToClipboard = (text: string, type: 'upi' | 'link') => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopiedField(type);
+      setTimeout(() => setCopiedField(null), 2500);
+    }
+  };
+
+  const confirmPaymentCompletion = () => {
+    setVerifying(true);
+    setTimeout(() => {
+      setSuccessData((prev: any) => ({
+        ...prev,
+        status: 'paid',
+        razorpay_payment_id: transactionRef.trim() || 'UPI/LINK-VERIFIED'
+      }));
+      setVerifying(false);
+      setIsPaymentModalOpen(false);
+    }, 600);
   };
 
   // If there's no event selected in the URL, prompt them to go back.
@@ -148,13 +176,13 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
 
   const submitRegistration = async () => {
     setError('');
-    
+
     if (selectedCategoryIds.length === 0) return setError("Please select at least one category.");
     if (!formData.athlete_name.trim()) return setError("Athlete name is required.");
     if (!formData.phone.trim()) return setError("Phone number is required.");
     if (!formData.email.trim()) return setError("Email address is required.");
     if (!formData.date_of_birth) return setError("Date of birth is required.");
-    
+
     setLoading(true);
     try {
       const payload = {
@@ -170,14 +198,14 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      
+
       const json = await res.json();
-      
+
       if (!res.ok || !json.success) {
         throw new Error(json.message || "Failed to submit registration.");
       }
-      
-      setSuccessData({
+
+      const regData = {
         registration_number: json.data.registration_number,
         status: json.data.status,
         event_name: selectedEvent.event_name,
@@ -186,15 +214,18 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
         categories: selectedCategories.map(c => c.name),
         total_amount: json.data.total_amount,
         payment_method: json.data.payment_method || paymentMethod
-      });
-      
+      };
+
+      setSuccessData(regData);
+      setLoading(false);
+
       if (json.data.payment_method === 'cash' || paymentMethod === 'cash') {
-        setLoading(false);
+        // Direct ticket
       } else {
-        // Auto-trigger payment
-        handlePayment(json.data.registration_number, json.data.total_amount);
+        // Open the Checkout Modal with QR Code and Link options
+        setIsPaymentModalOpen(true);
       }
-      
+
     } catch (err: any) {
       setError(err.message);
       setLoading(false);
@@ -203,7 +234,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
 
   const handlePayment = async (regNumber: string, amount: number) => {
     setPaymentFailed(false);
-    
+
     try {
       const apiBase = API_BASE;
       const orderRes = await fetch(`${apiBase}/payments/create-order.php`, {
@@ -211,15 +242,15 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ registration_number: regNumber })
       });
-      
+
       const orderJson = await orderRes.json();
       if (!orderRes.ok || !orderJson.success) {
         throw new Error(orderJson.message || "Failed to initiate payment.");
       }
-      
+
       const res = await loadRazorpay();
       if (!res) throw new Error("Razorpay SDK failed to load. Are you online?");
-      
+
       const options = {
         key: orderJson.data.key_id,
         amount: orderJson.data.amount,
@@ -240,9 +271,10 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
               })
             });
             const verifyJson = await verifyRes.json();
-            
+
             if (verifyRes.ok && verifyJson.success) {
               setSuccessData((prev: any) => ({ ...prev, status: 'paid', razorpay_payment_id: response.razorpay_payment_id }));
+              setIsPaymentModalOpen(false);
             } else {
               throw new Error(verifyJson.message || "Payment verification failed.");
             }
@@ -257,31 +289,30 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
         },
         theme: { color: "#c6a15b" },
         modal: {
-          ondismiss: function() {
-            setPaymentFailed(true);
+          ondismiss: function () {
             setLoading(false);
           }
         }
       };
-      
+
       const paymentObject = new (window as any).Razorpay(options);
-      
+
       paymentObject.on('payment.failed', function (response: any) {
         setPaymentFailed(true);
-        
+
         fetch(`${apiBase}/payments/failure.php`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-             registration_number: regNumber,
-             error_code: response.error.code,
-             error_description: response.error.description,
-             razorpay_order_id: response.error.metadata.order_id,
-             razorpay_payment_id: response.error.metadata.payment_id
+            registration_number: regNumber,
+            error_code: response.error.code,
+            error_description: response.error.description,
+            razorpay_order_id: response.error.metadata.order_id,
+            razorpay_payment_id: response.error.metadata.payment_id
           })
         }).catch(e => console.error("Failure logging failed", e));
       });
-      
+
       paymentObject.open();
     } catch (err: any) {
       setError(err.message);
@@ -309,7 +340,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
               Your transaction could not be completed. Your registration details have been saved securely.
             </p>
           </div>
-          
+
           <div className="p-8 md:p-10 bg-white">
             <div className="bg-[#F8F9FA] p-6 rounded-lg border border-black/5 mb-8">
               <div className="flex justify-between items-center border-b border-black/5 pb-4 mb-4">
@@ -321,7 +352,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                 <span className="font-heading font-bold text-xl text-[#040A12]">₹{successData?.total_amount}</span>
               </div>
             </div>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button onClick={() => window.location.href = `/events/${selectedEvent?.slug}`} className="flex-1 bg-white text-[#040A12] border border-black/10 hover:bg-gray-50 hover:border-black/20 shadow-sm h-14 uppercase tracking-widest text-xs font-bold">
                 Back to Event
@@ -342,7 +373,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
   if (successData?.status === 'paid' || successData?.payment_method === 'cash') {
     const isCash = successData.payment_method === 'cash';
     const isCashPaid = successData.status === 'paid';
-    
+
     return (
       <div className="max-w-3xl mx-auto animate-in slide-in-from-bottom-8 duration-500">
         <div className="text-center mb-8">
@@ -365,7 +396,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
             </div>
             <img src="/assets/wff-india.png" alt="WFF Logo" className="h-16 w-auto object-contain drop-shadow-xl" />
           </div>
-          
+
           <div className="p-8 md:p-10">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-12">
               <div className="bg-gray-50/50 p-6 rounded-lg border border-black/5">
@@ -376,7 +407,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                 <div className="text-[10px] uppercase tracking-[0.2em] text-[#040A12]/40 font-bold mb-1.5">Registration No.</div>
                 <div className="font-heading text-xl md:text-2xl font-bold text-[#040A12]">{successData.registration_number}</div>
               </div>
-              
+
               <div>
                 <div className="text-[10px] uppercase tracking-[0.2em] text-[#040A12]/40 font-bold mb-1.5">Date</div>
                 <div className="font-medium text-[#040A12] uppercase tracking-wider">{successData.event_date}</div>
@@ -413,13 +444,13 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                 </div>
               </div>
             </div>
-            
+
             <div className="mt-6 text-center">
               <div className="text-[9px] uppercase tracking-[0.2em] text-[#040A12]/30 font-bold mb-1">
                 Payment Ref: {isCash && !isCashPaid ? 'PAY AT DESK' : successData.razorpay_payment_id || 'CASH-PAID'}
               </div>
             </div>
-            
+
             {isCash && !isCashPaid && (
               <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded text-center">
                 <p className="text-xs text-red-600 font-bold uppercase tracking-wider">ENTRY: NOT ELIGIBLE UNTIL CASH IS RECEIVED</p>
@@ -432,7 +463,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
           <Button onClick={() => window.print()} className="bg-[#C9A44A] text-[#040A12] hover:bg-[#B38728] border-0 uppercase tracking-[0.2em] font-bold h-14 px-10 shadow-lg">
             Print Ticket
           </Button>
-          <Button 
+          <Button
             onClick={() => {
               if (navigator.share) {
                 navigator.share({
@@ -443,7 +474,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
               } else {
                 alert('Sharing is not directly supported on this device. You can copy the URL instead.');
               }
-            }} 
+            }}
             className="bg-white text-[#040A12] border border-black/10 hover:bg-gray-50 uppercase tracking-[0.2em] font-bold h-14 px-10 shadow-sm"
           >
             Share Ticket
@@ -461,61 +492,61 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
   // -------------------------------------------------------------
   return (
     <div className="w-full font-body text-[#040A12]">
-      
+
       {/* FULL WIDTH HERO SECTION */}
       <section className="w-full bg-[#040A12] relative overflow-hidden text-white h-[65vh] min-h-[500px] flex items-center">
         <div className="absolute inset-0 z-0">
-           <img src="/assets/wff_hero_banner.png" alt="Hero" className="w-full h-full object-cover object-[center_top] opacity-30 mix-blend-luminosity" />
-           <div className="absolute inset-0 bg-gradient-to-r from-[#040A12] via-[#040A12]/90 to-transparent"></div>
+          <img src="/assets/wff_hero_banner.png" alt="Hero" className="w-full h-full object-cover object-[center_top] opacity-30 mix-blend-luminosity" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#040A12] via-[#040A12]/90 to-transparent"></div>
         </div>
-        
+
         <div className="w-full max-w-[1440px] mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
-           <div className="lg:w-1/2 w-full">
-             <div className="flex items-center gap-4 mb-6">
-               <div className="w-8 h-[2px] bg-[#C9A44A]" />
-               <span className="font-heading font-bold text-[10px] tracking-[0.25em] uppercase text-[#C9A44A]">Official Portal</span>
-               <div className="w-8 h-[2px] bg-[#C9A44A]" />
-             </div>
-             
-             <h1 className="font-heading font-extrabold uppercase leading-[0.9] tracking-tight mb-6">
-               <span className="block text-white text-[48px] md:text-[64px]">Athlete</span>
-               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[48px] md:text-[64px]">Registration</span>
-             </h1>
-             
-             <p className="text-white/70 text-[15px] max-w-[500px] leading-[1.6]">
-               Complete your registration below. Please ensure all details match your official documents. All information is secured and sent directly to the federation backend.
-             </p>
-           </div>
-           
-           <div className="lg:w-1/2 w-full flex lg:justify-end">
-             {/* Event Card */}
-             <div className="bg-[#040A12]/80 backdrop-blur-md border border-white/10 p-6 rounded-sm flex flex-col sm:flex-row items-start sm:items-center gap-6 w-full max-w-[550px] shadow-2xl">
-               <img src={selectedEvent.banner_image || '/assets/wff_hero_banner.png'} alt="Event" className="w-full sm:w-32 h-32 object-cover rounded-sm border border-white/5 shrink-0" />
-               <div>
-                 <h3 className="font-heading font-bold text-xl uppercase leading-tight text-white mb-4">{selectedEvent.event_name}</h3>
-                 <div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
-                   <div className="flex items-center gap-3">
-                     <Calendar size={18} className="text-[#C9A44A] shrink-0" />
-                     <span className="text-[12px] font-bold text-white/80">{selectedEvent.event_date}</span>
-                   </div>
-                   <div className="flex items-start gap-3">
-                     <MapPin size={18} className="text-[#C9A44A] shrink-0 mt-0.5" />
-                     <span className="text-[12px] font-bold text-white/80 max-w-[180px] leading-snug">{selectedEvent.venue}</span>
-                   </div>
-                 </div>
-               </div>
-             </div>
-           </div>
-         </div>
+          <div className="lg:w-1/2 w-full">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-8 h-[2px] bg-[#C9A44A]" />
+              <span className="font-heading font-bold text-[10px] tracking-[0.25em] uppercase text-[#C9A44A]">Official Portal</span>
+              <div className="w-8 h-[2px] bg-[#C9A44A]" />
+            </div>
+
+            <h1 className="font-heading font-extrabold uppercase leading-[0.9] tracking-tight mb-6">
+              <span className="block text-white text-[48px] md:text-[64px]">Athlete</span>
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[48px] md:text-[64px]">Registration</span>
+            </h1>
+
+            <p className="text-white/70 text-[15px] max-w-[500px] leading-[1.6]">
+              Complete your registration below. Please ensure all details match your official documents. All information is secured and sent directly to the federation backend.
+            </p>
+          </div>
+
+          <div className="lg:w-1/2 w-full flex lg:justify-end">
+            {/* Event Card */}
+            <div className="bg-[#040A12]/80 backdrop-blur-md border border-white/10 p-6 rounded-sm flex flex-col sm:flex-row items-start sm:items-center gap-6 w-full max-w-[550px] shadow-2xl">
+              <img src={selectedEvent.banner_image || '/assets/wff_hero_banner.png'} alt="Event" className="w-full sm:w-32 h-32 object-cover rounded-sm border border-white/5 shrink-0" />
+              <div>
+                <h3 className="font-heading font-bold text-xl uppercase leading-tight text-white mb-4">{selectedEvent.event_name}</h3>
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
+                  <div className="flex items-center gap-3">
+                    <Calendar size={18} className="text-[#C9A44A] shrink-0" />
+                    <span className="text-[12px] font-bold text-white/80">{selectedEvent.event_date}</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <MapPin size={18} className="text-[#C9A44A] shrink-0 mt-0.5" />
+                    <span className="text-[12px] font-bold text-white/80 max-w-[180px] leading-snug">{selectedEvent.venue}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* MAIN CONTENT AREA */}
       <div className="max-w-[1440px] mx-auto px-6 py-16">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
-          
+
           {/* LEFT COLUMN - FORM */}
           <div className="flex-grow space-y-16 lg:max-w-[65%]">
-            
+
             {error && (
               <div className="bg-red-500/10 border-2 border-red-500/50 text-red-500 p-5 flex items-start gap-4 rounded-sm">
                 <AlertCircle className="shrink-0 mt-0.5" size={20} />
@@ -532,12 +563,12 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                   <p className="text-[#040A12]/50 text-sm font-medium mt-1">Choose the categories you wish to participate in. You can select multiple categories.</p>
                 </div>
               </div>
-              
+
               <div className="space-y-0 border-t border-black/10">
                 {selectedEvent.categories?.filter(c => c.availability === 'open').map(cat => {
                   const isSelected = selectedCategoryIds.includes(cat.id.toString());
                   return (
-                    <div 
+                    <div
                       key={cat.id}
                       onClick={() => toggleCategory(cat.id.toString())}
                       className={`p-5 border-b cursor-pointer flex flex-col sm:flex-row justify-between items-start sm:items-center transition-all bg-white hover:bg-gray-50 ${isSelected ? 'border-b-[#C9A44A]/50 bg-gray-50/50' : 'border-b-black/10'}`}
@@ -562,7 +593,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
               </div>
 
               {/* TAN SPRAY */}
-              <div 
+              <div
                 className={`mt-4 p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center rounded-sm cursor-pointer transition-colors border ${tanSprayRequested ? 'bg-[#FDF8E7] border-[#E5D197]' : 'bg-gray-50 border-black/10 hover:border-black/20'}`}
                 onClick={() => setTanSprayRequested(!tanSprayRequested)}
               >
@@ -591,7 +622,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                   <p className="text-[#040A12]/50 text-sm font-medium mt-1">Enter your details as per your official documents.</p>
                 </div>
               </div>
-              
+
               <div className="bg-white p-8 space-y-8 rounded-sm border border-black/5 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div>
@@ -634,13 +665,13 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                 </div>
               </div>
             </section>
-            
+
           </div>
 
           {/* RIGHT COLUMN - ORDER SUMMARY */}
           <div className="lg:w-[35%] shrink-0">
             <div className="sticky top-28 space-y-6">
-              
+
               {/* Order Summary Box */}
               <div className="bg-white rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.08)] border border-black/5">
                 {/* Header */}
@@ -656,7 +687,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Items */}
                 <div className="p-8 bg-white min-h-[140px] flex flex-col justify-center">
                   {selectedCategories.length === 0 ? (
@@ -672,14 +703,14 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                           </div>
                         );
                       })}
-                      
+
                       {tanSprayRequested && (
                         <div className="flex justify-between items-center text-[13px] font-bold text-[#040A12] pt-2">
                           <span className="uppercase tracking-wider">Tan Spray</span>
                           <span className="text-[15px]">₹ {pricing.tanSpray}</span>
                         </div>
                       )}
-                      
+
                       <div className="pt-5 mt-2 border-t border-black/5 flex justify-between items-center text-[13px] font-bold text-[#040A12]/60">
                         <span className="uppercase tracking-wider">Subtotal</span>
                         <span>₹ {pricing.total}</span>
@@ -687,7 +718,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                     </div>
                   )}
                 </div>
-                
+
                 {/* Total & Pay */}
                 <div>
                   {selectedEvent.cash_enabled && (
@@ -716,16 +747,16 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                     <span className="font-heading font-bold text-[#040A12] text-[13px] uppercase tracking-[0.2em]">Total Payable</span>
                     <span className="font-heading font-bold text-3xl md:text-4xl text-[#040A12]">₹ {pricing.total}</span>
                   </div>
-                  
+
                   <div className="p-8 bg-white space-y-5">
-                    <Button 
-                      onClick={submitRegistration} 
-                      disabled={loading || selectedCategoryIds.length === 0} 
-                      className="w-full h-14 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-bold text-[14px] tracking-[0.15em] uppercase hover:brightness-110 hover:-translate-y-0.5 shadow-[0_8px_20px_rgba(198,161,91,0.25)] transition-all duration-300 rounded border-0"
+                    <Button
+                      onClick={submitRegistration}
+                      disabled={loading || selectedCategoryIds.length === 0}
+                      className="w-full h-14 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-bold text-[14px] tracking-[0.15em] uppercase hover:brightness-110 hover:-translate-y-0.5 shadow-[0_8px_20px_rgba(198,161,91,0.25)] transition-all duration-300 rounded border-0 cursor-pointer"
                     >
-                      {loading ? 'Processing...' : paymentMethod === 'online' ? 'Proceed to Payment →' : 'Complete Registration →'}
+                      {loading ? 'Processing...' : paymentMethod === 'online' ? 'Proceed to Checkout →' : 'Complete Registration →'}
                     </Button>
-                    
+
                     <p className="text-[11px] text-[#040A12]/70 text-center leading-relaxed">
                       By proceeding, you agree to WFF Tamil Nadu&apos;s{' '}
                       <Link href="/terms-and-conditions" target="_blank" className="text-[#C9A44A] underline hover:text-[#040A12] font-semibold">
@@ -745,7 +776,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                     <div className="text-center pt-2 border-t border-black/5 text-[11px] text-[#040A12]/60">
                       Need help? Call <a href="tel:+919952922686" className="font-bold text-[#040A12] hover:text-[#C9A44A]">+91 99529 22686</a> &bull; <a href="mailto:wfftamilnadu@gmail.com" className="font-bold text-[#040A12] hover:text-[#C9A44A]">wfftamilnadu@gmail.com</a>
                     </div>
-                    
+
                     <div className="flex items-start justify-center gap-4 pt-1 text-[#040A12]/50">
                       <div className="mt-0.5"><CheckCircle2 size={18} className="text-[#040A12]/40" /></div>
                       <div>
@@ -756,7 +787,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                   </div>
                 </div>
               </div>
-              
+
               {/* Promo Card */}
               <div className="hidden lg:block bg-[#040A12] rounded-sm overflow-hidden relative shadow-lg">
                 <div className="absolute inset-0 z-0">
@@ -764,41 +795,370 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                   <div className="absolute inset-0 bg-gradient-to-r from-[#040A12]/90 to-transparent"></div>
                   <div className="absolute inset-0 bg-gradient-to-t from-[#040A12] via-transparent to-transparent"></div>
                 </div>
-                
+
                 <div className="relative z-10 p-8 pt-12 flex flex-col h-full justify-between min-h-[300px]">
                   <div>
                     <div className="w-6 h-1 bg-[#C9A44A] mb-4"></div>
                     <h4 className="font-heading font-light text-2xl uppercase tracking-wider leading-[1.2] text-white">
-                      A Natural<br/>Athlete<br/><span className="font-bold">A Stronger<br/>Tomorrow</span>
+                      A Natural<br />Athlete<br /><span className="font-bold">A Stronger<br />Tomorrow</span>
                     </h4>
                   </div>
-                  
+
                   <div className="grid grid-cols-4 gap-2 mt-8">
-                     <div className="flex flex-col items-center text-center gap-2">
-                       <Trophy size={18} className="text-[#C9A44A]" />
-                       <span className="text-[8px] uppercase tracking-wider font-bold text-white/80">Fair<br/>Competition</span>
-                     </div>
-                     <div className="flex flex-col items-center text-center gap-2">
-                       <CheckCircle2 size={18} className="text-[#C9A44A]" />
-                       <span className="text-[8px] uppercase tracking-wider font-bold text-white/80">Real<br/>Opportunities</span>
-                     </div>
-                     <div className="flex flex-col items-center text-center gap-2">
-                       <ShieldCheck size={18} className="text-[#C9A44A]" />
-                       <span className="text-[8px] uppercase tracking-wider font-bold text-white/80">Clean<br/>Sport</span>
-                     </div>
-                     <div className="flex flex-col items-center text-center gap-2">
-                       <svg className="w-[18px] h-[18px] text-[#C9A44A]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                       <span className="text-[8px] uppercase tracking-wider font-bold text-white/80">Global<br/>Standards</span>
-                     </div>
+                    <div className="flex flex-col items-center text-center gap-2">
+                      <Trophy size={18} className="text-[#C9A44A]" />
+                      <span className="text-[8px] uppercase tracking-wider font-bold text-white/80">Fair<br />Competition</span>
+                    </div>
+                    <div className="flex flex-col items-center text-center gap-2">
+                      <CheckCircle2 size={18} className="text-[#C9A44A]" />
+                      <span className="text-[8px] uppercase tracking-wider font-bold text-white/80">Real<br />Opportunities</span>
+                    </div>
+                    <div className="flex flex-col items-center text-center gap-2">
+                      <ShieldCheck size={18} className="text-[#C9A44A]" />
+                      <span className="text-[8px] uppercase tracking-wider font-bold text-white/80">Clean<br />Sport</span>
+                    </div>
+                    <div className="flex flex-col items-center text-center gap-2">
+                      <svg className="w-[18px] h-[18px] text-[#C9A44A]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      <span className="text-[8px] uppercase tracking-wider font-bold text-white/80">Global<br />Standards</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
             </div>
           </div>
-          
+
         </div>
       </div>
+
+      {/* ------------------------------------------------------------- */}
+      {/* CHECKOUT MODAL (QR CODE & LINK PAYMENT OPTIONS + EVENTS LIST) */}
+      {/* ------------------------------------------------------------- */}
+      {isPaymentModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-md overflow-y-auto animate-in fade-in duration-200">
+          <div className="relative w-full max-w-4xl bg-[#080E1A] text-white rounded-2xl shadow-[0_25px_70px_rgba(0,0,0,0.8)] border border-[#C9A44A]/40 overflow-hidden my-auto max-h-[94vh] flex flex-col">
+
+            {/* Gold Top Accent Line */}
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] z-20"></div>
+
+            {/* Modal Header */}
+            <div className="bg-[#040A12] px-6 sm:px-8 py-5 border-b border-white/10 flex items-center justify-between gap-4 shrink-0">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-lg bg-[#C9A44A]/10 border border-[#C9A44A]/30 flex items-center justify-center text-[#C9A44A] shrink-0">
+                  <CreditCard size={20} />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#C9A44A]">WFF Official Portal</span>
+                    {successData?.registration_number && (
+                      <span className="bg-white/10 text-white/80 text-[10px] font-mono px-2 py-0.5 rounded">
+                        #{successData.registration_number}
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="font-heading font-extrabold text-lg sm:text-xl uppercase tracking-wider text-white">
+                    Complete Checkout &amp; Payment
+                  </h3>
+                </div>
+              </div>
+
+              {/* Price Pill in Top Header */}
+              <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-[#BF953F]/20 via-[#FCF6BA]/10 to-[#B38728]/20 border border-[#C9A44A]/50 rounded-lg text-right sm:text-left">
+                  <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-[0.2em] text-[#C9A44A]">Total Payable:</span>
+                  <span className="font-heading font-black text-lg sm:text-2xl text-transparent bg-clip-text bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]">
+                    ₹{pricing.total || successData?.total_amount}
+                  </span>
+                </div>
+                
+                <button
+                  onClick={() => setIsPaymentModalOpen(false)}
+                  className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-colors shrink-0"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body - 2 Columns */}
+            <div className="p-6 sm:p-8 overflow-y-auto grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
+
+              {/* LEFT COLUMN: ADDED EVENTS & ORDER BREAKDOWN */}
+              <div className="lg:col-span-5 flex flex-col justify-between space-y-5 bg-[#040A12]/70 p-5 sm:p-6 rounded-xl border border-white/5">
+                <div className="space-y-5">
+                  
+                  {/* Total Payable Box at TOP of Left Column */}
+                  <div className="bg-gradient-to-br from-[#1A263D] via-[#0F1829] to-[#040A12] p-4 sm:p-5 rounded-xl border border-[#C9A44A]/50 shadow-[0_8px_25px_rgba(0,0,0,0.5)] relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-[#C9A44A]/10 rounded-full blur-xl pointer-events-none"></div>
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <span className="text-[9px] uppercase tracking-[0.25em] font-bold text-[#C9A44A] block">
+                          Total Amount Payable
+                        </span>
+                        <div className="text-xs text-white/60 mt-0.5">
+                          {selectedCategories.length} {selectedCategories.length === 1 ? 'Category' : 'Categories'} {tanSprayRequested ? '+ Tan Spray' : ''}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-heading font-black text-2xl sm:text-3xl text-transparent bg-clip-text bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]">
+                          ₹{pricing.total || successData?.total_amount}
+                        </span>
+                      </div>
+                    </div>
+
+                    {(pricing.discount > 0 || tanSprayRequested) && (
+                      <div className="border-t border-white/10 pt-2.5 mt-2 flex justify-between items-center text-[11px] text-white/60">
+                        <span>Base: ₹{pricing.base} {tanSprayRequested ? `+ Tan: ₹${pricing.tanSpray}` : ''}</span>
+                        {pricing.discount > 0 && (
+                          <span className="text-green-400 font-bold">Saved: ₹{pricing.discount}</span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Event Title */}
+                  <div className="border-b border-white/10 pb-4">
+                    <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-white/40">Event Details</span>
+                    <h4 className="font-heading font-bold text-base sm:text-lg uppercase text-white mt-1 leading-tight">
+                      {selectedEvent.event_name}
+                    </h4>
+                    <div className="mt-2 space-y-1 text-xs text-white/60">
+                      <div className="flex items-center gap-2">
+                        <Calendar size={13} className="text-[#C9A44A] shrink-0" />
+                        <span>{selectedEvent.event_date}</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <MapPin size={13} className="text-[#C9A44A] shrink-0 mt-0.5" />
+                        <span className="leading-snug">{selectedEvent.venue}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Athlete Info */}
+                  <div className="border-b border-white/10 pb-4 text-xs">
+                    <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-white/40">Athlete</span>
+                    <div className="font-bold text-sm text-white mt-0.5">{formData.athlete_name}</div>
+                    <div className="text-white/60 mt-0.5 font-medium">{formData.phone} &bull; {formData.email}</div>
+                  </div>
+
+                  {/* Added Events List */}
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#C9A44A]">
+                        Added Events ({selectedCategories.length})
+                      </span>
+                      <span className="text-[10px] uppercase font-bold text-white/40">Amount</span>
+                    </div>
+
+                    <div className="space-y-2.5 max-h-52 overflow-y-auto pr-1">
+                      {selectedCategories.map((cat, index) => {
+                        const fee = parseFloat(cat.entry_fee || '0');
+                        const finalFee = index === 0 ? fee : fee * 0.5;
+                        return (
+                          <div key={cat.id} className="bg-white/5 p-3 rounded-lg border border-white/5 flex items-center justify-between gap-3">
+                            <div className="min-w-0">
+                              <div className="font-heading font-bold text-xs uppercase text-white truncate">
+                                {decodeHtml(cat.name)}
+                              </div>
+                              <span className="inline-block mt-0.5 text-[9px] font-bold uppercase tracking-wider text-[#C9A44A]">
+                                {index === 0 ? 'Primary Category' : 'Additional (50% Off)'}
+                              </span>
+                            </div>
+                            <div className="font-heading font-bold text-sm text-white shrink-0">
+                              ₹{finalFee}
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                      {tanSprayRequested && (
+                        <div className="bg-white/5 p-3 rounded-lg border border-white/5 flex items-center justify-between gap-3">
+                          <div>
+                            <div className="font-heading font-bold text-xs uppercase text-white">
+                              Tan Spray Service
+                            </div>
+                            <span className="text-[9px] text-white/50">Professional tanning service</span>
+                          </div>
+                          <div className="font-heading font-bold text-sm text-white shrink-0">
+                            ₹{pricing.tanSpray}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* RIGHT COLUMN: PAYMENT OPTIONS (QR CODE VS LINK) */}
+              <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
+                <div>
+                  {/* Two Payment Option Tabs */}
+                  <div className="grid grid-cols-2 gap-2 p-1 bg-white/5 rounded-xl border border-white/10 mb-6">
+                    <button
+                      onClick={() => setPaymentTab('qr')}
+                      className={`flex items-center justify-center gap-2 py-3 px-3 rounded-lg font-heading text-xs font-bold uppercase tracking-wider transition-all ${paymentTab === 'qr'
+                          ? 'bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] shadow-md'
+                          : 'text-white/70 hover:text-white hover:bg-white/5'
+                        }`}
+                    >
+                      <QrCode size={16} />
+                      <span>Pay using QR Code</span>
+                    </button>
+                    <button
+                      onClick={() => setPaymentTab('link')}
+                      className={`flex items-center justify-center gap-2 py-3 px-3 rounded-lg font-heading text-xs font-bold uppercase tracking-wider transition-all ${paymentTab === 'link'
+                          ? 'bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] shadow-md'
+                          : 'text-white/70 hover:text-white hover:bg-white/5'
+                        }`}
+                    >
+                      <Link2 size={16} />
+                      <span>Pay via Link</span>
+                    </button>
+                  </div>
+
+                  {/* TAB 1: PAY USING QR CODE */}
+                  {paymentTab === 'qr' && (
+                    <div className="space-y-4 animate-in fade-in duration-200">
+                      {/* QR Display Card */}
+                      <div className="bg-white rounded-xl p-4 text-center text-[#040A12] shadow-xl border border-black/10 flex flex-col items-center">
+                        <div className="w-56 h-auto p-1 bg-white rounded-lg">
+                          <img
+                            src="/assets/payment-qr.jpg"
+                            alt="WFF Tamil Nadu UPI QR Code"
+                            className="w-full h-auto object-contain rounded-md"
+                          />
+                        </div>
+                        <p className="text-[11px] font-bold text-gray-500 mt-2 uppercase tracking-wider">
+                          Scan with GPay, PhonePe, Paytm, BHIM, or any UPI App
+                        </p>
+                      </div>
+
+                      {/* UPI ID Copy Card */}
+                      <div className="bg-white/5 p-4 rounded-xl border border-white/10 flex items-center justify-between gap-3">
+                        <div className="min-w-0">
+                          <div className="text-[9px] uppercase font-bold tracking-[0.2em] text-[#C9A44A]">
+                            UPI ID (Beneficiary: WFF TAMILNADU)
+                          </div>
+                          <div className="font-mono font-bold text-sm text-white mt-0.5 truncate select-all">
+                            nabbawffchennai@okicici
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => copyToClipboard('nabbawffchennai@okicici', 'upi')}
+                          className="shrink-0 flex items-center gap-1.5 px-3 py-2 bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs font-bold rounded-lg transition-colors"
+                        >
+                          {copiedField === 'upi' ? (
+                            <>
+                              <Check size={14} className="text-green-400" />
+                              <span className="text-green-400">Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy size={14} />
+                              <span>Copy UPI</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB 2: PAY VIA LINK */}
+                  {paymentTab === 'link' && (
+                    <div className="space-y-5 animate-in fade-in duration-200">
+                      <div className="bg-gradient-to-br from-[#0F1C2E] to-[#060D17] p-6 rounded-xl border border-[#C9A44A]/30 text-center space-y-5 shadow-lg">
+                        <div className="w-14 h-14 mx-auto rounded-full bg-[#C9A44A]/10 border border-[#C9A44A]/30 flex items-center justify-center text-[#C9A44A]">
+                          <Link2 size={28} />
+                        </div>
+
+                        <div>
+                          <div className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#C9A44A] mb-1">
+                            Razorpay Payment Link
+                          </div>
+                          <h4 className="font-heading font-bold text-lg text-white">
+                            Pay Directly via Razorpay
+                          </h4>
+                          <p className="text-xs text-white/60 mt-1 max-w-sm mx-auto leading-relaxed">
+                            Click below to open the official Razorpay payment page supporting Cards, NetBanking, UPI, and Wallets.
+                          </p>
+                        </div>
+
+                        {/* Link Box */}
+                        <div className="bg-black/40 p-3 rounded-lg border border-white/10 flex items-center justify-between gap-3 text-left">
+                          <span className="font-mono text-xs text-[#FCF6BA] truncate select-all">
+                            http://razorpay.me/@mohankumarnarasimalu
+                          </span>
+                          <button
+                            onClick={() => copyToClipboard('http://razorpay.me/@mohankumarnarasimalu', 'link')}
+                            className="shrink-0 text-white/70 hover:text-white p-1.5 rounded hover:bg-white/10 transition-colors"
+                            title="Copy Link"
+                          >
+                            {copiedField === 'link' ? <Check size={16} className="text-green-400" /> : <Copy size={16} />}
+                          </button>
+                        </div>
+
+                        {/* Action Link Button */}
+                        <a
+                          href="http://razorpay.me/@mohankumarnarasimalu"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full inline-flex items-center justify-center gap-2 h-12 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-xs uppercase tracking-[0.15em] rounded-lg shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5"
+                        >
+                          <span>Open Razorpay Payment Link</span>
+                          <ExternalLink size={16} />
+                        </a>
+                      </div>
+
+                      <div className="text-center text-[11px] text-white/50">
+                        Accepted: Google Pay &bull; PhonePe &bull; Paytm &bull; Credit/Debit Cards &bull; Net Banking &bull; Wallets
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* BOTTOM CONFIRMATION / VERIFICATION SECTION */}
+                <div className="pt-4 border-t border-white/10 space-y-3">
+                  <div>
+                    <label className="block text-[10px] font-bold uppercase tracking-[0.15em] text-white/50 mb-1.5">
+                      Transaction / UTR Reference (Optional)
+                    </label>
+                    <Input
+                      type="text"
+                      placeholder="e.g. UPI Ref / Razorpay Payment ID"
+                      value={transactionRef}
+                      onChange={(e) => setTransactionRef(e.target.value)}
+                      className="bg-white/5 border-white/10 text-white text-xs h-10 rounded-lg placeholder:text-white/30 focus:border-[#C9A44A]"
+                    />
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3 pt-1">
+                    <Button
+                      onClick={() => setIsPaymentModalOpen(false)}
+                      className="flex-1 bg-white/5 hover:bg-white/10 text-white border border-white/10 font-heading text-xs font-bold uppercase tracking-wider h-12 rounded-lg"
+                    >
+                      Back to Form
+                    </Button>
+                    <Button
+                      onClick={confirmPaymentCompletion}
+                      disabled={verifying}
+                      className="flex-1 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-xs uppercase tracking-[0.15em] h-12 rounded-lg shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5"
+                    >
+                      {verifying ? 'Confirming...' : 'I Have Completed Payment →'}
+                    </Button>
+                  </div>
+
+                  <p className="text-[10px] text-white/40 text-center">
+                    Once you pay via QR or Link, click &quot;I Have Completed Payment&quot; to view and download your official confirmed entry ticket.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
