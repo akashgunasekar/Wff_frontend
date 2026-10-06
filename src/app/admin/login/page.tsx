@@ -4,22 +4,27 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { useAdminAuth } from '../AdminAuthProvider';
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const { checkAuth, login } = useAdminAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = async (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     setError('');
 
     if (!email.trim() || !password) {
-      setError('Email and password are required.');
+      setError('Invalid email or password.');
       return;
     }
 
@@ -29,26 +34,49 @@ export default function AdminLoginPage() {
       const res = await fetch(`${API_BASE}/admin/auth/login.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-        credentials: 'include' // crucial for saving the session cookie
+        body: JSON.stringify({ email: email.trim(), password }),
+        credentials: 'include'
       });
 
       let json: any = null;
       try {
         json = await res.json();
       } catch {
-        const text = await res.text().catch(() => '');
-        throw new Error(text || `Server returned error status ${res.status}`);
+        if (res.status === 401 || !res.ok) {
+          throw new Error('Invalid email or password.');
+        }
+        throw new Error(`Server returned error status ${res.status}`);
       }
 
       if (!res.ok || !json?.success) {
-        throw new Error(json?.message || `Login failed (${res.status})`);
+        if (
+          res.status === 401 || 
+          json?.message?.toLowerCase().includes('invalid') || 
+          json?.message?.toLowerCase().includes('password') || 
+          json?.message?.toLowerCase().includes('email')
+        ) {
+          throw new Error('Invalid email or password.');
+        }
+        throw new Error(json?.message || 'Invalid email or password.');
       }
 
-      // Force hard navigation to /admin to re-trigger AuthProvider fetch
-      window.location.href = '/admin';
+      if (json?.data) {
+        if (json.data.csrf_token && typeof window !== 'undefined') {
+          sessionStorage.setItem('admin_csrf_token', json.data.csrf_token);
+        }
+        if (login) {
+          login(json.data);
+          return;
+        }
+      }
+
+      if (checkAuth) {
+        await checkAuth();
+      }
+      window.location.replace('/admin');
     } catch (err: any) {
-      setError(err.message);
+      setError(err?.message || 'Invalid email or password.');
+    } finally {
       setLoading(false);
     }
   };
@@ -65,7 +93,12 @@ export default function AdminLoginPage() {
           </h1>
         </div>
 
-        <form onSubmit={handleLogin} className="bg-[var(--surface)] border border-[var(--border-color)] p-8 shadow-2xl">
+        <form 
+          onSubmit={handleLogin}
+          action="#"
+          noValidate
+          className="bg-[var(--surface)] border border-[var(--border-color)] p-8 shadow-2xl"
+        >
           {error && (
             <div className="mb-6 bg-red-500/10 border border-red-500/50 text-red-600 dark:text-red-400 p-3 flex items-start gap-2 rounded text-sm">
               <AlertCircle className="shrink-0 mt-0.5" size={16} />
@@ -81,7 +114,11 @@ export default function AdminLoginPage() {
               <Input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (error) setError('');
+                }}
+                error={!!error}
                 required
                 placeholder="admin@wfftn.com"
               />
@@ -91,19 +128,35 @@ export default function AdminLoginPage() {
               <label className="block text-[10px] font-display tracking-widest uppercase text-[var(--muted)] mb-2">
                 Password
               </label>
-              <Input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (error) setError('');
+                  }}
+                  error={!!error}
+                  required
+                  placeholder="••••••••"
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-wff-muted hover:text-wff-gold transition-colors focus:outline-none p-1 cursor-pointer"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
 
             <Button
               type="submit"
               disabled={loading}
               variant="gold"
-              className="w-full h-12 uppercase tracking-widest shadow-[0_4px_20px_rgba(198,161,91,0.2)] mt-2"
+              className="w-full h-12 uppercase tracking-widest shadow-[0_4px_20px_rgba(198,161,91,0.2)] mt-2 cursor-pointer"
             >
               {loading ? 'Signing in...' : 'Login'}
             </Button>

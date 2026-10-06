@@ -15,6 +15,7 @@ interface AdminUser {
 interface AuthContextType {
   user: AdminUser | null;
   loading: boolean;
+  login: (userData: AdminUser) => void;
   logout: () => void;
   checkAuth: () => Promise<void>;
 }
@@ -22,6 +23,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({ 
   user: null, 
   loading: true, 
+  login: () => {},
   logout: () => {},
   checkAuth: async () => {}
 });
@@ -107,6 +109,18 @@ export default function AdminAuthProvider({ children }: { children: React.ReactN
     checkAuth();
   }, [checkAuth]);
 
+  const login = (userData: AdminUser) => {
+    setUser(userData);
+    if (userData.csrf_token) {
+      globalCsrfToken = userData.csrf_token;
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('admin_csrf_token', userData.csrf_token);
+      }
+    }
+    setLoading(false);
+    router.replace('/admin');
+  };
+
   const logout = async () => {
     setLoading(true);
     const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
@@ -136,7 +150,7 @@ export default function AdminAuthProvider({ children }: { children: React.ReactN
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, logout, checkAuth }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, checkAuth }}>
       <div className="fixed inset-0 z-[100] bg-[var(--surface)] overflow-y-auto">
         {children}
       </div>
