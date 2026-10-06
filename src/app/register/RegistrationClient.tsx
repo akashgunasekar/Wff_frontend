@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Event, EventCategory } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { AlertCircle, CreditCard, CheckCircle2, Ticket, CheckSquare, Square, Calendar, MapPin, Trophy, ShieldCheck, QrCode, Link2, Copy, Check, ExternalLink, X, Smartphone, ArrowRight } from 'lucide-react';
+import { AlertCircle, AlertTriangle, CreditCard, CheckCircle2, Ticket, CheckSquare, Square, Calendar, MapPin, Trophy, ShieldCheck, QrCode, Link2, Copy, Check, ExternalLink, X, Smartphone, ArrowRight, Upload, ImageIcon, Trash2, Camera } from 'lucide-react';
 import { loadRazorpay } from '@/lib/utils';
 import { API_BASE } from '@/lib/api';
+import { toast } from '@/components/ui/Toast';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -61,10 +62,59 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
 
   // Modal states for Checkout
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
   const [paymentTab, setPaymentTab] = useState<'qr' | 'link'>('qr');
   const [copiedField, setCopiedField] = useState<'upi' | 'link' | null>(null);
   const [transactionRef, setTransactionRef] = useState('');
+  const [paymentProofFile, setPaymentProofFile] = useState<File | null>(null);
+  const [paymentProofPreview, setPaymentProofPreview] = useState<string | null>(null);
   const [verifying, setVerifying] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select an image file (JPG, PNG, or WebP).', { title: 'Invalid File' });
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error('Screenshot size exceeds 10MB limit.', { title: 'File Too Large' });
+        return;
+      }
+      setPaymentProofFile(file);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setPaymentProofPreview(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+      toast.info('Screenshot attached! Click "Complete Registration" below to verify.', { title: 'File Ready' });
+    }
+  };
+
+  const handleRemoveProof = () => {
+    setPaymentProofFile(null);
+    setPaymentProofPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleRequestClosePaymentModal = () => {
+    setIsCancelConfirmOpen(true);
+  };
+
+  const handleConfirmCancelPayment = () => {
+    setIsCancelConfirmOpen(false);
+    setIsPaymentModalOpen(false);
+    toast.warning("Payment process cancelled. Your registration is incomplete.", {
+      title: "Payment Cancelled"
+    });
+  };
+
+  const handleContinuePayment = () => {
+    setIsCancelConfirmOpen(false);
+  };
 
   // Derived Values
   const selectedCategories = useMemo(() => {
@@ -126,21 +176,59 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
       setCopiedField(type);
+      toast.success(type === 'upi' ? 'UPI ID copied to clipboard' : 'Payment link copied to clipboard', { title: 'Copied' });
       setTimeout(() => setCopiedField(null), 2500);
     }
   };
 
-  const confirmPaymentCompletion = () => {
+  const confirmPaymentCompletion = async () => {
+    if (!paymentProofFile) {
+      toast.error("Please upload your payment screenshot before completing registration.", {
+        title: "Screenshot Required"
+      });
+      return;
+    }
+
+    if (!successData?.registration_number) {
+      toast.error("Registration information is missing. Please submit again.", {
+        title: "Registration Missing"
+      });
+      return;
+    }
+
     setVerifying(true);
-    setTimeout(() => {
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append('registration_number', successData.registration_number);
+      formDataUpload.append('screenshot', paymentProofFile);
+      if (transactionRef.trim()) {
+        formDataUpload.append('transaction_ref', transactionRef.trim());
+      }
+
+      const res = await fetch(`${API_BASE}/registrations/upload-proof.php`, {
+        method: 'POST',
+        body: formDataUpload
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.message || "Failed to upload payment screenshot.");
+      }
+
       setSuccessData((prev: any) => ({
         ...prev,
         status: 'paid',
-        razorpay_payment_id: transactionRef.trim() || 'UPI/LINK-VERIFIED'
+        razorpay_payment_id: transactionRef.trim() || 'UPI-PROOF-VERIFIED',
+        payment_proof: json.data?.payment_proof || paymentProofPreview
       }));
+
       setVerifying(false);
       setIsPaymentModalOpen(false);
-    }, 600);
+      toast.success("Payment screenshot uploaded! Registration confirmed.", { title: "Registration Confirmed" });
+    } catch (err: any) {
+      setVerifying(false);
+      toast.error(err.message || "Failed to upload screenshot. Please try again.", { title: "Upload Failed" });
+    }
   };
 
   // If there's no event selected in the URL, prompt them to go back.
@@ -177,11 +265,36 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
   const submitRegistration = async () => {
     setError('');
 
-    if (selectedCategoryIds.length === 0) return setError("Please select at least one category.");
-    if (!formData.athlete_name.trim()) return setError("Athlete name is required.");
-    if (!formData.phone.trim()) return setError("Phone number is required.");
-    if (!formData.email.trim()) return setError("Email address is required.");
-    if (!formData.date_of_birth) return setError("Date of birth is required.");
+    if (selectedCategoryIds.length === 0) {
+      const msg = "Please select at least one category.";
+      setError(msg);
+      toast.error(msg, { title: "Category Required" });
+      return;
+    }
+    if (!formData.athlete_name.trim()) {
+      const msg = "Athlete name is required.";
+      setError(msg);
+      toast.error(msg, { title: "Name Required" });
+      return;
+    }
+    if (!formData.phone.trim()) {
+      const msg = "Phone number is required.";
+      setError(msg);
+      toast.error(msg, { title: "Phone Required" });
+      return;
+    }
+    if (!formData.email.trim()) {
+      const msg = "Email address is required.";
+      setError(msg);
+      toast.error(msg, { title: "Email Required" });
+      return;
+    }
+    if (!formData.date_of_birth) {
+      const msg = "Date of birth is required.";
+      setError(msg);
+      toast.error(msg, { title: "Date of Birth Required" });
+      return;
+    }
 
     setLoading(true);
     try {
@@ -221,13 +334,16 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
 
       if (json.data.payment_method === 'cash' || paymentMethod === 'cash') {
         // Direct ticket
+        toast.success("Registration submitted! Payment due at desk.", { title: "Registration Reserved" });
       } else {
         // Open the Checkout Modal with QR Code and Link options
         setIsPaymentModalOpen(true);
       }
 
     } catch (err: any) {
-      setError(err.message);
+      const msg = err.message || "Failed to submit registration.";
+      setError(msg);
+      toast.error(msg, { title: "Submission Failed" });
       setLoading(false);
     }
   };
@@ -315,7 +431,9 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
 
       paymentObject.open();
     } catch (err: any) {
-      setError(err.message);
+      const msg = err.message || "Payment initiation failed.";
+      setError(msg);
+      toast.error(msg, { title: "Payment Error" });
       setPaymentFailed(true);
       setLoading(false);
     }
@@ -870,10 +988,12 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                     ₹{pricing.total || successData?.total_amount}
                   </span>
                 </div>
-                
+
                 <button
-                  onClick={() => setIsPaymentModalOpen(false)}
+                  type="button"
+                  onClick={handleRequestClosePaymentModal}
                   className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-colors shrink-0"
+                  aria-label="Close Payment Modal"
                 >
                   <X size={18} />
                 </button>
@@ -886,7 +1006,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
               {/* LEFT COLUMN: ADDED EVENTS & ORDER BREAKDOWN */}
               <div className="lg:col-span-5 flex flex-col justify-between space-y-5 bg-[#040A12]/70 p-5 sm:p-6 rounded-xl border border-white/5">
                 <div className="space-y-5">
-                  
+
                   {/* Total Payable Box at TOP of Left Column */}
                   <div className="bg-gradient-to-br from-[#1A263D] via-[#0F1829] to-[#040A12] p-4 sm:p-5 rounded-xl border border-[#C9A44A]/50 shadow-[0_8px_25px_rgba(0,0,0,0.5)] relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-[#C9A44A]/10 rounded-full blur-xl pointer-events-none"></div>
@@ -997,8 +1117,8 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                     <button
                       onClick={() => setPaymentTab('qr')}
                       className={`flex items-center justify-center gap-2 py-3 px-3 rounded-lg font-heading text-xs font-bold uppercase tracking-wider transition-all ${paymentTab === 'qr'
-                          ? 'bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] shadow-md'
-                          : 'text-white/70 hover:text-white hover:bg-white/5'
+                        ? 'bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] shadow-md'
+                        : 'text-white/70 hover:text-white hover:bg-white/5'
                         }`}
                     >
                       <QrCode size={16} />
@@ -1007,8 +1127,8 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                     <button
                       onClick={() => setPaymentTab('link')}
                       className={`flex items-center justify-center gap-2 py-3 px-3 rounded-lg font-heading text-xs font-bold uppercase tracking-wider transition-all ${paymentTab === 'link'
-                          ? 'bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] shadow-md'
-                          : 'text-white/70 hover:text-white hover:bg-white/5'
+                        ? 'bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] shadow-md'
+                        : 'text-white/70 hover:text-white hover:bg-white/5'
                         }`}
                     >
                       <Link2 size={16} />
@@ -1021,9 +1141,9 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                     <div className="space-y-4 animate-in fade-in duration-200">
                       {/* QR Display Card */}
                       <div className="bg-white rounded-xl p-4 text-center text-[#040A12] shadow-xl border border-black/10 flex flex-col items-center">
-                        <div className="w-56 h-auto p-1 bg-white rounded-lg">
+                        <div className="w-68 h-auto p-1 bg-white rounded-lg">
                           <img
-                            src="/assets/payment-qr.jpg"
+                            src="/assets/payment-qr.jpeg"
                             alt="WFF Tamil Nadu UPI QR Code"
                             className="w-full h-auto object-contain rounded-md"
                           />
@@ -1032,6 +1152,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                           Scan with GPay, PhonePe, Paytm, BHIM, or any UPI App
                         </p>
                       </div>
+
 
                       {/* UPI ID Copy Card */}
                       <div className="bg-white/5 p-4 rounded-xl border border-white/10 flex items-center justify-between gap-3">
@@ -1117,14 +1238,93 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                 </div>
 
                 {/* BOTTOM CONFIRMATION / VERIFICATION SECTION */}
-                <div className="pt-4 border-t border-white/10 space-y-3">
+                <div className="pt-5 border-t border-white/10 space-y-4">
+                  {/* UPLOAD PAYMENT SCREENSHOT */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#C9A44A] flex items-center gap-1.5">
+                        <Camera size={14} className="text-[#C9A44A]" />
+                        <span>Upload Payment Screenshot *</span>
+                      </label>
+                      <span className="text-[10px] text-white/40 font-medium">JPEG, PNG, WebP (Max 10MB)</span>
+                    </div>
+
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      accept="image/png, image/jpeg, image/jpg, image/webp"
+                      className="hidden"
+                      id="payment-screenshot-input"
+                    />
+
+                    {paymentProofPreview ? (
+                      <div className="bg-white/5 border border-emerald-500/40 rounded-xl p-3.5 flex items-center justify-between gap-3 animate-in fade-in duration-200">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-14 h-14 rounded-lg bg-black/50 overflow-hidden border border-emerald-500/30 shrink-0 relative flex items-center justify-center">
+                            <img
+                              src={paymentProofPreview}
+                              alt="Payment Screenshot Preview"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-bold truncate">
+                              <CheckCircle2 size={14} className="shrink-0" />
+                              <span className="truncate">{paymentProofFile?.name || 'Screenshot attached'}</span>
+                            </div>
+                            <span className="text-[10px] text-white/50 block mt-0.5">
+                              {paymentProofFile ? `${(paymentProofFile.size / 1024).toFixed(1)} KB &bull; Click complete below` : 'Ready to submit'}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="text-xs text-white/80 hover:text-white px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors font-medium border border-white/10 cursor-pointer"
+                          >
+                            Change
+                          </button>
+                          <button
+                            type="button"
+                            onClick={handleRemoveProof}
+                            className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
+                            title="Remove Screenshot"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div
+                        onClick={() => fileInputRef.current?.click()}
+                        className="border-2 border-dashed border-white/20 hover:border-[#C9A44A]/70 bg-white/5 hover:bg-white/10 rounded-xl p-4 text-center cursor-pointer transition-all duration-200 group flex flex-col items-center justify-center gap-2"
+                      >
+                        <div className="w-11 h-11 rounded-full bg-[#C9A44A]/10 border border-[#C9A44A]/30 flex items-center justify-center text-[#C9A44A] group-hover:scale-110 group-hover:bg-[#C9A44A]/20 transition-all">
+                          <Upload size={20} />
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-white group-hover:text-[#C9A44A] transition-colors">
+                            Click here to upload your payment screenshot
+                          </div>
+                          <p className="text-[10px] text-white/40 mt-1 max-w-xs mx-auto leading-relaxed">
+                            Take a screenshot from GPay / PhonePe / Paytm showing the successful payment to WFF Tamil Nadu
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* TRANSACTION / UTR REFERENCE */}
                   <div>
                     <label className="block text-[10px] font-bold uppercase tracking-[0.15em] text-white/50 mb-1.5">
                       Transaction / UTR Reference (Optional)
                     </label>
                     <Input
                       type="text"
-                      placeholder="e.g. UPI Ref / Razorpay Payment ID"
+                      placeholder="e.g. 12-digit UTR No / UPI Ref / Order ID"
                       value={transactionRef}
                       onChange={(e) => setTransactionRef(e.target.value)}
                       className="bg-white/5 border-white/10 text-white text-xs h-10 rounded-lg placeholder:text-white/30 focus:border-[#C9A44A]"
@@ -1133,28 +1333,86 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
 
                   <div className="flex flex-col sm:flex-row gap-3 pt-1">
                     <Button
-                      onClick={() => setIsPaymentModalOpen(false)}
-                      className="flex-1 bg-white/5 hover:bg-white/10 text-white border border-white/10 font-heading text-xs font-bold uppercase tracking-wider h-12 rounded-lg"
+                      type="button"
+                      onClick={handleRequestClosePaymentModal}
+                      className="flex-1 bg-white/5 hover:bg-white/10 text-white border border-white/10 font-heading text-xs font-bold uppercase tracking-wider h-12 rounded-lg cursor-pointer"
                     >
                       Back to Form
                     </Button>
                     <Button
+                      type="button"
                       onClick={confirmPaymentCompletion}
                       disabled={verifying}
-                      className="flex-1 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-xs uppercase tracking-[0.15em] h-12 rounded-lg shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5"
+                      className="flex-1 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-xs uppercase tracking-[0.15em] h-12 rounded-lg shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5 cursor-pointer disabled:opacity-60"
                     >
-                      {verifying ? 'Confirming...' : 'I Have Completed Payment →'}
+                      {verifying ? 'Uploading Proof & Verifying...' : 'Complete Registration & View Ticket →'}
                     </Button>
                   </div>
 
                   <p className="text-[10px] text-white/40 text-center">
-                    Once you pay via QR or Link, click &quot;I Have Completed Payment&quot; to view and download your official confirmed entry ticket.
+                    Upload your payment screenshot to verify and immediately receive your official digital entry pass.
                   </p>
                 </div>
               </div>
 
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* CANCEL PAYMENT CONFIRMATION POPUP MODAL */}
+      {/* ------------------------------------------------------------- */}
+      {isCancelConfirmOpen && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative w-full max-w-md bg-[#0C1422] text-white rounded-2xl shadow-[0_25px_70px_rgba(0,0,0,0.9)] border border-red-500/30 overflow-hidden animate-in zoom-in-95 duration-200 p-6 sm:p-7 text-center">
+            {/* Red Accent Top */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-red-600 via-amber-500 to-red-600"></div>
+
+            <div className="w-16 h-16 mx-auto rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400 mb-5 shadow-inner">
+              <AlertTriangle size={32} className="animate-pulse" />
+            </div>
+
+            <h3 className="font-heading font-extrabold text-xl sm:text-2xl uppercase tracking-wider text-white mb-2">
+              Cancel Payment Process?
+            </h3>
+
+            <p className="text-sm text-white/70 leading-relaxed mb-6">
+              Do you really want to cancel the payment process? If you cancel now, your registration will not be completed and <strong className="text-red-400 font-semibold">you cannot join or participate in this event</strong>.
+            </p>
+
+            <div className="bg-white/5 border border-white/10 rounded-xl p-3.5 mb-6 text-left space-y-1.5 text-xs">
+              <div className="flex justify-between items-center">
+                <span className="text-white/40 uppercase tracking-wider text-[10px] font-bold">Event:</span>
+                <span className="text-white font-bold truncate max-w-[220px]">{selectedEvent?.event_name}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-white/40 uppercase tracking-wider text-[10px] font-bold">Athlete:</span>
+                <span className="text-white font-bold">{formData.athlete_name || 'Athlete'}</span>
+              </div>
+              <div className="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1.5">
+                <span className="text-white/40 uppercase tracking-wider text-[10px] font-bold">Total Payable:</span>
+                <span className="text-[#C9A44A] font-bold text-sm">₹{pricing.total || successData?.total_amount}</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col-reverse sm:flex-row gap-3">
+              <Button
+                type="button"
+                onClick={handleConfirmCancelPayment}
+                className="flex-1 bg-transparent hover:bg-red-500/10 text-red-400 hover:text-red-300 border border-red-500/30 font-heading text-xs font-bold uppercase tracking-wider h-12 rounded-lg transition-colors cursor-pointer"
+              >
+                Yes, Cancel &amp; Exit
+              </Button>
+              <Button
+                type="button"
+                onClick={handleContinuePayment}
+                className="flex-1 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-xs uppercase tracking-[0.15em] h-12 rounded-lg shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5 cursor-pointer"
+              >
+                Continue Payment
+              </Button>
+            </div>
           </div>
         </div>
       )}

@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import AdminShell from '@/components/admin/AdminShell';
 import { Button } from '@/components/ui/Button';
-import { ArrowLeft, Loader2, AlertCircle, Check, X, ShieldAlert } from 'lucide-react';
+import { ArrowLeft, Loader2, AlertCircle, Check, X, ShieldAlert, ExternalLink, Eye, ImageIcon } from 'lucide-react';
+import { resolveImageUrl } from '@/lib/api';
 
 export default function AdminRegistrationDetail({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -180,6 +181,101 @@ export default function AdminRegistrationDetail({ params }: { params: Promise<{ 
                   )}
                 </div>
               </div>
+            </section>
+
+            {/* PAYMENT PROOF / SCREENSHOT */}
+            <section className="bg-[var(--surface)] border border-[var(--border-color)] p-6 md:p-8">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6 border-b border-[var(--border-color)] pb-4">
+                <div>
+                  <h2 className="font-display text-lg uppercase tracking-widest text-[var(--text-primary)]">
+                    Payment Proof &amp; Receipt
+                  </h2>
+                  <p className="text-xs text-[var(--muted)] mt-0.5">Screenshot uploaded by athlete during registration checkout</p>
+                </div>
+                {data.registration.payment_proof ? (
+                  <span className="px-2.5 py-1 bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 text-[10px] font-bold uppercase tracking-wider rounded-sm flex items-center gap-1.5 w-fit">
+                    <Check size={12} /> Proof Attached
+                  </span>
+                ) : (
+                  <span className="px-2.5 py-1 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border border-yellow-500/20 text-[10px] font-bold uppercase tracking-wider rounded-sm w-fit">
+                    No Screenshot Uploaded
+                  </span>
+                )}
+              </div>
+
+              {data.registration.payment_proof ? (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 items-start">
+                    {/* Screenshot Preview */}
+                    <div className="sm:col-span-1">
+                      <div className="relative group rounded-lg overflow-hidden border border-[var(--border-color)] bg-black/5 dark:bg-black/30 aspect-[3/4] max-w-[240px] flex items-center justify-center">
+                        <img
+                          src={resolveImageUrl(data.registration.payment_proof) || data.registration.payment_proof}
+                          alt="Payment Screenshot"
+                          className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <a
+                          href={resolveImageUrl(data.registration.payment_proof) || data.registration.payment_proof}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center gap-1.5 text-white text-xs font-bold transition-opacity"
+                        >
+                          <Eye size={20} />
+                          <span>View Full Image</span>
+                        </a>
+                      </div>
+                    </div>
+
+                    {/* Screenshot Info */}
+                    <div className="sm:col-span-2 space-y-4 bg-black/5 dark:bg-white/5 p-5 rounded-lg border border-[var(--border-color)] text-sm">
+                      <div>
+                        <span className="text-[10px] uppercase tracking-widest text-[var(--muted)] block mb-1">
+                          Transaction / UTR Reference
+                        </span>
+                        <span className="font-mono font-bold text-base text-[var(--text-primary)]">
+                          {data.registration.transaction_ref || 'Not Provided (Check Screenshot)'}
+                        </span>
+                      </div>
+
+                      {data.registration.proof_uploaded_at && (
+                        <div>
+                          <span className="text-[10px] uppercase tracking-widest text-[var(--muted)] block mb-1">
+                            Uploaded On
+                          </span>
+                          <span className="font-medium text-[var(--text-primary)] text-xs">
+                            {new Date(data.registration.proof_uploaded_at).toLocaleString()}
+                          </span>
+                        </div>
+                      )}
+
+                      <div>
+                        <span className="text-[10px] uppercase tracking-widest text-[var(--muted)] block mb-1">
+                          Calculated Payable Amount
+                        </span>
+                        <span className="font-heading font-bold text-xl text-[var(--gold)]">
+                          ₹{data.registration.total_amount || data.registration.entry_fee}
+                        </span>
+                      </div>
+
+                      <div className="pt-2">
+                        <a
+                          href={resolveImageUrl(data.registration.payment_proof) || data.registration.payment_proof}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--gold)] hover:underline"
+                        >
+                          <ExternalLink size={14} /> Open Full Size in New Tab
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-8 text-center bg-black/5 dark:bg-white/5 rounded-lg border border-dashed border-[var(--border-color)]">
+                  <ImageIcon className="w-10 h-10 text-[var(--muted)] mx-auto mb-2 opacity-50" />
+                  <p className="text-sm font-medium text-[var(--muted)]">No payment screenshot attached for this athlete.</p>
+                </div>
+              )}
             </section>
 
             {/* PAYMENTS */}

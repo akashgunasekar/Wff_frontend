@@ -6,6 +6,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FooterWrapper } from "@/components/layout/FooterWrapper";
 import { AnnouncementWrapper } from "@/components/layout/AnnouncementWrapper";
+import { Toaster } from "@/components/ui/Toast";
 
 export const metadata: Metadata = {
   title: "WFF Tamil Nadu | Bodybuilding & Fitness Federation",
@@ -41,6 +42,7 @@ export default function RootLayout({
           <FooterWrapper>
             <Footer />
           </FooterWrapper>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

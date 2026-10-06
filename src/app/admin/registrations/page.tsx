@@ -6,7 +6,7 @@ import AdminShell from '@/components/admin/AdminShell';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
-import { Search, Loader2, FileText, ChevronLeft, ChevronRight, Trash, Download } from 'lucide-react';
+import { Search, Loader2, FileText, ChevronLeft, ChevronRight, Trash, Download, Camera } from 'lucide-react';
 
 interface RegistrationList {
   id: number;
@@ -20,6 +20,8 @@ interface RegistrationList {
   event_name: string;
   category_name: string;
   created_at: string;
+  payment_proof?: string | null;
+  transaction_ref?: string | null;
 }
 
 export default function AdminRegistrationsPage() {
@@ -308,9 +310,17 @@ export default function AdminRegistrationsPage() {
                         </span>
                       </td>
                       <td className="p-4">
-                        <span className={`inline-block px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-sm ${reg.payment_status ? (paymentColors[reg.payment_status] || 'bg-gray-100 text-gray-800') : 'bg-gray-100/50 text-gray-500'}`}>
-                          {reg.payment_status ? reg.payment_status : 'N/A'}
-                        </span>
+                        <div className="space-y-1">
+                          <span className={`inline-block px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-sm ${reg.payment_status ? (paymentColors[reg.payment_status] || 'bg-gray-100 text-gray-800') : 'bg-gray-100/50 text-gray-500'}`}>
+                            {reg.payment_status ? reg.payment_status : 'N/A'}
+                          </span>
+                          {reg.payment_proof && (
+                            <div className="flex items-center gap-1 text-[10px] text-green-600 dark:text-green-400 font-bold uppercase tracking-wider">
+                              <Camera size={11} className="shrink-0" />
+                              <span>Proof Attached</span>
+                            </div>
+                          )}
+                        </div>
                       </td>
                       <td className="p-4 text-right">
                         <div className="flex justify-end gap-2">
@@ -379,13 +389,18 @@ export default function AdminRegistrationsPage() {
                     <div className="text-xs text-[var(--muted)]">{reg.category_name}</div>
                   </div>
                   
-                  <div className="flex gap-2 mt-2">
+                  <div className="flex flex-wrap items-center gap-2 mt-2">
                     <span className={`inline-block px-2 py-1 text-[9px] font-bold uppercase tracking-wider rounded-sm ${statusColors[reg.registration_status] || 'bg-gray-100 text-gray-800'}`}>
                       {reg.registration_status.replace('_', ' ')}
                     </span>
                     <span className={`inline-block px-2 py-1 text-[9px] font-bold uppercase tracking-wider rounded-sm ${reg.payment_status ? (paymentColors[reg.payment_status] || 'bg-gray-100 text-gray-800') : 'bg-gray-100/50 text-gray-500'}`}>
                       {reg.payment_status ? reg.payment_status : 'N/A'}
                     </span>
+                    {reg.payment_proof && (
+                      <span className="inline-flex items-center gap-1 px-2 py-1 text-[9px] font-bold uppercase tracking-wider rounded-sm bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20">
+                        <Camera size={10} /> Proof Attached
+                      </span>
+                    )}
                   </div>
                 </div>
               ))}
