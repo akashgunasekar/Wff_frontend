@@ -521,8 +521,13 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
           pixelRatio: 2,
           skipFonts: true,
           backgroundColor: '#050A12',
+          style: {
+            width: '600px',
+            maxWidth: '600px',
+            minWidth: '600px',
+            margin: '0 auto',
+          },
           filter: (domNode: HTMLElement) => {
-            // Exclude script or iframe tags if any
             return domNode.tagName !== 'SCRIPT' && domNode.tagName !== 'IFRAME';
           }
         });
@@ -662,12 +667,12 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
               </div>
 
               <div className="flex items-center justify-between gap-4 relative z-10">
-                <div>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-[#C9A44A]/20 border border-[#C9A44A]/40 text-[#FCF6BA] text-[9px] sm:text-[10px] font-black uppercase tracking-[0.25em] mb-1.5">
-                    <Trophy size={11} className="text-[#FCF6BA]" />
+                <div className="min-w-0 flex-1">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-[#C9A44A]/20 border border-[#C9A44A]/40 text-[#FCF6BA] text-[9px] sm:text-[10px] font-black uppercase tracking-[0.25em] mb-1.5 whitespace-nowrap">
+                    <Trophy size={11} className="text-[#FCF6BA] shrink-0" />
                     <span>Official Athlete Pass</span>
                   </div>
-                  <h3 className="font-heading text-2xl sm:text-3xl uppercase font-black tracking-wider leading-tight bg-gradient-to-r from-[#FFF3D6] via-[#FCF6BA] to-[#C9A44A] bg-clip-text text-transparent">
+                  <h3 className="font-heading text-2xl sm:text-3xl uppercase font-black tracking-wider leading-tight bg-gradient-to-r from-[#FFF3D6] via-[#FCF6BA] to-[#C9A44A] bg-clip-text text-transparent break-words">
                     {decodeHtml(successData.event_name)}
                   </h3>
                   <div className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-white/50 font-semibold mt-0.5">
@@ -687,14 +692,14 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
 
             {/* ATHLETE CREDENTIAL RIBBON */}
             <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-[#14233D] via-[#0E1A2E] to-[#14233D] border-b border-[#C9A44A]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <div className="text-[9px] uppercase tracking-[0.25em] text-[#C9A44A] font-extrabold mb-1">
+              <div className="min-w-0">
+                <div className="text-[9px] uppercase tracking-[0.25em] text-[#C9A44A] font-extrabold mb-1 whitespace-nowrap">
                   Registered Competitor
                 </div>
-                <div className="font-heading text-xl sm:text-2xl uppercase font-black text-white tracking-wide">
+                <div className="font-heading text-xl sm:text-2xl uppercase font-black text-white tracking-wide break-words">
                   {athleteName}
                 </div>
-                <div className="text-[11px] text-white/60 font-medium mt-0.5">
+                <div className="text-[11px] text-white/60 font-medium mt-0.5 whitespace-nowrap">
                   Category Entries: <span className="text-[#FCF6BA] font-bold">{successData.categories?.length || 1} Divisions</span>
                 </div>
               </div>
@@ -702,12 +707,13 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
               {/* Reg ID Box */}
               <div className="bg-[#050B14] px-4 py-2.5 rounded-xl border border-[#C9A44A]/40 flex items-center justify-between sm:justify-center gap-3 shrink-0">
                 <div>
-                  <div className="text-[8px] uppercase tracking-[0.25em] text-[#C9A44A] font-bold">Pass ID / Reg No</div>
-                  <div className="font-heading font-mono font-bold text-sm sm:text-base text-[#FCF6BA] tracking-wider">
+                  <div className="text-[8px] uppercase tracking-[0.25em] text-[#C9A44A] font-bold whitespace-nowrap">Pass ID / Reg No</div>
+                  <div className="font-heading font-mono font-bold text-sm sm:text-base text-[#FCF6BA] tracking-wider whitespace-nowrap">
                     {successData.registration_number}
                   </div>
                 </div>
                 <button
+                  type="button"
                   onClick={() => {
                     if (typeof navigator !== 'undefined') {
                       navigator.clipboard.writeText(successData.registration_number);
@@ -724,25 +730,25 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
 
             {/* EVENT SCHEDULE & VENUE TILES */}
             <div className="px-6 sm:px-8 py-4 grid grid-cols-1 sm:grid-cols-2 gap-3 border-b border-white/10 bg-black/20">
-              <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/5">
                 <div className="w-8 h-8 rounded-lg bg-[#C9A44A]/15 border border-[#C9A44A]/30 flex items-center justify-center text-[#FCF6BA] shrink-0">
                   <Calendar size={15} />
                 </div>
                 <div>
-                  <div className="text-[8.5px] uppercase tracking-[0.2em] text-white/40 font-bold">Date &amp; Schedule</div>
+                  <div className="text-[8.5px] uppercase tracking-[0.2em] text-white/40 font-bold whitespace-nowrap">Date &amp; Schedule</div>
                   <div className="font-heading font-bold text-xs sm:text-sm text-white uppercase tracking-wide">
                     {successData.event_date}
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/5 min-w-0">
                 <div className="w-8 h-8 rounded-lg bg-[#C9A44A]/15 border border-[#C9A44A]/30 flex items-center justify-center text-[#FCF6BA] shrink-0">
                   <MapPin size={15} />
                 </div>
-                <div className="min-w-0">
-                  <div className="text-[8.5px] uppercase tracking-[0.2em] text-white/40 font-bold">Official Venue</div>
-                  <div className="font-heading font-bold text-xs sm:text-sm text-white uppercase tracking-wide truncate">
+                <div className="min-w-0 flex-1">
+                  <div className="text-[8.5px] uppercase tracking-[0.2em] text-white/40 font-bold whitespace-nowrap">Official Venue</div>
+                  <div className="font-heading font-bold text-xs sm:text-sm text-white uppercase tracking-wide break-words leading-snug">
                     {decodeHtml(successData.venue)}
                   </div>
                 </div>
@@ -752,11 +758,11 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
             {/* CONFIRMED DIVISIONS & CATEGORIES LIST */}
             <div className="px-6 sm:px-8 py-5">
               <div className="flex items-center justify-between gap-2 mb-3">
-                <div className="text-[10px] uppercase tracking-[0.25em] text-[#C9A44A] font-extrabold flex items-center gap-1.5">
-                  <Trophy size={13} className="text-[#C9A44A]" />
+                <div className="text-[10px] uppercase tracking-[0.25em] text-[#C9A44A] font-extrabold flex items-center gap-1.5 whitespace-nowrap">
+                  <Trophy size={13} className="text-[#C9A44A] shrink-0" />
                   <span>Enrolled Championship Categories</span>
                 </div>
-                <span className="text-[9px] font-black text-emerald-400 bg-emerald-950/60 border border-emerald-500/40 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                <span className="text-[9px] font-black text-emerald-400 bg-emerald-950/60 border border-emerald-500/40 px-2.5 py-0.5 rounded-full uppercase tracking-wider whitespace-nowrap">
                   Verified
                 </span>
               </div>
@@ -767,24 +773,24 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                     key={idx}
                     className="flex items-center justify-between gap-3 p-3 rounded-xl bg-gradient-to-r from-white/[0.06] to-white/[0.02] border border-white/10 hover:border-[#C9A44A]/40 transition-colors"
                   >
-                    <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
                       <span className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#BF953F] to-[#8A6318] text-[#040A12] text-xs font-black flex items-center justify-center shrink-0 shadow-sm">
                         {idx + 1}
                       </span>
-                      <span className="font-heading font-extrabold text-xs sm:text-sm uppercase text-white tracking-wider truncate">
+                      <span className="font-heading font-extrabold text-xs sm:text-sm uppercase text-white tracking-wider break-words leading-snug">
                         {decodeHtml(catName)}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-emerald-400 shrink-0 text-[10px] font-bold uppercase tracking-wider">
-                      <CheckCircle2 size={14} />
-                      <span className="hidden sm:inline">Active</span>
+                    <div className="flex items-center gap-1.5 text-emerald-400 shrink-0 text-[10px] font-bold uppercase tracking-wider whitespace-nowrap">
+                      <CheckCircle2 size={14} className="shrink-0" />
+                      <span>Active</span>
                     </div>
                   </div>
                 ))}
 
                 {(successData.tan_spray_requested || tanSprayRequested) && (
                   <div className="p-3 rounded-xl bg-gradient-to-r from-[#C9A44A]/20 to-[#C9A44A]/5 border border-[#C9A44A]/40 flex items-center gap-2.5 text-xs font-bold text-[#FCF6BA] uppercase tracking-wider">
-                    <span className="w-2 h-2 rounded-full bg-[#FCF6BA] animate-pulse"></span>
+                    <span className="w-2 h-2 rounded-full bg-[#FCF6BA] animate-pulse shrink-0"></span>
                     <span>Official Pro Stage Tan Spray Included</span>
                   </div>
                 )}
@@ -801,15 +807,16 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
               <div className="flex flex-col sm:flex-row items-center justify-between gap-5 bg-gradient-to-br from-white/[0.04] to-transparent p-4 sm:p-5 rounded-2xl border border-white/10">
 
                 {/* QR Code Container */}
-                <div className="flex flex-col items-center text-center">
+                <div className="flex flex-col items-center text-center shrink-0">
                   <div className="w-28 h-28 sm:w-32 sm:h-32 bg-white p-2 rounded-xl border-2 border-[#C9A44A] shadow-[0_0_20px_rgba(201,164,74,0.25)] flex items-center justify-center mb-1.5">
                     <img
                       src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(successData.registration_number)}`}
                       alt="Athlete Verification QR Code"
                       className="w-full h-full object-contain"
+                      crossOrigin="anonymous"
                     />
                   </div>
-                  <span className="text-[8px] uppercase tracking-[0.25em] text-[#FCF6BA] font-extrabold">
+                  <span className="text-[8px] uppercase tracking-[0.25em] text-[#FCF6BA] font-extrabold whitespace-nowrap">
                     Scan for Stage Access
                   </span>
                 </div>
@@ -817,21 +824,21 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                 {/* Status & Payment Info */}
                 <div className="flex-1 flex flex-col justify-between sm:items-end gap-2 text-center sm:text-right w-full sm:w-auto">
                   <div>
-                    <div className="text-[9px] uppercase tracking-[0.2em] text-white/40 font-bold mb-0.5">Total Registration Fee</div>
-                    <div className="font-heading text-3xl sm:text-4xl font-black text-white bg-gradient-to-r from-white via-[#FCF6BA] to-[#C9A44A] bg-clip-text text-transparent">
+                    <div className="text-[9px] uppercase tracking-[0.2em] text-white/40 font-bold mb-0.5 whitespace-nowrap">Total Registration Fee</div>
+                    <div className="font-heading text-3xl sm:text-4xl font-black text-white bg-gradient-to-r from-white via-[#FCF6BA] to-[#C9A44A] bg-clip-text text-transparent leading-none">
                       ₹{successData.total_amount}
                     </div>
                   </div>
 
                   <div>
-                    <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-[0.2em] border shadow-sm ${isCash && !isCashPaid ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'}`}>
+                    <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-[0.2em] border shadow-sm whitespace-nowrap ${isCash && !isCashPaid ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'}`}>
                       <CheckCircle2 size={13} className="shrink-0" />
                       <span>{isCash && !isCashPaid ? 'PAY AT DESK' : 'PAID & VERIFIED'}</span>
                     </div>
                   </div>
 
-                  <div className="text-[9px] uppercase font-mono text-white/40">
-                    Ref: {isCash && !isCashPaid ? 'CASH-VENUE' : successData.razorpay_payment_id || 'ONLINE-CONFIRMED'}
+                  <div className="text-[9px] uppercase font-mono text-white/40 break-all sm:break-normal">
+                    Ref: {isCash && !isCashPaid ? 'CASH-VENUE' : successData.razorpay_payment_id || 'UPI-PROOF-VERIFIED'}
                   </div>
                 </div>
 
