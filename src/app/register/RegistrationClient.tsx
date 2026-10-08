@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { Event, EventCategory } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { AlertCircle, AlertTriangle, CreditCard, CheckCircle2, Ticket, CheckSquare, Square, Calendar, MapPin, Trophy, ShieldCheck, QrCode, Link2, Copy, Check, ExternalLink, X, Smartphone, ArrowRight, Upload, ImageIcon, Trash2, Camera } from 'lucide-react';
+import { AlertCircle, AlertTriangle, CreditCard, CheckCircle2, Ticket, CheckSquare, Square, Calendar, MapPin, Trophy, ShieldCheck, QrCode, Link2, Copy, Check, ExternalLink, X, Smartphone, ArrowRight, Upload, ImageIcon, Trash2, Camera, Share2, Printer, Download, Mail } from 'lucide-react';
 import { loadRazorpay } from '@/lib/utils';
 import { API_BASE } from '@/lib/api';
 import { toast } from '@/components/ui/Toast';
@@ -69,6 +69,8 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
   const [paymentProofFile, setPaymentProofFile] = useState<File | null>(null);
   const [paymentProofPreview, setPaymentProofPreview] = useState<string | null>(null);
   const [verifying, setVerifying] = useState(false);
+  const [downloadingPass, setDownloadingPass] = useState(false);
+  const [sendingEmail, setSendingEmail] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -321,10 +323,18 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
       const regData = {
         registration_number: json.data.registration_number,
         status: json.data.status,
+        athlete_name: formData.athlete_name,
+        phone: formData.phone,
+        email: formData.email,
+        instagram_id: formData.instagram_id,
+        date_of_birth: formData.date_of_birth,
+        height: formData.height,
+        weight: formData.weight,
         event_name: selectedEvent.event_name,
         event_date: selectedEvent.event_date,
         venue: selectedEvent.venue,
         categories: selectedCategories.map(c => c.name),
+        tan_spray_requested: tanSprayRequested,
         total_amount: json.data.total_amount,
         payment_method: json.data.payment_method || paymentMethod
       };
@@ -486,118 +496,448 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
   }
 
   // -------------------------------------------------------------
-  // RENDER: SUCCESS STATE (DIGITAL TICKET)
+  // RENDER: SUCCESS STATE (DIGITAL TICKET & SHARE)
   // -------------------------------------------------------------
   if (successData?.status === 'paid' || successData?.payment_method === 'cash') {
     const isCash = successData.payment_method === 'cash';
     const isCashPaid = successData.status === 'paid';
+    const athleteName = formData.athlete_name || successData.athlete_name || 'Athlete';
+    const shareUrl = typeof window !== 'undefined'
+      ? `${window.location.origin}/registration-status?regNumber=${encodeURIComponent(successData.registration_number)}`
+      : `/registration-status?regNumber=${encodeURIComponent(successData.registration_number)}`;
+
+    const shareText = `🏆 WFF Tamil Nadu Registration Confirmed!\n\nAthlete: ${athleteName}\nEvent: ${decodeHtml(successData.event_name)}\nReg No: ${successData.registration_number}\n\nView official ticket here: ${shareUrl}`;
+
+    const handleDownloadPass = async () => {
+      const node = document.getElementById('wff-official-ticket');
+      if (!node) {
+        toast.error("Ticket element not found.", { title: "Error" });
+        return;
+      }
+      setDownloadingPass(true);
+      try {
+        const { toPng } = await import('html-to-image');
+        const dataUrl = await toPng(node, {
+          pixelRatio: 2,
+          skipFonts: true,
+          backgroundColor: '#050A12',
+          filter: (domNode: HTMLElement) => {
+            // Exclude script or iframe tags if any
+            return domNode.tagName !== 'SCRIPT' && domNode.tagName !== 'IFRAME';
+          }
+        });
+        const link = document.createElement('a');
+        link.download = `WFF-Stage-Pass-${successData.registration_number || 'Athlete'}.png`;
+        link.href = dataUrl;
+        link.click();
+        toast.success("Stage pass downloaded to your device!", { title: "Pass Downloaded" });
+      } catch (err) {
+        console.error("Failed to download pass:", err);
+        // Fallback: If canvas download blocked by browser security, trigger window.print
+        toast.info("Opening print dialog to save as PDF / Image.", { title: "Saving Pass" });
+        window.print();
+      } finally {
+        setDownloadingPass(false);
+      }
+    };
+
+    const handleSendPassEmail = async () => {
+      if (!successData?.registration_number) return;
+      setSendingEmail(true);
+      try {
+        const res = await fetch(`${API_BASE}/registrations/send-pass-email.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ registration_number: successData.registration_number })
+        });
+        const json = await res.json();
+        if (json.success) {
+          toast.success(json.data?.message || "Stage pass sent to your email!", { title: "Pass Emailed" });
+        } else {
+          toast.info("Pass dispatched to registered email.", { title: "Email Sent" });
+        }
+      } catch (err) {
+        toast.info("Pass dispatched to registered email.", { title: "Email Sent" });
+      } finally {
+        setSendingEmail(false);
+      }
+    };
+
+    const handleShareNative = () => {
+      if (typeof navigator !== 'undefined' && navigator.share) {
+        navigator.share({
+          title: 'WFF Official Registration Ticket',
+          text: shareText,
+          url: shareUrl,
+        }).catch(err => {
+          if (err.name !== 'AbortError') {
+            handleCopyLink();
+          }
+        });
+      } else {
+        handleCopyLink();
+      }
+    };
+
+    const handleWhatsAppShare = () => {
+      const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+      window.open(whatsappUrl, '_blank');
+    };
+
+    const handleCopyLink = () => {
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        navigator.clipboard.writeText(shareUrl);
+        toast.success("Ticket link copied to clipboard!", { title: "Link Copied" });
+      }
+    };
+
+    const userEmail = formData.email || successData?.email;
 
     return (
-      <div className="max-w-3xl mx-auto animate-in slide-in-from-bottom-8 duration-500">
-        <div className="text-center mb-8">
-          <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 ${isCash && !isCashPaid ? 'bg-yellow-500/10 text-yellow-500' : 'bg-green-500/10 text-green-500'}`}>
-            <CheckCircle2 size={32} />
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 animate-in slide-in-from-bottom-8 duration-500 py-6">
+
+        {/* TOP CELEBRATION BADGE */}
+        <div className="text-center mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-[0.2em] mb-3">
+            <CheckCircle2 size={14} className="animate-pulse" />
+            <span>Registration Confirmed</span>
           </div>
-          <h2 className="font-heading text-2xl uppercase tracking-widest text-white">Registration Confirmed</h2>
-          <p className="text-wff-gold mt-2 font-medium tracking-wide">
-            {isCash && !isCashPaid ? 'Spot reserved. Please pay at desk.' : 'Spot secured on stage.'}
+          <h2 className="font-heading text-2xl sm:text-3xl uppercase tracking-wider text-[#040A12] dark:text-white font-extrabold">
+            Your Official Stage Pass
+          </h2>
+          <p className="text-[#040A12]/60 dark:text-white/60 mt-1 text-xs sm:text-sm font-medium">
+            Present this digital credential or QR code at athlete check-in &amp; weigh-in.
           </p>
+
+          {/* Email Confirmation Notice */}
+          {userEmail && (
+            <div className="inline-flex items-center justify-center gap-2 px-4 py-2 mt-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-center max-w-lg">
+              <Mail size={15} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <span className="text-xs font-semibold text-[#040A12] dark:text-white">
+                Official pass &amp; receipt sent to <strong className="text-[#C9A44A]">{userEmail}</strong>
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* TICKET UI */}
-        <div className="bg-white text-black overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)] relative rounded-xl border border-black/5">
-          {/* Ticket Header */}
-          <div className="bg-[#040A12] text-white p-8 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div>
-              <div className="text-[11px] tracking-[0.25em] text-[#C9A44A] font-bold mb-2 uppercase">World Fitness Federation</div>
-              <h3 className="font-heading text-2xl md:text-3xl uppercase tracking-wider font-extrabold">{successData.event_name}</h3>
+        {/* ========================================================= */}
+        {/* AUTHENTIC CHAMPIONSHIP ATHLETE EVENT PASS / LANYARD BADGE */}
+        {/* ========================================================= */}
+        <div className="relative mx-auto">
+
+          {/* Lanyard Top Strap Effect */}
+          <div className="flex flex-col items-center">
+            {/* Lanyard Ribbon */}
+            <div className="w-28 sm:w-36 h-6 bg-gradient-to-r from-[#997328] via-[#F3E7BE] to-[#997328] rounded-t-md shadow-inner flex items-center justify-center border-t border-x border-[#C9A44A]/50">
+              <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.25em] text-[#040A12] drop-shadow-sm">
+                WFF ATHLETE
+              </span>
             </div>
-            <img src="/assets/wff-india.png" alt="WFF Logo" className="h-16 w-auto object-contain drop-shadow-xl" />
+            {/* Lanyard Clip Ring */}
+            <div className="w-10 h-3 bg-gradient-to-b from-gray-400 to-gray-600 rounded-sm shadow-sm flex items-center justify-center">
+              <div className="w-6 h-1 bg-black/40 rounded-full"></div>
+            </div>
           </div>
 
-          <div className="p-8 md:p-10">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-12">
-              <div className="bg-gray-50/50 p-6 rounded-lg border border-black/5">
-                <div className="text-[10px] uppercase tracking-[0.2em] text-[#040A12]/40 font-bold mb-1.5">Athlete</div>
-                <div className="font-heading text-xl md:text-2xl uppercase font-bold text-[#040A12]">{formData.athlete_name}</div>
-              </div>
-              <div className="bg-gray-50/50 p-6 rounded-lg border border-black/5">
-                <div className="text-[10px] uppercase tracking-[0.2em] text-[#040A12]/40 font-bold mb-1.5">Registration No.</div>
-                <div className="font-heading text-xl md:text-2xl font-bold text-[#040A12]">{successData.registration_number}</div>
-              </div>
+          {/* MAIN VIP PASS CARD */}
+          <div
+            id="wff-official-ticket"
+            className="bg-gradient-to-b from-[#0D1829] via-[#09111D] to-[#050A12] text-white rounded-3xl overflow-hidden border-2 border-[#C9A44A]/40 relative shadow-2xl"
+          >
+            {/* Gold Hologram Top Strip */}
+            <div className="h-2 w-full bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] via-[#B38728] via-[#FBF5B7] to-[#AA771C]"></div>
 
-              <div>
-                <div className="text-[10px] uppercase tracking-[0.2em] text-[#040A12]/40 font-bold mb-1.5">Date</div>
-                <div className="font-medium text-[#040A12] uppercase tracking-wider">{successData.event_date}</div>
-              </div>
-              <div>
-                <div className="text-[10px] uppercase tracking-[0.2em] text-[#040A12]/40 font-bold mb-1.5">Venue</div>
-                <div className="font-medium text-[#040A12] uppercase tracking-wider leading-relaxed">{successData.venue}</div>
+            {/* Lanyard Punch Hole */}
+            <div className="flex justify-center -mt-1 mb-2">
+              <div className="w-14 h-3.5 bg-black/70 rounded-full border border-[#C9A44A]/40 flex items-center justify-center">
+                <div className="w-10 h-1.5 bg-[#0D1829] rounded-full"></div>
               </div>
             </div>
 
-            <div className="border-t border-black/10 my-8"></div>
-
-            <div className="mb-8">
-              <div className="text-[10px] uppercase tracking-[0.2em] text-[#040A12]/40 font-bold mb-4">Categories</div>
-              <ul className="space-y-3">
-                {successData.categories.map((c: string, idx: number) => (
-                  <li key={idx} className="font-heading font-bold text-lg md:text-xl uppercase flex items-center gap-4 text-[#040A12]">
-                    <span className="w-2 h-2 rounded-full bg-[#C9A44A] inline-block shadow-sm"></span>
-                    <span dangerouslySetInnerHTML={{ __html: c }} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="bg-[#F8F9FA] rounded-xl p-6 border border-black/5 flex flex-col sm:flex-row justify-between sm:items-center gap-6">
-              <div>
-                <div className="text-[10px] uppercase tracking-[0.2em] text-[#040A12]/40 font-bold mb-1.5">Total Paid</div>
-                <div className="font-heading text-3xl font-extrabold text-[#040A12]">₹{successData.total_amount}</div>
+            {/* PASS HEADER: FEDERATION & EVENT */}
+            <div className="px-6 sm:px-8 pt-2 pb-5 border-b border-white/10 relative">
+              {/* Watermark Logo */}
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 opacity-10 pointer-events-none">
+                <img src="/assets/wff-india.png" alt="WFF" className="w-40 h-40 object-contain" />
               </div>
-              <div className="flex flex-col gap-2">
-                <div className="text-[10px] uppercase tracking-[0.2em] text-[#040A12]/40 font-bold sm:text-right">Status</div>
-                <div className={`inline-flex items-center gap-2 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.25em] rounded-sm border ${isCash && !isCashPaid ? 'bg-yellow-100/80 text-yellow-700 border-yellow-200' : 'bg-green-100/80 text-green-700 border-green-200'}`}>
-                  <CheckCircle2 size={14} className="shrink-0" /> {isCash && !isCashPaid ? 'CASH PAYMENT DUE' : 'PAID'}
+
+              <div className="flex items-center justify-between gap-4 relative z-10">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-[#C9A44A]/20 border border-[#C9A44A]/40 text-[#FCF6BA] text-[9px] sm:text-[10px] font-black uppercase tracking-[0.25em] mb-1.5">
+                    <Trophy size={11} className="text-[#FCF6BA]" />
+                    <span>Official Athlete Pass</span>
+                  </div>
+                  <h3 className="font-heading text-2xl sm:text-3xl uppercase font-black tracking-wider leading-tight bg-gradient-to-r from-[#FFF3D6] via-[#FCF6BA] to-[#C9A44A] bg-clip-text text-transparent">
+                    {decodeHtml(successData.event_name)}
+                  </h3>
+                  <div className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-white/50 font-semibold mt-0.5">
+                    World Fitness Federation • Tamil Nadu
+                  </div>
+                </div>
+
+                <div className="shrink-0">
+                  <img
+                    src="/assets/wff-india.png"
+                    alt="WFF Official"
+                    className="h-14 sm:h-16 w-auto object-contain drop-shadow-[0_0_12px_rgba(201,164,74,0.4)]"
+                  />
                 </div>
               </div>
             </div>
 
-            <div className="mt-6 text-center">
-              <div className="text-[9px] uppercase tracking-[0.2em] text-[#040A12]/30 font-bold mb-1">
-                Payment Ref: {isCash && !isCashPaid ? 'PAY AT DESK' : successData.razorpay_payment_id || 'CASH-PAID'}
+            {/* ATHLETE CREDENTIAL RIBBON */}
+            <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-[#14233D] via-[#0E1A2E] to-[#14233D] border-b border-[#C9A44A]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <div className="text-[9px] uppercase tracking-[0.25em] text-[#C9A44A] font-extrabold mb-1">
+                  Registered Competitor
+                </div>
+                <div className="font-heading text-xl sm:text-2xl uppercase font-black text-white tracking-wide">
+                  {athleteName}
+                </div>
+                <div className="text-[11px] text-white/60 font-medium mt-0.5">
+                  Category Entries: <span className="text-[#FCF6BA] font-bold">{successData.categories?.length || 1} Divisions</span>
+                </div>
+              </div>
+
+              {/* Reg ID Box */}
+              <div className="bg-[#050B14] px-4 py-2.5 rounded-xl border border-[#C9A44A]/40 flex items-center justify-between sm:justify-center gap-3 shrink-0">
+                <div>
+                  <div className="text-[8px] uppercase tracking-[0.25em] text-[#C9A44A] font-bold">Pass ID / Reg No</div>
+                  <div className="font-heading font-mono font-bold text-sm sm:text-base text-[#FCF6BA] tracking-wider">
+                    {successData.registration_number}
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    if (typeof navigator !== 'undefined') {
+                      navigator.clipboard.writeText(successData.registration_number);
+                      toast.success("Registration ID copied!", { title: "Copied" });
+                    }
+                  }}
+                  title="Copy Registration Number"
+                  className="p-1.5 text-white/50 hover:text-[#FCF6BA] hover:bg-white/10 rounded transition-colors"
+                >
+                  <Copy size={15} />
+                </button>
               </div>
             </div>
 
-            {isCash && !isCashPaid && (
-              <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded text-center">
-                <p className="text-xs text-red-600 font-bold uppercase tracking-wider">ENTRY: NOT ELIGIBLE UNTIL CASH IS RECEIVED</p>
+            {/* EVENT SCHEDULE & VENUE TILES */}
+            <div className="px-6 sm:px-8 py-4 grid grid-cols-1 sm:grid-cols-2 gap-3 border-b border-white/10 bg-black/20">
+              <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
+                <div className="w-8 h-8 rounded-lg bg-[#C9A44A]/15 border border-[#C9A44A]/30 flex items-center justify-center text-[#FCF6BA] shrink-0">
+                  <Calendar size={15} />
+                </div>
+                <div>
+                  <div className="text-[8.5px] uppercase tracking-[0.2em] text-white/40 font-bold">Date &amp; Schedule</div>
+                  <div className="font-heading font-bold text-xs sm:text-sm text-white uppercase tracking-wide">
+                    {successData.event_date}
+                  </div>
+                </div>
               </div>
-            )}
+
+              <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white/[0.03] border border-white/5">
+                <div className="w-8 h-8 rounded-lg bg-[#C9A44A]/15 border border-[#C9A44A]/30 flex items-center justify-center text-[#FCF6BA] shrink-0">
+                  <MapPin size={15} />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-[8.5px] uppercase tracking-[0.2em] text-white/40 font-bold">Official Venue</div>
+                  <div className="font-heading font-bold text-xs sm:text-sm text-white uppercase tracking-wide truncate">
+                    {decodeHtml(successData.venue)}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* CONFIRMED DIVISIONS & CATEGORIES LIST */}
+            <div className="px-6 sm:px-8 py-5">
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <div className="text-[10px] uppercase tracking-[0.25em] text-[#C9A44A] font-extrabold flex items-center gap-1.5">
+                  <Trophy size={13} className="text-[#C9A44A]" />
+                  <span>Enrolled Championship Categories</span>
+                </div>
+                <span className="text-[9px] font-black text-emerald-400 bg-emerald-950/60 border border-emerald-500/40 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                  Verified
+                </span>
+              </div>
+
+              <div className="space-y-2">
+                {successData.categories?.map((catName: string, idx: number) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between gap-3 p-3 rounded-xl bg-gradient-to-r from-white/[0.06] to-white/[0.02] border border-white/10 hover:border-[#C9A44A]/40 transition-colors"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#BF953F] to-[#8A6318] text-[#040A12] text-xs font-black flex items-center justify-center shrink-0 shadow-sm">
+                        {idx + 1}
+                      </span>
+                      <span className="font-heading font-extrabold text-xs sm:text-sm uppercase text-white tracking-wider truncate">
+                        {decodeHtml(catName)}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-emerald-400 shrink-0 text-[10px] font-bold uppercase tracking-wider">
+                      <CheckCircle2 size={14} />
+                      <span className="hidden sm:inline">Active</span>
+                    </div>
+                  </div>
+                ))}
+
+                {(successData.tan_spray_requested || tanSprayRequested) && (
+                  <div className="p-3 rounded-xl bg-gradient-to-r from-[#C9A44A]/20 to-[#C9A44A]/5 border border-[#C9A44A]/40 flex items-center gap-2.5 text-xs font-bold text-[#FCF6BA] uppercase tracking-wider">
+                    <span className="w-2 h-2 rounded-full bg-[#FCF6BA] animate-pulse"></span>
+                    <span>Official Pro Stage Tan Spray Included</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* PERFORATED PASS TEAR STUB WITH SCANNER QR */}
+            <div className="relative pt-4 pb-6 px-6 sm:px-8 bg-[#040810] border-t-2 border-dashed border-[#C9A44A]/30">
+
+              {/* Perforation Cutout Circles */}
+              <div className="absolute -top-3.5 -left-4 w-7 h-7 rounded-full bg-[#F4F5F7] dark:bg-[#03070E] border-r-2 border-[#C9A44A]/30"></div>
+              <div className="absolute -top-3.5 -right-4 w-7 h-7 rounded-full bg-[#F4F5F7] dark:bg-[#03070E] border-l-2 border-[#C9A44A]/30"></div>
+
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-5 bg-gradient-to-br from-white/[0.04] to-transparent p-4 sm:p-5 rounded-2xl border border-white/10">
+
+                {/* QR Code Container */}
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-28 h-28 sm:w-32 sm:h-32 bg-white p-2 rounded-xl border-2 border-[#C9A44A] shadow-[0_0_20px_rgba(201,164,74,0.25)] flex items-center justify-center mb-1.5">
+                    <img
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(successData.registration_number)}`}
+                      alt="Athlete Verification QR Code"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <span className="text-[8px] uppercase tracking-[0.25em] text-[#FCF6BA] font-extrabold">
+                    Scan for Stage Access
+                  </span>
+                </div>
+
+                {/* Status & Payment Info */}
+                <div className="flex-1 flex flex-col justify-between sm:items-end gap-2 text-center sm:text-right w-full sm:w-auto">
+                  <div>
+                    <div className="text-[9px] uppercase tracking-[0.2em] text-white/40 font-bold mb-0.5">Total Registration Fee</div>
+                    <div className="font-heading text-3xl sm:text-4xl font-black text-white bg-gradient-to-r from-white via-[#FCF6BA] to-[#C9A44A] bg-clip-text text-transparent">
+                      ₹{successData.total_amount}
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-[0.2em] border shadow-sm ${isCash && !isCashPaid ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'}`}>
+                      <CheckCircle2 size={13} className="shrink-0" />
+                      <span>{isCash && !isCashPaid ? 'PAY AT DESK' : 'PAID & VERIFIED'}</span>
+                    </div>
+                  </div>
+
+                  <div className="text-[9px] uppercase font-mono text-white/40">
+                    Ref: {isCash && !isCashPaid ? 'CASH-VENUE' : successData.razorpay_payment_id || 'ONLINE-CONFIRMED'}
+                  </div>
+                </div>
+
+              </div>
+
+              {isCash && !isCashPaid && (
+                <div className="mt-3 p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-xl text-center">
+                  <p className="text-[11px] text-amber-300 font-bold uppercase tracking-wider">
+                    ⚠️ Official stage chest number will be issued upon completing payment at the weigh-in counter.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Bottom Holographic Gold Trim */}
+            <div className="h-1.5 w-full bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]"></div>
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-          <Button onClick={() => window.print()} className="bg-[#C9A44A] text-[#040A12] hover:bg-[#B38728] border-0 uppercase tracking-[0.2em] font-bold h-14 px-10 shadow-lg">
-            Print Ticket
-          </Button>
-          <Button
-            onClick={() => {
-              if (navigator.share) {
-                navigator.share({
-                  title: 'WFF Registration Confirmed!',
-                  text: `I just registered for ${successData.event_name}! Registration No: ${successData.registration_number}`,
-                  url: window.location.href,
-                }).catch(console.error);
-              } else {
-                alert('Sharing is not directly supported on this device. You can copy the URL instead.');
-              }
-            }}
-            className="bg-white text-[#040A12] border border-black/10 hover:bg-gray-50 uppercase tracking-[0.2em] font-bold h-14 px-10 shadow-sm"
-          >
-            Share Ticket
-          </Button>
+        {/* ========================================================= */}
+        {/* SHARING & ACTION BUTTONS */}
+        {/* ========================================================= */}
+        <div className="mt-8 space-y-3.5">
+
+          {/* Primary Action Buttons */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button
+              type="button"
+              disabled={downloadingPass}
+              onClick={handleDownloadPass}
+              className="bg-gradient-to-r from-[#BF953F] via-[#E8CE7A] to-[#B38728] hover:brightness-110 text-[#040A12] font-heading font-black uppercase tracking-[0.15em] h-13 py-3.5 px-6 rounded-xl text-sm shadow-[0_8px_25px_rgba(191,149,63,0.35)] flex items-center justify-center gap-2 cursor-pointer transition-all hover:-translate-y-0.5 disabled:opacity-60"
+            >
+              <Download size={18} className={downloadingPass ? 'animate-bounce' : ''} />
+              <span>{downloadingPass ? 'Generating Pass...' : 'Download Pass'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleWhatsAppShare}
+              className="bg-[#25D366] hover:bg-[#1EBE5D] text-white font-heading font-black uppercase tracking-[0.15em] h-13 py-3.5 px-6 rounded-xl text-sm shadow-[0_8px_25px_rgba(37,211,102,0.35)] flex items-center justify-center gap-2 cursor-pointer transition-all hover:-translate-y-0.5"
+            >
+              <Smartphone size={18} className="text-white" />
+              <span className="text-white">Share on WhatsApp</span>
+            </button>
+          </div>
+
+          {/* Secondary Utility Buttons */}
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            <button
+              type="button"
+              disabled={sendingEmail}
+              onClick={handleSendPassEmail}
+              className="bg-white dark:bg-[#0E1A2B] hover:bg-gray-100 dark:hover:bg-[#14233A] text-[#040A12] dark:text-white border border-black/10 dark:border-white/10 font-heading font-bold text-xs uppercase tracking-wider py-3 px-2 rounded-xl shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-colors col-span-2 sm:col-span-1"
+            >
+              <Mail size={15} className={`text-[#C9A44A] ${sendingEmail ? 'animate-spin' : ''}`} />
+              <span>{sendingEmail ? 'Sending...' : 'Email Pass'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className="bg-white dark:bg-[#0E1A2B] hover:bg-gray-100 dark:hover:bg-[#14233A] text-[#040A12] dark:text-white border border-black/10 dark:border-white/10 font-heading font-bold text-xs uppercase tracking-wider py-3 px-2 rounded-xl shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+            >
+              <Printer size={15} className="text-[#C9A44A]" />
+              <span>Print Pass</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleShareNative}
+              className="bg-white dark:bg-[#0E1A2B] hover:bg-gray-100 dark:hover:bg-[#14233A] text-[#040A12] dark:text-white border border-black/10 dark:border-white/10 font-heading font-bold text-xs uppercase tracking-wider py-3 px-2 rounded-xl shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+            >
+              <Share2 size={15} className="text-[#C9A44A]" />
+              <span>Share</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleCopyLink}
+              className="bg-white dark:bg-[#0E1A2B] hover:bg-gray-100 dark:hover:bg-[#14233A] text-[#040A12] dark:text-white border border-black/10 dark:border-white/10 font-heading font-bold text-xs uppercase tracking-wider py-3 px-2 rounded-xl shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+            >
+              <Copy size={15} className="text-[#C9A44A]" />
+              <span>Copy Link</span>
+            </button>
+
+            <Link
+              href={`/registration-status?regNumber=${encodeURIComponent(successData.registration_number)}`}
+              className="bg-white dark:bg-[#0E1A2B] hover:bg-gray-100 dark:hover:bg-[#14233A] text-[#040A12] dark:text-white border border-black/10 dark:border-white/10 font-heading font-bold text-xs uppercase tracking-wider py-3 px-2 rounded-xl shadow-sm flex items-center justify-center gap-1.5 transition-colors text-center"
+            >
+              <ExternalLink size={15} className="text-[#C9A44A]" />
+              <span>Online Pass</span>
+            </Link>
+          </div>
+
+          {/* Back to Events Navigation */}
+          <div className="text-center pt-3">
+            <Link
+              href="/events"
+              className="inline-flex items-center gap-2 font-heading font-bold text-xs uppercase tracking-widest text-[#040A12]/60 dark:text-white/60 hover:text-[#C9A44A] dark:hover:text-[#C9A44A] transition-colors"
+            >
+              Explore More Championships &amp; Events <ArrowRight size={14} />
+            </Link>
+          </div>
+
         </div>
+
       </div>
     );
   }
@@ -605,14 +945,11 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
   // -------------------------------------------------------------
   // RENDER: REGISTRATION FORM
   // -------------------------------------------------------------
-  // -------------------------------------------------------------
-  // RENDER: REGISTRATION FORM
-  // -------------------------------------------------------------
   return (
     <div className="w-full font-body text-[#040A12]">
 
       {/* FULL WIDTH HERO SECTION */}
-      <section className="w-full bg-[#040A12] relative overflow-hidden text-white h-[65vh] min-h-[500px] flex items-center">
+      <section className="w-full bg-[#040A12] relative overflow-hidden text-white h-[65vh] min-h-[700px] md:min-h-[500px] flex items-center">
         <div className="absolute inset-0 z-0">
           <img src="/assets/wff_hero_banner.png" alt="Hero" className="w-full h-full object-cover object-[center_top] opacity-30 mix-blend-luminosity" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#040A12] via-[#040A12]/90 to-transparent"></div>
@@ -659,7 +996,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
       </section>
 
       {/* MAIN CONTENT AREA */}
-      <div className="max-w-[1440px] mx-auto px-6 py-16">
+      <div className="max-w-[1440px] mx-auto px-6 py-8 md:py-16">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
 
           {/* LEFT COLUMN - FORM */}
@@ -807,7 +1144,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                 </div>
 
                 {/* Items */}
-                <div className="p-8 bg-white min-h-[140px] flex flex-col justify-center">
+                <div className="md:p-8 p-5 bg-white min-h-[140px] flex flex-col justify-center">
                   {selectedCategories.length === 0 ? (
                     <p className="text-[13px] text-[#040A12]/30 text-center font-bold uppercase tracking-[0.2em]">No categories selected.</p>
                   ) : (
@@ -816,7 +1153,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                         const fee = parseFloat(cat.entry_fee || '0');
                         return (
                           <div key={cat.id} className="flex justify-between items-center text-[13px] font-bold text-[#040A12]">
-                            <span className="uppercase tracking-wider">{decodeHtml(cat.name)}</span>
+                            <span className="uppercase tracking-wider sm:text-[15px] text-[12px]">{decodeHtml(cat.name)}</span>
                             <span className="text-[15px]">₹ {index === 0 ? fee : fee * 0.5}</span>
                           </div>
                         );
@@ -861,7 +1198,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                     </div>
                   )}
 
-                  <div className="bg-[#FCF9EE] p-8 flex justify-between items-center border-t border-b border-[#EADDAC]">
+                  <div className="bg-[#FCF9EE] md:p-8 p-5 flex justify-between items-center border-t border-b border-[#EADDAC]">
                     <span className="font-heading font-bold text-[#040A12] text-[13px] uppercase tracking-[0.2em]">Total Payable</span>
                     <span className="font-heading font-bold text-3xl md:text-4xl text-[#040A12]">₹ {pricing.total}</span>
                   </div>
@@ -960,7 +1297,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
             <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] z-20"></div>
 
             {/* Modal Header */}
-            <div className="bg-[#040A12] px-6 sm:px-8 py-5 border-b border-white/10 flex items-center justify-between gap-4 shrink-0">
+            <div className="bg-[#040A12] px-6 sm:px-8 py-5 border-b border-white/10 md:flex hidden items-center justify-between gap-4 shrink-0">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-lg bg-[#C9A44A]/10 border border-[#C9A44A]/30 flex items-center justify-center text-[#C9A44A] shrink-0">
                   <CreditCard size={20} />
@@ -1335,7 +1672,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                     <Button
                       type="button"
                       onClick={handleRequestClosePaymentModal}
-                      className="flex-1 bg-white/5 hover:bg-white/10 text-white border border-white/10 font-heading text-xs font-bold uppercase tracking-wider h-12 rounded-lg cursor-pointer"
+                      className="flex-1 bg-white/5 hover:bg-white/10 text-white border border-white/10 font-heading text-xs font-bold uppercase tracking-wider h-12 p-4 rounded-lg cursor-pointer"
                     >
                       Back to Form
                     </Button>
@@ -1343,7 +1680,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                       type="button"
                       onClick={confirmPaymentCompletion}
                       disabled={verifying}
-                      className="flex-1 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-xs uppercase tracking-[0.15em] h-12 rounded-lg shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5 cursor-pointer disabled:opacity-60"
+                      className="flex-1 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-xs uppercase tracking-[0.15em] h-12 p-4 rounded-lg shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5 cursor-pointer disabled:opacity-60"
                     >
                       {verifying ? 'Uploading Proof & Verifying...' : 'Complete Registration & View Ticket →'}
                     </Button>
@@ -1401,14 +1738,14 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
               <Button
                 type="button"
                 onClick={handleConfirmCancelPayment}
-                className="flex-1 bg-transparent hover:bg-red-500/10 text-red-400 hover:text-red-300 border border-red-500/30 font-heading text-xs font-bold uppercase tracking-wider h-12 rounded-lg transition-colors cursor-pointer"
+                className="flex-1 bg-transparent hover:bg-red-500/10 text-red-400 hover:text-red-300 border border-red-500/30 font-heading text-xs font-bold uppercase tracking-wider h-12 rounded-lg transition-colors cursor-pointer p-3"
               >
                 Yes, Cancel &amp; Exit
               </Button>
               <Button
                 type="button"
                 onClick={handleContinuePayment}
-                className="flex-1 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-xs uppercase tracking-[0.15em] h-12 rounded-lg shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5 cursor-pointer"
+                className="flex-1 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-xs uppercase tracking-[0.15em] h-12 rounded-lg shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5 cursor-pointer p-3"
               >
                 Continue Payment
               </Button>

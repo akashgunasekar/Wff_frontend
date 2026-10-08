@@ -26,18 +26,18 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-wff-surface/95 backdrop-blur-sm border-b border-wff-border">
-      <div className="max-w-[1440px] mx-auto px-6 h-[72px] flex items-center justify-between">
+    <header className="sticky top-0 z-50 bg-wff-surface/95 backdrop-blur-md border-b border-wff-border">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 h-[64px] sm:h-[72px] flex items-center justify-between">
 
         {/* Spacer for perfect desktop centering */}
         <div className="hidden lg:block flex-1"></div>
 
         {/* Mobile Left Logo */}
-        <Link href="/" className="flex lg:hidden items-center gap-3 shrink-0">
+        <Link href="/" className="flex lg:hidden items-center gap-2.5 shrink-0">
           <img
             src="/assets/wff-india.png"
             alt="WFF Tamil Nadu"
-            className="h-12 w-auto object-contain"
+            className="h-10 sm:h-12 w-auto object-contain"
           />
         </Link>
 
@@ -74,17 +74,17 @@ export function Header() {
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center justify-end gap-4 flex-1">
+        <div className="flex items-center justify-end gap-2 sm:gap-4 flex-1">
           {/* Theme Toggle */}
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="w-10 h-10 flex items-center justify-center text-[var(--muted)] hover:text-[var(--gold)] transition-colors"
+            className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-[var(--muted)] hover:text-[var(--gold)] transition-colors rounded-full hover:bg-black/5 dark:hover:bg-white/5"
             aria-label="Toggle theme"
           >
             {theme === "dark" ? <Sun size={18} strokeWidth={1.5} /> : <Moon size={18} strokeWidth={1.5} />}
           </button>
 
-          {/* Register CTA */}
+          {/* Register CTA (Desktop) */}
           <Link
             href="/register"
             className="hidden md:inline-flex items-center h-10 px-6 bg-[var(--navy)] text-white text-[13.5px] font-display font-bold tracking-[0.12em] uppercase rounded hover:bg-[var(--gold)] hover:text-[var(--navy)] transition-all duration-200"
@@ -95,10 +95,10 @@ export function Header() {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden w-9 h-9 flex items-center justify-center text-[var(--text-primary)]"
+            className="lg:hidden w-10 h-10 flex items-center justify-center text-[var(--text-primary)] hover:text-[var(--gold)] transition-colors rounded-md active:bg-black/5 dark:active:bg-white/5"
             aria-label="Toggle menu"
           >
-            {mobileOpen ? <X size={20} strokeWidth={1.5} /> : <Menu size={20} strokeWidth={1.5} />}
+            {mobileOpen ? <X size={22} strokeWidth={1.75} /> : <Menu size={22} strokeWidth={1.75} />}
           </button>
         </div>
       </div>
@@ -106,32 +106,40 @@ export function Header() {
       {/* Mobile Navigation Drawer */}
       {mobileOpen && (
         <div 
-          className="lg:hidden absolute top-full left-0 w-full h-[calc(100vh-72px)] overflow-y-auto bg-wff-surface border-t border-wff-border"
+          className="lg:hidden absolute top-full left-0 w-full h-[calc(100dvh-64px)] sm:h-[calc(100dvh-72px)] bg-white dark:bg-[#081220] border-t border-wff-border overflow-y-auto flex flex-col z-50 shadow-2xl"
         >
-          <div className="h-full flex flex-col px-6 pt-8">
-            <nav className="flex flex-col gap-1">
-              {navLinks.map((link, i) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-4 py-4 border-b border-wff-border group"
-                >
-                  <span className="font-display text-[11px] tracking-[0.12em] text-[var(--gold)] font-medium">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <span className="font-display font-semibold text-lg tracking-[0.06em] uppercase text-[var(--text-primary)] group-hover:text-[var(--gold)] transition-colors">
-                    {link.label}
-                  </span>
-                </Link>
-              ))}
+          <div className="flex-1 flex flex-col px-6 pt-6 pb-12 justify-between">
+            <nav className="flex flex-col">
+              {navLinks.map((link, i) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className={`flex items-center justify-between py-4 border-b border-black/5 dark:border-white/10 group transition-colors ${isActive ? 'text-[var(--gold)]' : 'text-[#061426] dark:text-[#F0F2F5]'}`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className="font-display text-[12px] tracking-[0.12em] text-[var(--gold)] font-bold">
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      <span className="font-display font-bold text-xl tracking-[0.06em] uppercase group-hover:text-[var(--gold)] transition-colors">
+                        {link.label}
+                      </span>
+                    </div>
+                    {isActive && (
+                      <span className="w-2 h-2 rounded-full bg-[var(--gold)]" />
+                    )}
+                  </Link>
+                );
+              })}
             </nav>
 
-            <div className="mt-auto pb-8">
+            <div className="mt-8 pt-6 border-t border-black/5 dark:border-white/10">
               <Link
                 href="/register"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-center h-12 w-full bg-[var(--navy)] text-white font-display font-semibold text-sm tracking-[0.12em] uppercase rounded hover:bg-[var(--gold)] hover:text-[var(--navy)] transition-all"
+                className="flex items-center justify-center h-14 w-full bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-[14px] tracking-[0.15em] uppercase rounded-sm shadow-lg active:scale-[0.99] transition-all"
               >
                 Register Now
               </Link>

@@ -26,23 +26,23 @@ export default async function AboutPage() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#F4F5F7] pb-24">
+    <div className="flex flex-col min-h-screen bg-[#F4F5F7] md:pb-24 pb-12">
       {/* Hero Section */}
-      <section className="relative w-full h-[60vh] min-h-[450px] flex items-center justify-center overflow-hidden border-b-2 border-[#C9A44A]">
+      <section className="relative w-full md:h-[60vh] h-[40vh] md:min-h-[450px] min-h-[350px] flex items-center justify-center overflow-hidden border-b-2 border-[#C9A44A]">
         <div className="absolute inset-0 z-0 bg-[#040A12]">
-          <img 
-            src={data.heroImage || '/assets/wff_hero_banner.png'} 
+          <img
+            src={data.heroImage || '/assets/wff_hero_banner.png'}
             alt={data.heroTitle}
             className="w-full h-full object-cover object-center opacity-40 mix-blend-overlay grayscale"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-[#040A12]/90 via-[#040A12]/60 to-[#040A12]"></div>
         </div>
-        
+
         <Container className="relative z-10 text-center">
           <div className="inline-block mb-8 rounded-full bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-bold px-8 py-2.5 text-[12px] tracking-[0.25em] uppercase shadow-[0_4px_15px_rgba(198,161,91,0.2)] animate-fade-up">
             Official State Chapter
           </div>
-          <h1 className="font-heading text-5xl md:text-7xl lg:text-[80px] text-white uppercase leading-[0.95] tracking-tight mb-6 drop-shadow-2xl animate-fade-up [animation-delay:100ms] max-w-5xl mx-auto font-bold">
+          <h1 className="font-heading text-4xl md:text-7xl lg:text-[80px] text-white uppercase leading-[0.95] tracking-tight mb-6 drop-shadow-2xl animate-fade-up [animation-delay:100ms] max-w-5xl mx-auto font-bold">
             {(() => {
               const text = data.heroTitle || 'About World Fitness Federation Tamil Nadu';
               const words = text.split(' ');
@@ -62,14 +62,14 @@ export default async function AboutPage() {
         </Container>
       </section>
 
-      <Container className="mt-24">
+      <Container className="mt-12 md:mt-24">
         {/* Our Story */}
-        <div className="max-w-5xl mx-auto text-center mb-32 relative">
+        <div className="max-w-5xl mx-auto text-center md:mb-32 mb-12 relative">
           <div className="absolute -top-12 left-1/2 -translate-x-1/2 text-[120px] text-[#040A12]/5 font-heading leading-none z-0 hidden md:block">STORY</div>
           <div className="relative z-10">
             <h3 className="text-[#C9A44A] font-bold tracking-[0.3em] text-xs uppercase mb-4">The Federation</h3>
             <h2 className="font-heading text-4xl md:text-5xl text-[#040A12] uppercase tracking-wide mb-10">Our Story</h2>
-            
+
             <div className="bg-white p-10 md:p-14 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-black/5 relative">
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]"></div>
               <p className="text-lg md:text-2xl text-[#040A12]/80 leading-[1.8] font-medium max-w-4xl mx-auto">
@@ -80,11 +80,11 @@ export default async function AboutPage() {
         </div>
 
         {/* Mission & Vision */}
-        <div className="grid md:grid-cols-2 gap-8 mb-32">
+        <div className="grid md:grid-cols-2 gap-8 md:mb-32 mb-12">
           {principles.map((item, i) => (
-            <div key={i} className="bg-[#040A12] p-12 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] group relative overflow-hidden transition-transform duration-500 hover:-translate-y-2">
+            <div key={i} className="bg-[#040A12] md:p-12 p-6 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] group relative overflow-hidden transition-transform duration-500 hover:-translate-y-2">
               <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]"></div>
-              
+
               <div className="flex flex-col items-center text-center relative z-10">
                 <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-8 shadow-sm border border-white/10 group-hover:scale-110 group-hover:bg-[#C9A44A]/10 group-hover:border-[#C9A44A]/30 transition-all duration-500">
                   {item.icon}
@@ -94,7 +94,7 @@ export default async function AboutPage() {
                   {item.description}
                 </p>
               </div>
-              
+
               {/* Background accent */}
               <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-[#C9A44A]/5 rounded-full blur-3xl group-hover:bg-[#C9A44A]/10 transition-colors duration-700"></div>
             </div>
@@ -102,12 +102,12 @@ export default async function AboutPage() {
         </div>
 
         {/* Values */}
-        <div className="mb-32">
-          <div className="text-center mb-16">
+        <div className="md:mb-32 mb-12">
+          <div className="text-center md:mb-16 mb-8">
             <h3 className="text-[#C9A44A] font-bold tracking-[0.3em] text-xs uppercase mb-4">What We Stand For</h3>
             <h2 className="font-heading text-4xl md:text-5xl text-[#040A12] uppercase tracking-wide">Core Values</h2>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-8">
             {data.values.map((value: any, idx: number) => (
               <div key={value.id || idx} className="bg-white border border-black/5 p-10 rounded-xl text-center shadow-[0_15px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_50px_rgba(198,161,91,0.15)] transition-all duration-500 hover:-translate-y-2 group">
@@ -124,10 +124,10 @@ export default async function AboutPage() {
         </div>
 
         {/* Leadership Snippet */}
-        <div className="bg-[#040A12] rounded-2xl p-12 md:p-20 shadow-[0_30px_60px_rgba(0,0,0,0.4)] relative overflow-hidden mb-8">
+        <div className="bg-[#040A12] rounded-2xl p-6 md:p-20 shadow-[0_30px_60px_rgba(0,0,0,0.4)] relative overflow-hidden mb-8">
           <div className="absolute inset-0 bg-gradient-to-br from-[#BF953F]/10 via-transparent to-transparent opacity-50 z-0"></div>
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]"></div>
-          
+
           <div className="relative z-10 text-center max-w-4xl mx-auto">
             <User size={48} className="text-[#C9A44A] mx-auto mb-8 opacity-90" />
             <h3 className="font-heading text-3xl md:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] uppercase tracking-wider mb-8 drop-shadow-sm">

@@ -42,15 +42,15 @@ export default async function ContactPage() {
   const settings = await getSiteSettings();
 
   return (
-    <div className="flex flex-col min-h-screen bg-wff-bg pb-32">
+    <div className="flex flex-col min-h-screen bg-wff-bg md:pb-32 pb-10">
       {/* Hero Section */}
       <section className="relative w-full h-[40vh] min-h-[350px] flex items-center justify-center overflow-hidden border-b border-wff-border bg-wff-deep-navy">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-wff-navy via-[#030810] to-black opacity-90"></div>
           <div className="absolute inset-0 bg-[url('/assets/hero-pattern.png')] opacity-10 mix-blend-overlay"></div>
         </div>
-        
-        <div className="relative z-10 text-center px-6 mt-16 max-w-4xl mx-auto">
+
+        <div className="relative z-10 text-center px-6 md:mt-16 mt-8 max-w-4xl mx-auto">
           <div className="inline-block px-4 py-1.5 border border-wff-gold/30 bg-wff-gold/10 text-wff-gold text-[10px] font-bold tracking-[0.2em] uppercase mb-6 shadow-sm">
             Federation Support
           </div>
@@ -63,9 +63,9 @@ export default async function ContactPage() {
         </div>
       </section>
 
-      <Container className="mt-24">
-        <div className="grid lg:grid-cols-12 gap-16 lg:gap-24">
-          
+      <Container className="md:mt-24 mt-12">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-24">
+
           {/* Contact Information Side */}
           <div className="lg:col-span-5 space-y-12">
             <div>
@@ -77,7 +77,7 @@ export default async function ContactPage() {
 
             <div className="grid gap-6">
               {settings.contact_address && (
-                <div className="bg-wff-surface border border-wff-border p-8 rounded-sm flex items-start gap-6 hover:border-wff-navy/30 transition-colors shadow-sm group">
+                <div className="bg-wff-surface border border-wff-border md:p-8 p-4 rounded-sm flex items-start gap-6 hover:border-wff-navy/30 transition-colors shadow-sm group">
                   <div className="w-14 h-14 rounded-full bg-wff-bg shrink-0 flex items-center justify-center border border-wff-border group-hover:border-wff-gold/50 transition-colors">
                     <MapPin className="text-wff-gold" size={24} />
                   </div>
@@ -91,7 +91,7 @@ export default async function ContactPage() {
               )}
 
               {settings.phone && (
-                <div className="bg-wff-surface border border-wff-border p-8 rounded-sm flex items-start gap-6 hover:border-wff-navy/30 transition-colors shadow-sm group">
+                <div className="bg-wff-surface border border-wff-border md:p-8 p-4 rounded-sm flex items-start gap-6 hover:border-wff-navy/30 transition-colors shadow-sm group">
                   <div className="w-14 h-14 rounded-full bg-wff-bg shrink-0 flex items-center justify-center border border-wff-border group-hover:border-wff-gold/50 transition-colors">
                     <Phone className="text-wff-gold" size={24} />
                   </div>
@@ -105,7 +105,7 @@ export default async function ContactPage() {
               )}
 
               {settings.contact_email && (
-                <div className="bg-wff-surface border border-wff-border p-8 rounded-sm flex items-start gap-6 hover:border-wff-navy/30 transition-colors shadow-sm group">
+                <div className="bg-wff-surface border border-wff-border md:p-8 p-4 rounded-sm flex items-start gap-6 hover:border-wff-navy/30 transition-colors shadow-sm group">
                   <div className="w-14 h-14 rounded-full bg-wff-bg shrink-0 flex items-center justify-center border border-wff-border group-hover:border-wff-gold/50 transition-colors">
                     <Mail className="text-wff-gold" size={24} />
                   </div>
@@ -119,7 +119,7 @@ export default async function ContactPage() {
               )}
 
               {settings.contact_map_url && settings.contact_map_url !== '#' && (
-                <div className="bg-wff-surface border border-wff-border p-8 rounded-sm flex items-start gap-6 hover:border-wff-navy/30 transition-colors shadow-sm group">
+                <div className="bg-wff-surface border border-wff-border md:p-8 p-4 rounded-sm flex items-start gap-6 hover:border-wff-navy/30 transition-colors shadow-sm group">
                   <div className="w-14 h-14 rounded-full bg-wff-bg shrink-0 flex items-center justify-center border border-wff-border group-hover:border-wff-gold/50 transition-colors">
                     <Map className="text-wff-gold" size={24} />
                   </div>
@@ -165,7 +165,7 @@ export default async function ContactPage() {
 
           {/* Form Side */}
           <div className="lg:col-span-7">
-            <div className="bg-wff-surface border border-wff-border p-10 md:p-14 rounded-sm shadow-xl relative overflow-hidden">
+            <div className="bg-wff-surface border border-wff-border md:p-14 p-6 rounded-sm shadow-xl relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1.5 bg-wff-gold"></div>
               <h3 className="font-heading text-4xl uppercase tracking-wider text-wff-text-primary mb-10">Send a Message</h3>
               <ContactForm />

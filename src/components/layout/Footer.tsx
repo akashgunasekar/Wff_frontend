@@ -27,66 +27,66 @@ export async function Footer() {
   const address = settings.contact_address || 'No. 7/8, Near ICICI Bank, Link Road, Kilpauk Garden Road, Shenoy Nagar, Chennai – 600030, Tamil Nadu.';
 
   return (
-    <footer className="bg-[#040A12] text-white/80 border-t border-[#C9A44A]/20 relative overflow-hidden">
+    <footer className="bg-[#040A12] text-white/80 border-t border-[#C9A44A]/20 relative overflow-hidden w-full">
       {/* Decorative top accent glow */}
       <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#C9A44A] to-transparent"></div>
       
-      <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-16 py-16 lg:py-20">
+      <div className="max-w-[1440px] mx-auto px-5 sm:px-8 md:px-12 lg:px-16 py-12 sm:py-16 lg:py-20">
         {/* Main Footer Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 pb-14 border-b border-white/10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-8 pb-10 sm:pb-14 border-b border-white/10">
 
           {/* Col 1 — Federation (Col-span 4) */}
-          <div className="lg:col-span-4 pr-0 lg:pr-6">
-            <div className="flex flex-col gap-5 mb-6">
-              <div className="flex items-center gap-4">
+          <div className="sm:col-span-2 lg:col-span-4 pr-0 lg:pr-6">
+            <div className="flex flex-col gap-4 sm:gap-5 mb-5 sm:mb-6">
+              <div className="flex items-center gap-3 sm:gap-4">
                 <Image
                   src="/assets/wff-international.png"
                   alt="WFF International"
                   width={75}
                   height={75}
-                  className="w-14 h-14 md:w-16 md:h-16 object-contain drop-shadow-md hover:scale-105 transition-transform"
+                  className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 object-contain drop-shadow-md hover:scale-105 transition-transform"
                 />
                 <Image
                   src="/assets/wff-india.png"
                   alt="WFF India"
                   width={75}
                   height={75}
-                  className="w-14 h-14 md:w-16 md:h-16 object-contain drop-shadow-md hover:scale-105 transition-transform"
+                  className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 object-contain drop-shadow-md hover:scale-105 transition-transform"
                 />
               </div>
               <div>
-                <div className="font-heading font-bold text-xl md:text-2xl tracking-wider uppercase text-white leading-tight mb-1">
+                <div className="font-heading font-bold text-lg sm:text-xl md:text-2xl tracking-wider uppercase text-white leading-tight mb-1">
                   WFF Tamil Nadu
                 </div>
-                <div className="font-heading font-semibold text-[11px] md:text-[12px] tracking-[0.2em] uppercase text-[#C9A44A]">
+                <div className="font-heading font-semibold text-[10.5px] sm:text-[11px] md:text-[12px] tracking-[0.2em] uppercase text-[#C9A44A]">
                   World Fitness Federation
                 </div>
               </div>
             </div>
             
-            <p className="font-body text-[14px] md:text-[15px] text-white/70 leading-[1.7] mb-6">
+            <p className="font-body text-[13px] sm:text-[14px] md:text-[15px] text-white/70 leading-[1.65] mb-5 sm:mb-6 max-w-[500px]">
               The official state chapter of World Fitness Federation, committed to advancing natural, drug-free bodybuilding championships and athletic excellence across Tamil Nadu.
             </p>
 
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[12px] text-white/70">
-              <ShieldCheck size={14} className="text-[#C9A44A]" />
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] sm:text-[12px] text-white/70">
+              <ShieldCheck size={14} className="text-[#C9A44A] shrink-0" />
               <span>Official Razorpay Verified Registration Gateway</span>
             </div>
           </div>
 
           {/* Col 2 — About & Events (Col-span 2) */}
           <div className="lg:col-span-2">
-            <h4 className="font-heading font-bold text-[13px] md:text-[14px] tracking-[0.18em] uppercase text-[#C9A44A] mb-6 flex items-center gap-2">
+            <h4 className="font-heading font-bold text-[12.5px] sm:text-[13px] md:text-[14px] tracking-[0.18em] uppercase text-[#C9A44A] mb-4 sm:mb-6 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-[#C9A44A]"></span>
               About &amp; Events
             </h4>
-            <nav className="flex flex-col gap-3">
+            <nav className="flex flex-col gap-2.5 sm:gap-3">
               {exploreLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   prefetch={false}
-                  className="font-body text-[14px] text-white/75 hover:text-[#C9A44A] hover:translate-x-1 transition-all duration-200"
+                  className="font-body text-[13.5px] sm:text-[14px] text-white/75 hover:text-[#C9A44A] hover:translate-x-1 transition-all duration-200 py-0.5"
                 >
                   {link.label}
                 </Link>
@@ -96,17 +96,17 @@ export async function Footer() {
 
           {/* Col 3 — Legal & Policies (Col-span 3) */}
           <div className="lg:col-span-3">
-            <h4 className="font-heading font-bold text-[13px] md:text-[14px] tracking-[0.18em] uppercase text-[#C9A44A] mb-6 flex items-center gap-2">
+            <h4 className="font-heading font-bold text-[12.5px] sm:text-[13px] md:text-[14px] tracking-[0.18em] uppercase text-[#C9A44A] mb-4 sm:mb-6 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-[#C9A44A]"></span>
               Legal &amp; Policies
             </h4>
-            <nav className="flex flex-col gap-3">
+            <nav className="flex flex-col gap-2.5 sm:gap-3">
               {policyLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   prefetch={false}
-                  className="font-body text-[14px] text-white/75 hover:text-[#C9A44A] hover:translate-x-1 transition-all duration-200"
+                  className="font-body text-[13.5px] sm:text-[14px] text-white/75 hover:text-[#C9A44A] hover:translate-x-1 transition-all duration-200 py-0.5"
                 >
                   {link.label}
                 </Link>
@@ -116,15 +116,15 @@ export async function Footer() {
 
           {/* Col 4 — Support & Contact (Col-span 3) */}
           <div className="lg:col-span-3">
-            <h4 className="font-heading font-bold text-[13px] md:text-[14px] tracking-[0.18em] uppercase text-[#C9A44A] mb-6 flex items-center gap-2">
+            <h4 className="font-heading font-bold text-[12.5px] sm:text-[13px] md:text-[14px] tracking-[0.18em] uppercase text-[#C9A44A] mb-4 sm:mb-6 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-[#C9A44A]"></span>
               Support &amp; Contact
             </h4>
-            <div className="flex flex-col gap-4 font-body text-[14px] text-white/75">
+            <div className="flex flex-col gap-3.5 sm:gap-4 font-body text-[13.5px] sm:text-[14px] text-white/75">
               <div className="flex items-start gap-3">
-                <Phone size={16} className="text-[#C9A44A] shrink-0 mt-1" />
+                <Phone size={16} className="text-[#C9A44A] shrink-0 mt-0.5" />
                 <div>
-                  <div className="text-[11px] uppercase tracking-wider text-white/50 font-bold">Helpline</div>
+                  <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-white/50 font-bold">Helpline</div>
                   <a href={`tel:${phone.replace(/[^0-9+]/g, '')}`} className="text-white hover:text-[#C9A44A] transition-colors font-medium">
                     {phone}
                   </a>
@@ -132,9 +132,9 @@ export async function Footer() {
               </div>
 
               <div className="flex items-start gap-3">
-                <Mail size={16} className="text-[#C9A44A] shrink-0 mt-1" />
+                <Mail size={16} className="text-[#C9A44A] shrink-0 mt-0.5" />
                 <div>
-                  <div className="text-[11px] uppercase tracking-wider text-white/50 font-bold">Inquiries &amp; Refunds</div>
+                  <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-white/50 font-bold">Inquiries &amp; Refunds</div>
                   <a href={`mailto:${email}`} className="text-white hover:text-[#C9A44A] transition-colors font-medium break-all">
                     {email}
                   </a>
@@ -142,17 +142,17 @@ export async function Footer() {
               </div>
 
               <div className="flex items-start gap-3">
-                <MapPin size={16} className="text-[#C9A44A] shrink-0 mt-1" />
+                <MapPin size={16} className="text-[#C9A44A] shrink-0 mt-0.5" />
                 <div>
-                  <div className="text-[11px] uppercase tracking-wider text-white/50 font-bold">Registered Office</div>
-                  <p className="text-white/60 leading-relaxed text-[13px] mt-0.5">
+                  <div className="text-[10px] sm:text-[11px] uppercase tracking-wider text-white/50 font-bold">Registered Office</div>
+                  <p className="text-white/60 leading-relaxed text-[12.5px] sm:text-[13px] mt-0.5">
                     {address}
                   </p>
                 </div>
               </div>
 
               {/* Social Icons Strip */}
-              <div className="pt-3 flex items-center gap-3">
+              <div className="pt-2 sm:pt-3 flex items-center gap-3">
                 {settings.whatsapp_url && settings.whatsapp_url !== '#' && (
                   <a
                     href={settings.whatsapp_url}
@@ -203,18 +203,18 @@ export async function Footer() {
         </div>
 
         {/* Bottom Bar with Razorpay & Security Trust */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left">
-            <p className="font-body text-[13px] text-white/50">
+        <div className="pt-6 sm:pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-center gap-1.5 sm:gap-4 text-center sm:text-left">
+            <p className="font-body text-[12px] sm:text-[13px] text-white/50">
               &copy; {new Date().getFullYear()} {siteName}. All rights reserved.
             </p>
             <span className="hidden sm:inline text-white/20">•</span>
-            <p className="font-body text-[13px] text-white/40">
+            <p className="font-body text-[12px] sm:text-[13px] text-white/40">
               World Fitness Federation — Tamil Nadu Chapter
             </p>
           </div>
 
-          <div className="flex items-center gap-4 text-[12px] text-white/50">
+          <div className="flex items-center gap-3 sm:gap-4 text-[11px] sm:text-[12px] text-white/50 flex-wrap justify-center">
             <span className="flex items-center gap-1 text-white/60">
               <Lock size={12} className="text-[#C9A44A]" /> 256-Bit SSL Encrypted
             </span>

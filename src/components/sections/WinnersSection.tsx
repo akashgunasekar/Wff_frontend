@@ -10,7 +10,7 @@ interface WinnersSectionProps {
 
 export function WinnersSection({ winners }: WinnersSectionProps) {
   return (
-    <section className="relative w-full py-24 md:py-32 lg:py-40 flex items-center justify-center overflow-hidden border-t border-black/[0.05]">
+    <section className="relative w-full py-16 sm:py-24 md:py-32 lg:py-40 flex items-center justify-center overflow-hidden border-t border-black/[0.05]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -24,35 +24,35 @@ export function WinnersSection({ winners }: WinnersSectionProps) {
         <div className="absolute inset-0 bg-[#040A12]/85 backdrop-brightness-50" />
       </div>
 
-      <div className="relative z-10 w-[90%] max-w-[1400px] mx-auto flex flex-col items-center text-center">
+      <div className="relative z-10 w-[92%] sm:w-[90%] max-w-[1400px] mx-auto flex flex-col items-center text-center">
         
-        <Reveal direction="up" className="flex flex-col items-center">
+        <Reveal direction="up" className="flex flex-col items-center w-full max-w-[800px]">
           {/* Eyebrow */}
-          <div className="flex items-center gap-3 mb-5">
+          <div className="flex items-center gap-3 mb-3 sm:mb-5">
             <div className="w-8 h-px bg-[#C9A44A]" />
-            <span className="font-heading font-semibold text-[12px] tracking-[0.2em] uppercase text-[#C9A44A]">
+            <span className="font-heading font-semibold text-[11px] sm:text-[12px] tracking-[0.2em] uppercase text-[#C9A44A]">
               Our Legacy
             </span>
             <div className="w-8 h-px bg-[#C9A44A]" />
           </div>
 
           {/* Title */}
-          <h2 className="font-heading font-bold text-4xl md:text-5xl lg:text-[64px] uppercase leading-[1.05] tracking-tight mb-5">
+          <h2 className="font-heading font-bold text-3xl sm:text-4xl md:text-5xl lg:text-[64px] uppercase leading-[1.05] tracking-tight mb-4 sm:mb-5">
             <span className="text-white">Hall Of </span>
             <span className="text-[#C9A44A]">Champions</span>
           </h2>
 
           {/* Subtitle */}
-          <p className="font-body text-white/70 text-[14px] md:text-[16px] max-w-[600px] leading-[1.6] mb-10">
+          <p className="font-body text-white/70 text-[13.5px] sm:text-[15px] md:text-[16px] max-w-[600px] leading-[1.6] mb-8 sm:mb-10">
             Celebrating the athletes who have set the benchmark for natural fitness and inspired generations to come.
           </p>
 
           {/* Button */}
           <Link 
             href="/events"
-            className="group inline-flex items-center gap-3 px-8 py-4 border border-[#C9A44A]/40 bg-transparent hover:bg-[#C9A44A]/10 transition-all duration-300"
+            className="group inline-flex items-center justify-center gap-3 w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 border border-[#C9A44A]/40 bg-transparent hover:bg-[#C9A44A]/10 transition-all duration-300 rounded-sm"
           >
-            <span className="font-heading font-bold text-[12px] tracking-[0.15em] uppercase text-white">
+            <span className="font-heading font-bold text-[11.5px] sm:text-[12px] tracking-[0.15em] uppercase text-white">
               View All Champions
             </span>
             <ArrowRight size={16} className="text-[#C9A44A] transition-transform duration-300 group-hover:translate-x-1" />
@@ -60,22 +60,24 @@ export function WinnersSection({ winners }: WinnersSectionProps) {
         </Reveal>
 
         {/* Bottom Features Row */}
-        <Reveal delay={200} direction="up" className="mt-20 md:mt-28 w-full border-t border-white/10 pt-8 flex flex-wrap justify-center gap-6 md:gap-12 lg:gap-16">
-          <div className="flex items-center gap-3">
-            <Trophy size={20} className="text-[#C9A44A]" />
-            <span className="font-heading font-semibold text-[11px] md:text-[12px] uppercase tracking-[0.15em] text-white">Discipline</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <Star size={20} className="text-[#C9A44A]" />
-            <span className="font-heading font-semibold text-[11px] md:text-[12px] uppercase tracking-[0.15em] text-white">Determination</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <Award size={20} className="text-[#C9A44A]" />
-            <span className="font-heading font-semibold text-[11px] md:text-[12px] uppercase tracking-[0.15em] text-white">Championship</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <Users size={20} className="text-[#C9A44A]" />
-            <span className="font-heading font-semibold text-[11px] md:text-[12px] uppercase tracking-[0.15em] text-white">A Stronger Tomorrow</span>
+        <Reveal delay={200} direction="up" className="mt-12 sm:mt-20 md:mt-28 w-full border-t border-white/10 pt-6 sm:pt-8">
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center gap-4 sm:gap-8 md:gap-12 lg:gap-16 text-left sm:text-center">
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <Trophy size={18} className="text-[#C9A44A] sm:w-5 sm:h-5 shrink-0" />
+              <span className="font-heading font-semibold text-[10px] sm:text-[11px] md:text-[12px] uppercase tracking-[0.12em] sm:tracking-[0.15em] text-white">Discipline</span>
+            </div>
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <Star size={18} className="text-[#C9A44A] sm:w-5 sm:h-5 shrink-0" />
+              <span className="font-heading font-semibold text-[10px] sm:text-[11px] md:text-[12px] uppercase tracking-[0.12em] sm:tracking-[0.15em] text-white">Determination</span>
+            </div>
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <Award size={18} className="text-[#C9A44A] sm:w-5 sm:h-5 shrink-0" />
+              <span className="font-heading font-semibold text-[10px] sm:text-[11px] md:text-[12px] uppercase tracking-[0.12em] sm:tracking-[0.15em] text-white">Championship</span>
+            </div>
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <Users size={18} className="text-[#C9A44A] sm:w-5 sm:h-5 shrink-0" />
+              <span className="font-heading font-semibold text-[10px] sm:text-[11px] md:text-[12px] uppercase tracking-[0.12em] sm:tracking-[0.15em] text-white">Stronger Tomorrow</span>
+            </div>
           </div>
         </Reveal>
 
