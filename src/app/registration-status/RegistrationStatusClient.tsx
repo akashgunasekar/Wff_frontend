@@ -229,7 +229,7 @@ export default function RegistrationStatusClient() {
                   <h3 className="font-heading text-2xl sm:text-3xl uppercase font-black tracking-wider leading-tight bg-gradient-to-r from-[#FFF3D6] via-[#FCF6BA] to-[#C9A44A] bg-clip-text text-transparent break-words">
                     {decodeHtml(registration.event_name)}
                   </h3>
-                  <div className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-white/50 font-semibold mt-0.5">
+                  <div className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-white/50 font-semibold mt-1">
                     World Fitness Federation • Tamil Nadu
                   </div>
                 </div>
@@ -246,23 +246,23 @@ export default function RegistrationStatusClient() {
 
             {/* ATHLETE CREDENTIAL RIBBON */}
             <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-[#14233D] via-[#0E1A2E] to-[#14233D] border-b border-[#C9A44A]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="min-w-0">
-                <div className="text-[9px] uppercase tracking-[0.25em] text-[#C9A44A] font-extrabold mb-1 whitespace-nowrap">
+              <div className="min-w-0 flex-1 flex flex-col justify-center">
+                <span className="text-[9px] uppercase tracking-[0.25em] text-[#C9A44A] font-extrabold block mb-1">
                   Registered Competitor
-                </div>
-                <div className="font-heading text-xl sm:text-2xl uppercase font-black text-white tracking-wide break-words">
+                </span>
+                <div className="font-heading text-xl sm:text-2xl uppercase font-black text-white tracking-wide leading-snug break-words my-0.5">
                   {registration.athlete_name}
                 </div>
-                <div className="text-[11px] text-white/60 font-medium mt-0.5 whitespace-nowrap">
-                  Category Entries: <span className="text-[#FCF6BA] font-bold">{registration.categories?.length || 1} Divisions</span>
-                </div>
+                <span className="text-[11px] text-white/70 font-medium block mt-1">
+                  Category Entries: <strong className="text-[#FCF6BA] font-bold">{registration.categories?.length || 1} Divisions</strong>
+                </span>
               </div>
 
               {/* Reg ID Box */}
               <div className="bg-[#050B14] px-4 py-2.5 rounded-xl border border-[#C9A44A]/40 flex items-center justify-between sm:justify-center gap-3 shrink-0">
                 <div>
                   <div className="text-[8px] uppercase tracking-[0.25em] text-[#C9A44A] font-bold whitespace-nowrap">Pass ID / Reg No</div>
-                  <div className="font-heading font-mono font-bold text-sm sm:text-base text-[#FCF6BA] tracking-wider whitespace-nowrap">
+                  <div className="font-mono font-bold text-sm sm:text-base text-[#FCF6BA] tracking-wider whitespace-nowrap mt-0.5">
                     {registration.registration_number}
                   </div>
                 </div>
@@ -283,14 +283,14 @@ export default function RegistrationStatusClient() {
             </div>
 
             {/* Date & Venue Tiles */}
-            <div className="px-6 sm:px-8 py-4 grid grid-cols-1 sm:grid-cols-2 gap-3 border-b border-white/10 bg-black/20">
+            <div className="px-6 sm:px-8 py-4 grid grid-cols-1 sm:grid-cols-2 gap-3.5 border-b border-white/10 bg-black/20">
               <div className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/5">
                 <div className="w-8 h-8 rounded-lg bg-[#C9A44A]/15 border border-[#C9A44A]/30 flex items-center justify-center text-[#FCF6BA] shrink-0">
                   <Calendar size={15} />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <div className="text-[8.5px] uppercase tracking-[0.2em] text-white/40 font-bold whitespace-nowrap">Event Date</div>
-                  <div className="font-heading font-bold text-xs sm:text-sm text-white uppercase tracking-wide">{registration.event_date}</div>
+                  <div className="font-sans font-bold text-xs sm:text-sm text-white uppercase tracking-wide leading-snug mt-0.5">{registration.event_date}</div>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/5 min-w-0">
@@ -299,7 +299,7 @@ export default function RegistrationStatusClient() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-[8.5px] uppercase tracking-[0.2em] text-white/40 font-bold whitespace-nowrap">Official Venue</div>
-                  <div className="font-heading font-bold text-xs sm:text-sm text-white uppercase tracking-wide break-words leading-snug">{decodeHtml(registration.venue || 'TBA')}</div>
+                  <div className="font-sans font-bold text-xs sm:text-sm text-white uppercase tracking-wide break-words leading-snug mt-0.5">{decodeHtml(registration.venue || 'TBA')}</div>
                 </div>
               </div>
             </div>
@@ -316,25 +316,25 @@ export default function RegistrationStatusClient() {
                 </span>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 {registration.categories?.map((c: string, idx: number) => (
-                  <div key={idx} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-gradient-to-r from-white/[0.06] to-white/[0.02] border border-white/10 hover:border-[#C9A44A]/40 transition-colors">
+                  <div key={idx} className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-white/[0.07] to-white/[0.02] border border-white/10 hover:border-[#C9A44A]/40 transition-colors">
                     <div className="flex items-center gap-3 min-w-0 flex-1">
                       <span className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#BF953F] to-[#8A6318] text-[#040A12] text-xs font-black flex items-center justify-center shrink-0 shadow-sm">
                         {idx + 1}
                       </span>
-                      <span className="font-heading font-extrabold text-xs sm:text-sm uppercase text-white tracking-wider break-words leading-snug">
+                      <span className="font-sans font-bold text-xs sm:text-[13px] uppercase text-white tracking-wide leading-normal break-words">
                         {decodeHtml(c)}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-emerald-400 shrink-0 text-[10px] font-bold uppercase tracking-wider whitespace-nowrap">
+                    <div className="flex items-center gap-1.5 text-emerald-400 shrink-0 text-[10px] font-bold uppercase tracking-wider whitespace-nowrap pl-2">
                       <CheckCircle2 size={14} className="shrink-0" />
                       <span>Active</span>
                     </div>
                   </div>
                 ))}
                 {registration.tan_spray_requested && (
-                  <div className="p-3 rounded-xl bg-gradient-to-r from-[#C9A44A]/20 to-[#C9A44A]/5 border border-[#C9A44A]/40 flex items-center gap-2.5 text-xs font-bold text-[#FCF6BA] uppercase tracking-wider">
+                  <div className="px-4 py-3 rounded-xl bg-gradient-to-r from-[#C9A44A]/20 to-[#C9A44A]/5 border border-[#C9A44A]/40 flex items-center gap-2.5 text-xs font-bold text-[#FCF6BA] uppercase tracking-wider">
                     <span className="w-2 h-2 rounded-full bg-[#FCF6BA] animate-pulse shrink-0"></span>
                     <span>Official Pro Stage Tan Spray Included</span>
                   </div>
@@ -360,10 +360,10 @@ export default function RegistrationStatusClient() {
                   <span className="text-[8px] uppercase tracking-[0.25em] text-[#FCF6BA] font-extrabold whitespace-nowrap">Scan for Stage Access</span>
                 </div>
 
-                <div className="flex-1 flex flex-col justify-between sm:items-end gap-2 text-center sm:text-right w-full sm:w-auto">
+                <div className="flex-1 flex flex-col justify-center sm:items-end gap-2 text-center sm:text-right w-full sm:w-auto">
                   <div>
                     <div className="text-[9px] uppercase tracking-[0.2em] text-white/40 font-bold mb-0.5 whitespace-nowrap">Total Registration Fee</div>
-                    <div className="font-heading text-3xl sm:text-4xl font-black text-white bg-gradient-to-r from-white via-[#FCF6BA] to-[#C9A44A] bg-clip-text text-transparent leading-none">₹{registration.total_amount}</div>
+                    <div className="font-heading text-3xl sm:text-4xl font-black text-white bg-gradient-to-r from-white via-[#FCF6BA] to-[#C9A44A] bg-clip-text text-transparent leading-tight">₹{registration.total_amount}</div>
                   </div>
                   <div>
                     <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-[0.2em] border shadow-sm bg-emerald-500/20 text-emerald-300 border-emerald-500/40 whitespace-nowrap">
@@ -397,21 +397,16 @@ export default function RegistrationStatusClient() {
                   try {
                     const { toPng } = await import('html-to-image');
                     const dataUrl = await toPng(node, {
-                      pixelRatio: 2,
+                      pixelRatio: 2.5,
                       skipFonts: true,
                       backgroundColor: '#050A12',
-                      style: {
-                        width: '600px',
-                        maxWidth: '600px',
-                        minWidth: '600px',
-                        margin: '0 auto',
-                      },
+                      cacheBust: true,
                       filter: (domNode: HTMLElement) => {
                         return domNode.tagName !== 'SCRIPT' && domNode.tagName !== 'IFRAME';
                       }
                     });
                     const link = document.createElement('a');
-                    link.download = `WFF-Stage-Pass-${registration.registration_number || 'Athlete'}.png`;
+                    link.download = `WFF-Stage-Pass-${(registration.registration_number || 'Athlete').replace(/[^a-zA-Z0-9-_]/g, '_')}.png`;
                     link.href = dataUrl;
                     link.click();
                     toast.success("Stage pass downloaded to your device!", { title: "Pass Downloaded" });
