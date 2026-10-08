@@ -686,40 +686,34 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
             </div>
 
             {/* ATHLETE CREDENTIAL RIBBON */}
-            <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-[#14233D] via-[#0E1A2E] to-[#14233D] border-b border-[#C9A44A]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="min-w-0 flex-1 flex flex-col justify-center">
-                <span className="text-[9px] uppercase tracking-[0.25em] text-[#C9A44A] font-extrabold block mb-1">
+            <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-[#14233D] via-[#0E1A2E] to-[#14233D] border-b border-[#C9A44A]/20">
+              {/* Top Meta Line */}
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <span className="text-[9px] uppercase tracking-[0.25em] text-[#C9A44A] font-extrabold">
                   Registered Competitor
                 </span>
-                <div className="font-heading text-xl sm:text-2xl uppercase font-black text-white tracking-wide leading-snug break-words my-0.5">
-                  {athleteName}
+                <div className="bg-[#050B14] px-2.5 py-1 rounded border border-[#C9A44A]/30 flex items-center gap-1.5 shrink-0">
+                  <span className="text-[8px] uppercase tracking-wider text-[#C9A44A] font-bold">Pass ID:</span>
+                  <span className="font-mono font-bold text-xs text-[#FCF6BA] tracking-wider">
+                    {successData.registration_number}
+                  </span>
                 </div>
-                <span className="text-[11px] text-white/70 font-medium block mt-1">
-                  Category Entries: <strong className="text-[#FCF6BA] font-bold">{successData.categories?.length || 1} Divisions</strong>
-                </span>
               </div>
 
-              {/* Reg ID Box */}
-              <div className="bg-[#050B14] px-4 py-2.5 rounded-xl border border-[#C9A44A]/40 flex items-center justify-between sm:justify-center gap-3 shrink-0">
-                <div>
-                  <div className="text-[8px] uppercase tracking-[0.25em] text-[#C9A44A] font-bold whitespace-nowrap">Pass ID / Reg No</div>
-                  <div className="font-mono font-bold text-sm sm:text-base text-[#FCF6BA] tracking-wider whitespace-nowrap mt-0.5">
-                    {successData.registration_number}
-                  </div>
+              {/* Athlete Name - Full Width Block */}
+              <h3 className="font-heading text-2xl sm:text-3xl uppercase font-black text-white tracking-wide leading-tight break-words py-0.5">
+                {athleteName}
+              </h3>
+
+              {/* Bottom Meta Line */}
+              <div className="flex items-center justify-between gap-3 mt-3 pt-2.5 border-t border-white/10 text-xs">
+                <div className="text-white/70 font-medium">
+                  Enrolled Divisions: <strong className="text-[#FCF6BA] font-bold">{successData.categories?.length || 1} Categories</strong>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (typeof navigator !== 'undefined') {
-                      navigator.clipboard.writeText(successData.registration_number);
-                      toast.success("Registration ID copied!", { title: "Copied" });
-                    }
-                  }}
-                  title="Copy Registration Number"
-                  className="p-1.5 text-white/50 hover:text-[#FCF6BA] hover:bg-white/10 rounded transition-colors"
-                >
-                  <Copy size={15} />
-                </button>
+                <div className="text-[#FCF6BA] text-[11px] font-bold uppercase tracking-wider flex items-center gap-1 shrink-0">
+                  <CheckCircle2 size={13} className="text-emerald-400" />
+                  <span>Official Athlete</span>
+                </div>
               </div>
             </div>
 
@@ -751,13 +745,13 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
             </div>
 
             {/* CONFIRMED DIVISIONS & CATEGORIES LIST */}
-            <div className="px-6 sm:px-8 py-5">
-              <div className="flex items-center justify-between gap-2 mb-3">
+            <div className="px-6 sm:px-8 pt-5 pb-6">
+              <div className="flex items-center justify-between gap-2 mb-3.5">
                 <div className="text-[10px] uppercase tracking-[0.25em] text-[#C9A44A] font-extrabold flex items-center gap-1.5 whitespace-nowrap">
                   <Trophy size={13} className="text-[#C9A44A] shrink-0" />
                   <span>Enrolled Championship Categories</span>
                 </div>
-                <span className="text-[9px] font-black text-emerald-400 bg-emerald-950/60 border border-emerald-500/40 px-2.5 py-0.5 rounded-full uppercase tracking-wider whitespace-nowrap">
+                <span className="text-[9px] font-black text-emerald-400 bg-emerald-500/15 border border-emerald-500/40 px-3 py-0.5 rounded-full uppercase tracking-wider whitespace-nowrap">
                   Verified
                 </span>
               </div>
@@ -793,7 +787,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
             </div>
 
             {/* PERFORATED PASS TEAR STUB WITH SCANNER QR */}
-            <div className="relative pt-4 pb-6 px-6 sm:px-8 bg-[#040810] border-t-2 border-dashed border-[#C9A44A]/30">
+            <div className="relative pt-6 pb-6 px-6 sm:px-8 bg-[#040810] border-t-2 border-dashed border-[#C9A44A]/30">
 
               {/* Perforation Cutout Circles */}
               <div className="absolute -top-3.5 -left-4 w-7 h-7 rounded-full bg-[#F4F5F7] dark:bg-[#03070E] border-r-2 border-[#C9A44A]/30"></div>
