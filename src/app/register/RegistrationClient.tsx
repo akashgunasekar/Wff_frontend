@@ -663,8 +663,8 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
 
               <div className="flex items-center justify-between gap-4 relative z-10">
                 <div className="min-w-0 flex-1">
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-[#C9A44A]/20 border border-[#C9A44A]/40 text-[#FCF6BA] text-[9px] sm:text-[10px] font-black uppercase tracking-[0.25em] mb-1.5 whitespace-nowrap">
-                    <Trophy size={11} className="text-[#FCF6BA] shrink-0" />
+                  <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-md bg-[#C9A44A]/20 border border-[#C9A44A]/40 text-[#FCF6BA] text-[10px] font-black uppercase tracking-wider mb-2 whitespace-nowrap">
+                    <Trophy size={12} className="text-[#FCF6BA] shrink-0" />
                     <span>Official Athlete Pass</span>
                   </div>
                   <h3 className="font-heading text-2xl sm:text-3xl uppercase font-black tracking-wider leading-tight bg-gradient-to-r from-[#FFF3D6] via-[#FCF6BA] to-[#C9A44A] bg-clip-text text-transparent break-words">
@@ -689,12 +689,12 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
             <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-[#14233D] via-[#0E1A2E] to-[#14233D] border-b border-[#C9A44A]/20">
               {/* Top Meta Line */}
               <div className="flex items-center justify-between gap-2 mb-2">
-                <span className="text-[9px] uppercase tracking-[0.25em] text-[#C9A44A] font-extrabold">
+                <span className="text-[9px] uppercase tracking-[0.25em] text-[#C9A44A] font-extrabold whitespace-nowrap">
                   Registered Competitor
                 </span>
-                <div className="bg-[#050B14] px-2.5 py-1 rounded border border-[#C9A44A]/30 flex items-center gap-1.5 shrink-0">
-                  <span className="text-[8px] uppercase tracking-wider text-[#C9A44A] font-bold">Pass ID:</span>
-                  <span className="font-mono font-bold text-xs text-[#FCF6BA] tracking-wider">
+                <div className="bg-[#050B14] px-3 py-1 rounded-md border border-[#C9A44A]/40 flex items-center gap-2 shrink-0 whitespace-nowrap flex-nowrap">
+                  <span className="text-[9px] uppercase tracking-wider text-[#C9A44A] font-extrabold whitespace-nowrap">Pass ID:</span>
+                  <span className="font-mono font-bold text-xs sm:text-sm text-[#FCF6BA] tracking-wider whitespace-nowrap">
                     {successData.registration_number}
                   </span>
                 </div>
@@ -706,12 +706,12 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
               </h3>
 
               {/* Bottom Meta Line */}
-              <div className="flex items-center justify-between gap-3 mt-3 pt-2.5 border-t border-white/10 text-xs">
-                <div className="text-white/70 font-medium">
-                  Enrolled Divisions: <strong className="text-[#FCF6BA] font-bold">{successData.categories?.length || 1} Categories</strong>
+              <div className="flex items-center justify-between gap-4 mt-3 pt-2.5 border-t border-white/10 text-xs">
+                <div className="text-white/70 font-medium whitespace-nowrap">
+                  Enrolled: <strong className="text-[#FCF6BA] font-bold">{successData.categories?.length || 1} Divisions</strong>
                 </div>
-                <div className="text-[#FCF6BA] text-[11px] font-bold uppercase tracking-wider flex items-center gap-1 shrink-0">
-                  <CheckCircle2 size={13} className="text-emerald-400" />
+                <div className="text-[#FCF6BA] text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 shrink-0 whitespace-nowrap">
+                  <CheckCircle2 size={13} className="text-emerald-400 shrink-0" />
                   <span>Official Athlete</span>
                 </div>
               </div>
@@ -745,7 +745,7 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
             </div>
 
             {/* CONFIRMED DIVISIONS & CATEGORIES LIST */}
-            <div className="px-6 sm:px-8 pt-5 pb-6">
+            <div className="px-6 sm:px-8 pt-5 pb-8">
               <div className="flex items-center justify-between gap-2 mb-3.5">
                 <div className="text-[10px] uppercase tracking-[0.25em] text-[#C9A44A] font-extrabold flex items-center gap-1.5 whitespace-nowrap">
                   <Trophy size={13} className="text-[#C9A44A] shrink-0" />
@@ -811,23 +811,23 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
                 </div>
 
                 {/* Status & Payment Info */}
-                <div className="flex-1 flex flex-col justify-center sm:items-end gap-2 text-center sm:text-right w-full sm:w-auto">
+                <div className="flex-1 flex flex-col justify-between sm:items-end gap-3 text-center sm:text-right w-full sm:w-auto py-1">
                   <div>
                     <div className="text-[9px] uppercase tracking-[0.2em] text-white/40 font-bold mb-0.5 whitespace-nowrap">Total Registration Fee</div>
-                    <div className="font-heading text-3xl sm:text-4xl font-black text-white bg-gradient-to-r from-white via-[#FCF6BA] to-[#C9A44A] bg-clip-text text-transparent leading-tight">
+                    <div className="font-heading text-3xl sm:text-4xl font-black text-white bg-gradient-to-r from-white via-[#FCF6BA] to-[#C9A44A] bg-clip-text text-transparent leading-none">
                       ₹{successData.total_amount}
                     </div>
                   </div>
 
-                  <div>
-                    <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-[0.2em] border shadow-sm whitespace-nowrap ${isCash && !isCashPaid ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'}`}>
+                  <div className="flex flex-col sm:items-end gap-1.5">
+                    <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider border shadow-sm whitespace-nowrap ${isCash && !isCashPaid ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'}`}>
                       <CheckCircle2 size={13} className="shrink-0" />
                       <span>{isCash && !isCashPaid ? 'PAY AT DESK' : 'PAID & VERIFIED'}</span>
                     </div>
-                  </div>
 
-                  <div className="text-[9px] uppercase font-mono text-white/40 break-all sm:break-normal">
-                    Ref: {isCash && !isCashPaid ? 'CASH-VENUE' : successData.razorpay_payment_id || 'UPI-PROOF-VERIFIED'}
+                    <div className="text-[9px] uppercase font-mono text-white/40 whitespace-nowrap">
+                      Ref: {isCash && !isCashPaid ? 'CASH-VENUE' : successData.razorpay_payment_id || 'UPI-PROOF-VERIFIED'}
+                    </div>
                   </div>
                 </div>
 
