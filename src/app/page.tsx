@@ -40,8 +40,8 @@ export default async function Home() {
     <div className="flex flex-col items-center w-full min-h-screen overflow-x-hidden">
       <HeroSection slides={heroSlides} />
       <UpcomingEventsSection events={events} />
-      <WhyCompeteSection />
-      <ExcellenceSection />
+      <WhyCompeteSection section={sections?.why_compete} />
+      <ExcellenceSection section={sections?.wff_standard} />
       <WinnersSection winners={winners} />
       <OfficialsSection officials={officials} />
       <GallerySection images={galleryImages} />

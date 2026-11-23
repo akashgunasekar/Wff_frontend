@@ -1,18 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
 
 /* ═══════════════════════════════════════════════
-   WFF TAMIL NADU — CHAMPIONSHIP EDITORIAL
-   Design System Tokens
+   WFF TAMIL NADU — PROFESSIONAL TYPOGRAPHY SYSTEM
+   Barlow Condensed = Championship Athletic Identity
+   Inter = Professional Digital Readability
    ═══════════════════════════════════════════════ */
 
 @theme {
-  /* Typography */
-  --font-body: "Barlow", sans-serif;
-  --font-display: "Barlow Condensed", sans-serif;
-  --font-signature: "Great Vibes", cursive;
+  /* Typography Families */
+  --font-body: var(--font-inter), "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-barlow-condensed), "Barlow Condensed", sans-serif;
+
+  /* Semantic Aliases */
   --font-sans: var(--font-body);
   --font-heading: var(--font-display);
 
@@ -45,110 +46,191 @@
 }
 
 /* ═══════════════════════════════════════════════
-   Light Theme (Default)
+   Theme Variables (Light & Dark)
    ═══════════════════════════════════════════════ */
 
 @layer base {
   :root {
-    --bg: #F5F6F8;
+    --bg: #F5F7FA;
     --surface: #FFFFFF;
     --elevated: #FFFFFF;
-    --navy: #061426;
-    --deep-navy: #081A2E;
-    --gold: #C9A44A;
-    --gold-light: #DDBE72;
-    --text-primary: #061426;
-    --text-body: #3B4A5E;
-    --muted: #64748B;
-    --border-color: #DCE2E8;
-  }
-
-  /* ═══════════════════════════════════════════════
-     Dark Theme — Midnight Championship Night
-     ═══════════════════════════════════════════════ */
-
-  .dark {
-    --bg: #040A12;
-    --surface: #081220;
-    --elevated: #0C1A2C;
-    --navy: #0A1526;
+    --navy: #071A2E;
     --deep-navy: #040A12;
     --gold: #C9A44A;
-    --gold-light: #DDBE72;
-    --text-primary: #F0F2F5;
-    --text-body: #8A96A8;
+    --gold-light: #FCF6BA;
+    --gold-hover: #B38728;
+    --gold-surface: #FBF7EC;
+    --text-primary: #071A2E;
+    --text-body: #3B4A5E;
     --muted: #64748B;
+    --border-color: #E2E8F0;
+    --card-shadow: 0 4px 20px -2px rgba(7, 26, 46, 0.05);
+    --card-shadow-hover: 0 12px 30px -4px rgba(7, 26, 46, 0.10);
+  }
+
+  /* Dark Theme — Midnight Championship Obsidian */
+  .dark {
+    --bg: #040A12;
+    --surface: #0B1E36;
+    --elevated: #0E2542;
+    --navy: #071A2E;
+    --deep-navy: #040A12;
+    --gold: #C9A44A;
+    --gold-light: #FCF6BA;
+    --gold-hover: #B38728;
+    --gold-surface: rgba(201, 164, 74, 0.12);
+    --text-primary: #F0F2F5;
+    --text-body: #CBD5E1;       /* Readable high-contrast neutral */
+    --muted: #A3AFBF;           /* Clean supporting neutral */
     --border-color: rgba(255, 255, 255, 0.10);
+    --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+    --card-shadow-hover: 0 12px 30px -4px rgba(201, 164, 74, 0.15);
   }
 
   * {
     border-color: var(--border-color);
   }
 
-  /* Body */
+  html {
+    font-size: 16px;
+    letter-spacing: normal;
+  }
+
+  /* Default Body — Inter */
   body {
     background-color: var(--bg);
     color: var(--text-body);
-    font-family: "Barlow", sans-serif;
+    font-family: var(--font-body);
     font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: normal;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   /* Headings — Barlow Condensed */
   h1, h2, h3, h4, h5, h6 {
-    font-family: "Barlow Condensed", sans-serif;
+    font-family: var(--font-heading);
     color: var(--text-primary);
-    font-weight: 600;
-    letter-spacing: 0.02em;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
   }
 
-  h1 { font-weight: 700; }
+  h1 { font-weight: 900; }
+  h2 { font-weight: 800; line-height: 1.25; letter-spacing: 0; }
+  h3 { font-weight: 800; line-height: 1.3; letter-spacing: 0.01em; }
+  h4 { font-weight: 700; line-height: 1.35; letter-spacing: 0.01em; }
 }
 
 /* ═══════════════════════════════════════════════
-   Typography Utilities
+   Restrained Typography Utilities
    ═══════════════════════════════════════════════ */
 
 @layer utilities {
   .font-display {
-    font-family: "Barlow Condensed", sans-serif;
+    font-family: var(--font-display);
+  }
+
+  .font-heading {
+    font-family: var(--font-display);
   }
 
   .font-body {
-    font-family: "Barlow", sans-serif;
+    font-family: var(--font-body);
   }
 
-  /* Championship Label — micro typography */
-  .championship-label {
-    font-family: "Barlow Condensed", sans-serif;
-    font-weight: 500;
-    font-size: 0.75rem;
-    letter-spacing: 0.16em;
+  .font-sans {
+    font-family: var(--font-body);
+  }
+
+  /* Typography Scale Utilities using clamp() */
+  .text-hero-title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(44px, 5.5vw, 88px);
+    line-height: 0.92;
+    letter-spacing: -1px;
     text-transform: uppercase;
-    color: var(--gold);
   }
 
-  /* Section number */
-  .section-number {
-    font-family: "Barlow Condensed", sans-serif;
+  .text-section-h2 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(32px, 3.5vw, 48px);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+
+  .text-section-h3 {
+    font-family: var(--font-display);
     font-weight: 700;
-    font-size: 0.875rem;
-    letter-spacing: 0.12em;
-    color: var(--gold);
+    font-size: clamp(25px, 2.5vw, 32px);
+    line-height: 1.15;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
   }
 
-  /* Gold rule */
-  .gold-rule {
-    width: 48px;
-    height: 1px;
-    background-color: var(--gold);
+  .text-section-h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(21px, 2vw, 24px);
+    line-height: 1.25;
+    text-transform: uppercase;
   }
 
-  .gold-rule-vertical {
-    width: 1px;
-    height: 48px;
-    background-color: var(--gold);
+  .text-card-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(19px, 1.8vw, 22px);
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .text-nav-item {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: clamp(14px, 1.1vw, 15px);
+    letter-spacing: 0;
+  }
+
+  .text-eyebrow-label {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(11px, 0.9vw, 13px);
+    letter-spacing: 2px;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .text-cta-btn {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(13px, 1.1vw, 15px);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* Controlled Letter-Spacing utilities */
+  .tracking-tight-heading {
+    letter-spacing: -0.01em;
+  }
+
+  .tracking-subheading {
+    letter-spacing: 0.01em;
+  }
+
+  .tracking-nav {
+    letter-spacing: 0;
+  }
+
+  .tracking-btn {
+    letter-spacing: 1px;
+  }
+
+  .tracking-label {
+    letter-spacing: 0.015em;
   }
 }
 

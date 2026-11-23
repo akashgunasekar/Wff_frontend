@@ -8,9 +8,10 @@ interface EventActionBoxProps {
   targetDateStr: string;
   venue: string;
   isClosed: boolean;
+  status?: string;
 }
 
-export default function EventActionBox({ eventId, targetDateStr, venue, isClosed }: EventActionBoxProps) {
+export default function EventActionBox({ eventId, targetDateStr, venue, isClosed, status }: EventActionBoxProps) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [isMounted, setIsMounted] = useState(false);
   const [isPassed, setIsPassed] = useState(false);
@@ -128,6 +129,19 @@ export default function EventActionBox({ eventId, targetDateStr, venue, isClosed
           >
             Registration Closed
           </button>
+        ) : status === 'upcoming' ? (
+          <>
+            <button 
+              disabled
+              className="w-full h-12 bg-[#040A12] border-2 border-[#C9A44A]/50 text-[#FCF6BA] text-[13px] uppercase tracking-[0.12em] font-heading font-extrabold rounded-md cursor-default flex items-center justify-center gap-2 shadow-sm"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#C9A44A] animate-pulse" />
+              Registration Opens Soon
+            </button>
+            <p className="text-center text-[10px] text-[#040A12]/60 mt-3 font-heading font-bold uppercase tracking-[0.15em]">
+              Online registration opening soon
+            </p>
+          </>
         ) : (
           <>
             <Link href={`/register?eventId=${eventId}`} className="block w-full">

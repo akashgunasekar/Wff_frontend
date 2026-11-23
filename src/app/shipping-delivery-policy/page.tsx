@@ -25,13 +25,13 @@ export default async function ShippingDeliveryPolicyPage() {
         </div>
 
         <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-wff-gold/30 bg-wff-gold/10 text-wff-gold text-[11px] font-bold tracking-[0.2em] uppercase mb-6 rounded-full">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-wff-gold/30 bg-wff-gold/10 text-wff-gold text-xs font-bold tracking-label uppercase mb-6 rounded-full font-heading">
             <Truck size={14} /> Service Delivery
           </div>
-          <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl text-white uppercase leading-[0.95] mb-5 tracking-tight font-bold">
+          <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl text-white uppercase leading-[0.95] mb-5 tracking-tight-heading font-extrabold">
             Shipping &amp; <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]">Delivery Policy</span>
           </h1>
-          <p className="text-wff-muted text-base sm:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
+          <p className="text-wff-muted text-base sm:text-lg max-w-2xl mx-auto font-normal font-body leading-relaxed">
             Effective Date: 12 September 2026 • Digital Confirmation &amp; On-Venue Fulfillment
           </p>
         </div>

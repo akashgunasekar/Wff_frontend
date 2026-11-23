@@ -40,38 +40,99 @@ export function HeroSection({ slides }: HeroSectionProps) {
   };
 
   const renderTitle = (title: string) => {
-    const cleanTitle = decodeHtml(title);
-    const words = cleanTitle.split(' ');
+    const cleanTitle = decodeHtml(title).trim();
+    const upper = cleanTitle.toUpperCase();
     let line1 = '';
-    let line2 = cleanTitle;
-    let line3 = '';
+    let line2 = '';
 
-    if (words.length >= 3 && cleanTitle.toUpperCase().includes('WFF')) {
-      line1 = words[0];
-      const lastWord = words[words.length - 1];
-      if (/\d{4}/.test(lastWord)) {
-        line3 = lastWord;
-        line2 = words.slice(1, words.length - 1).join(' ');
-      } else {
-        line2 = words.slice(1).join(' ');
-      }
+    if (upper.includes('SOUTH INDIA')) {
+      const idx = upper.indexOf('SOUTH INDIA');
+      const rest = cleanTitle.slice(idx + 11).trim();
+      line1 = 'SOUTH INDIA';
+      line2 = rest || 'NATURAL LEAGUE 2027';
+    } else if (upper.includes('INDIA NATURAL')) {
+      const idx = upper.indexOf('INDIA NATURAL');
+      const rest = cleanTitle.slice(idx + 13).trim();
+      line1 = 'INDIA NATURAL';
+      line2 = rest || '2027';
+    } else if (upper.includes('NATURAL LEAGUE') && (upper.includes('TAMIL NADU') || upper.includes('CHAMPIONSHIP'))) {
+      const splitTarget = upper.includes('TAMIL NADU') ? 'TAMIL NADU' : 'CHAMPIONSHIP';
+      const splitIdx = upper.indexOf(splitTarget);
+      line1 = cleanTitle.slice(0, splitIdx).trim();
+      line2 = cleanTitle.slice(splitIdx).trim();
     } else {
-      line1 = '';
-      line2 = cleanTitle;
-      line3 = '';
+      const words = cleanTitle.split(/\s+/);
+      if (words.length > 2) {
+        const mid = Math.ceil(words.length / 2);
+        line1 = words.slice(0, mid).join(' ');
+        line2 = words.slice(mid).join(' ');
+      } else if (words.length === 2) {
+        line1 = words[0];
+        line2 = words[1];
+      } else {
+        line1 = cleanTitle;
+        line2 = '';
+      }
     }
 
     return (
-      <h1 className="font-heading font-extrabold uppercase leading-[0.92] sm:leading-[0.88] tracking-[-0.02em] mb-4 sm:mb-6 drop-shadow-2xl flex flex-col items-start">
-        {line1 && <span className="text-white text-[32px] xs:text-[40px] sm:text-[54px] lg:text-[70px] xl:text-[50px]">{line1}</span>}
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] text-[40px] xs:text-[40px] sm:text-[54px] lg:text-[70px] xl:text-[50px]">{line2}</span>
-        {line3 && <span className="text-white text-[32px] xs:text-[40px] sm:text-[54px] lg:text-[70px] xl:text-[50px]">{line3}</span>}
+      <h1 className="font-heading font-black uppercase leading-[0.92] tracking-[-1px] mb-3 sm:mb-4 drop-shadow-2xl flex flex-col items-start">
+        {line1 && (
+          <span className="text-[clamp(34px,4.8vw,74px)] leading-[0.92] tracking-[-1px]">
+            {line1.toUpperCase().startsWith('WFF ') ? (
+              <>
+                <span className="text-white">WFF </span>
+                <span className="text-[#FCF6BA]">{line1.slice(4)}</span>
+              </>
+            ) : (
+              <span className="text-white">{line1}</span>
+            )}
+          </span>
+        )}
+        {line2 && (
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] text-[clamp(36px,5.2vw,80px)] leading-[0.92] tracking-[-1px]">
+            {line2}
+          </span>
+        )}
       </h1>
     );
   };
 
+  // Live countdown timer in Asia/Kolkata (IST = UTC+5:30)
+  const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; seconds: number; isPassed: boolean }>({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+    isPassed: false
+  });
+
+  useEffect(() => {
+    const targetDateStr = slide.event_date ? `${slide.event_date}T08:00:00+05:30` : '2027-01-10T08:00:00+05:30';
+    const eventTargetDate = new Date(targetDateStr).getTime();
+
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const diff = eventTargetDate - now;
+
+      if (diff <= 0) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, isPassed: true });
+      } else {
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+        setTimeLeft({ days, hours, minutes, seconds, isPassed: false });
+      }
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, [slide.event_date]);
+
   return (
-    <section className="relative w-full min-h-[500px] sm:min-h-[660px] lg:min-h-[680px] lg:h-[76vh] md:flex md:flex-col justify-between overflow-hidden bg-[#040A12]">
+    <section className="relative w-full min-h-[520px] sm:min-h-[640px] lg:min-h-[700px] lg:h-[82vh] flex flex-col justify-between overflow-hidden bg-[#040A12]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -80,23 +141,23 @@ export function HeroSection({ slides }: HeroSectionProps) {
           unoptimized={slide.image?.startsWith('/uploads')}
           fill
           priority
-          className="object-cover object-center saturate-[0.8] brightness-100"
+          className="object-cover object-center saturate-[0.85] brightness-95"
           sizes="100vw"
         />
         {/* Shadow overlays for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b sm:bg-gradient-to-r from-[#040A12]/95 via-[#040A12]/80 sm:via-[#040A12]/50 to-[#040A12]/40 sm:to-transparent"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#040A12] via-transparent to-transparent opacity-90 sm:opacity-80"></div>
+        <div className="absolute inset-0 bg-gradient-to-b sm:bg-gradient-to-r from-[#040A12]/95 via-[#040A12]/85 sm:via-[#040A12]/60 to-[#040A12]/40 sm:to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#040A12] via-transparent to-transparent opacity-95 sm:opacity-80"></div>
       </div>
 
       {/* Main Content Area */}
-      <div className="max-w-[1440px] mx-auto px-5 sm:px-6 md:px-8 relative z-10 w-full md:flex-grow md:flex md:flex-col justify-center pt-6 sm:pt-16 lg:pt-20 pb-8 sm:pb-12">
-        <div className="w-full max-w-[700px] flex flex-col items-start text-left">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-8 relative z-10 w-full flex-grow flex flex-col justify-center pt-8 sm:pt-14 lg:pt-16 pb-8 sm:pb-10">
+        <div className="w-full max-w-[760px] flex flex-col items-start text-left">
 
           {/* Eyebrow */}
           {slide.subtitle && (
-            <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+            <div className="flex items-center gap-3 sm:gap-4 mb-2.5 sm:mb-3">
               <div className="w-8 sm:w-10 h-[2px] bg-[#C9A44A]" />
-              <span className="font-heading font-semibold text-[16px] sm:text-[11px] md:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase text-white drop-shadow-md">
+              <span className="font-heading font-bold text-[11px] sm:text-[13px] tracking-[2px] leading-[1.4] uppercase text-[#FCF6BA] drop-shadow-md">
                 {decodeHtml(slide.subtitle)}
               </span>
             </div>
@@ -105,33 +166,39 @@ export function HeroSection({ slides }: HeroSectionProps) {
           {/* Title */}
           {renderTitle(slide.title)}
 
+          {/* Federation Notice */}
+          <div className="flex items-center gap-2 mb-3 text-xs sm:text-[13px] font-heading font-semibold uppercase tracking-[1.5px] text-[#FCF6BA]/90">
+            <span className="w-2 h-2 rounded-full bg-[#C9A44A] inline-block"></span>
+            <span>World Fitness Federation Tamil Nadu</span>
+          </div>
+
           {/* Description */}
           {slide.description && (
-            <p className="font-body text-[13.5px] sm:text-[15px] md:text-[16px] text-white/80 max-w-[500px] mb-6 sm:mb-8 leading-[1.55] sm:leading-[1.6] drop-shadow-md">
+            <p className="font-body font-normal text-[14.5px] sm:text-[15.5px] text-white/85 max-w-[650px] mb-5 sm:mb-6 leading-[1.6] tracking-normal drop-shadow-md">
               {decodeHtml(slide.description)}
             </p>
           )}
 
           {/* Date & Location */}
           {(slide.date || slide.location) && (
-            <div className="flex flex-col xs:flex-row items-start gap-4 sm:gap-6 mb-8 sm:mb-10 border-l-2 border-[#C9A44A]/30 pl-4 sm:pl-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2.5 sm:gap-6 mb-6 sm:mb-7 border-l-2 border-[#C9A44A]/40 pl-4 sm:pl-6">
               {slide.date && (
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <Calendar size={20} className="text-[#C9A44A] mt-0.5 shrink-0 sm:w-6 sm:h-6" strokeWidth={1.5} />
-                  <div className="flex flex-col">
-                    <span className="font-heading font-bold text-white tracking-[0.1em] leading-tight uppercase text-[15px] sm:text-[14px]">
-                      {slide.date.split(' ').slice(0, 3).join(' ')}
+                <div className="flex items-center gap-2.5 sm:gap-3 whitespace-nowrap shrink-0">
+                  <Calendar size={18} className="text-[#C9A44A] shrink-0 sm:w-5 sm:h-5" strokeWidth={1.8} />
+                  <span className="font-body font-bold text-white tracking-normal text-[14px] sm:text-[16px] whitespace-nowrap">
+                    {decodeHtml(slide.date)}
+                  </span>
+                  {slide.date_type === 'multi' && (
+                    <span className="px-2 py-0.5 rounded text-[10px] font-heading font-extrabold uppercase bg-[var(--gold)]/20 text-[#FCF6BA] border border-[var(--gold)]/40 tracking-[1px] whitespace-nowrap shrink-0">
+                      Multi-Day
                     </span>
-                    <span className="font-heading font-medium text-white/50 tracking-[0.1em] text-[14px] sm:text-[11px] uppercase mt-0.5">
-                      {slide.date.split(' ').slice(3).join(' ')}
-                    </span>
-                  </div>
+                  )}
                 </div>
               )}
               {slide.location && (
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <MapPin size={20} className="text-[#C9A44A] mt-0.5 shrink-0 sm:w-6 sm:h-6" strokeWidth={1.5} />
-                  <div className="font-heading font-bold text-white tracking-[0.08em] leading-[1.3] uppercase text-[14px] sm:text-[16px] opacity-80">
+                <div className="flex items-center gap-2.5 sm:gap-3">
+                  <MapPin size={18} className="text-[#C9A44A] shrink-0 sm:w-5 sm:h-5" strokeWidth={1.8} />
+                  <div className="font-body font-medium text-white/90 tracking-normal leading-[1.5] text-[13.5px] sm:text-[14px]">
                     {decodeHtml(slide.location)}
                   </div>
                 </div>
@@ -139,23 +206,75 @@ export function HeroSection({ slides }: HeroSectionProps) {
             </div>
           )}
 
-          {/* Buttons */}
-          <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-3 sm:gap-4 w-full sm:w-auto">
-            <Link
-              href={slide.event_id ? `/register?eventId=${slide.event_id}` : "/register"}
-              className="w-full sm:w-auto inline-flex items-center justify-center h-12 sm:h-14 px-6 sm:px-10 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-bold text-[12.5px] sm:text-[14px] tracking-[0.15em] uppercase hover:brightness-110 transition-all duration-300 shadow-[0_4px_20px_rgba(198,161,91,0.25)] rounded-sm"
-            >
-              Register Now
-              <ArrowRight size={16} strokeWidth={2} className="ml-2 sm:ml-3 sm:w-[18px] sm:h-[18px]" />
-            </Link>
+          {/* Live Countdown Timer (Asia/Kolkata) */}
+          <div className="mb-7 sm:mb-8 w-full max-w-[500px]">
+            <div className="text-[11px] font-heading font-bold uppercase tracking-[2px] text-[#FCF6BA] mb-2 flex items-center gap-2">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#C9A44A] animate-pulse"></span>
+              <span>Championship Countdown ({slide.date || 'Upcoming Championship'})</span>
+            </div>
+            {timeLeft.isPassed ? (
+              <div className="inline-flex items-center px-4 py-2 rounded-lg bg-[#C9A44A]/20 border border-[#C9A44A]/40 text-[#FCF6BA] font-heading font-bold text-sm uppercase tracking-[1px]">
+                Championship Concluded
+              </div>
+            ) : (
+              <div className="grid grid-cols-4 gap-2 sm:gap-3">
+                {[
+                  { label: 'Days', value: timeLeft.days },
+                  { label: 'Hours', value: timeLeft.hours },
+                  { label: 'Minutes', value: timeLeft.minutes },
+                  { label: 'Seconds', value: timeLeft.seconds }
+                ].map((unit, idx) => (
+                  <div key={idx} className="bg-[#071A2E]/80 backdrop-blur-md border border-[#C9A44A]/30 rounded-lg p-2 sm:p-2.5 text-center shadow-lg">
+                    <span className="font-heading font-black text-xl sm:text-2xl lg:text-3xl text-white block leading-tight">
+                      {String(unit.value).padStart(2, '0')}
+                    </span>
+                    <span className="font-heading text-[10px] sm:text-[11px] text-[#FCF6BA] uppercase tracking-[1px] font-semibold">
+                      {unit.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
-            <Link
-              href="/events"
-              className="w-full sm:w-auto inline-flex items-center justify-center h-12 sm:h-14 px-6 sm:px-10 border border-white/30 text-white font-heading font-bold text-[12.5px] sm:text-[14px] tracking-[0.15em] uppercase hover:bg-white/10 hover:border-white/50 backdrop-blur-sm transition-all duration-300 rounded-sm"
-            >
-              Explore Events
-              <ArrowRight size={16} strokeWidth={2} className="ml-2 sm:ml-3 opacity-60 sm:w-[18px] sm:h-[18px]" />
-            </Link>
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
+            {(slide.event_status === 'open' || (!slide.event_status && slide.event_id === 11)) ? (
+              <>
+                <Link
+                  href={slide.event_id ? `/register?eventId=${slide.event_id}` : "/register?eventId=11"}
+                  className="w-full sm:w-auto inline-flex items-center justify-center h-12 sm:h-14 px-7 sm:px-10 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-[13px] sm:text-[15px] tracking-[1px] uppercase hover:brightness-110 active:scale-[0.99] transition-all duration-300 shadow-[0_4px_20px_rgba(198,161,91,0.25)] rounded-lg min-h-[48px]"
+                >
+                  REGISTER NOW
+                  <ArrowRight size={16} strokeWidth={2.2} className="ml-2.5 sm:w-[18px] sm:h-[18px]" />
+                </Link>
+
+                <Link
+                  href={slide.slug ? `/events/${slide.slug}` : slide.event_id === 11 ? "/events/south-india-natural-league-2027" : "/events"}
+                  className="w-full sm:w-auto inline-flex items-center justify-center h-12 sm:h-14 px-7 sm:px-10 border border-white/30 text-white font-heading font-extrabold text-[13px] sm:text-[15px] tracking-[1px] uppercase hover:bg-white/10 hover:border-white/50 active:scale-[0.99] backdrop-blur-sm transition-all duration-300 rounded-lg min-h-[48px]"
+                >
+                  EXPLORE EVENT
+                  <ArrowRight size={16} strokeWidth={2} className="ml-2.5 opacity-60 sm:w-[18px] sm:h-[18px]" />
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  href={slide.slug ? `/events/${slide.slug}` : "/events"}
+                  className="w-full sm:w-auto inline-flex items-center justify-center h-12 sm:h-14 px-7 sm:px-10 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-[13px] sm:text-[15px] tracking-[1px] uppercase hover:brightness-110 active:scale-[0.99] transition-all duration-300 shadow-[0_4px_20px_rgba(198,161,91,0.25)] rounded-lg min-h-[48px]"
+                >
+                  EXPLORE CHAMPIONSHIP
+                  <ArrowRight size={16} strokeWidth={2.2} className="ml-2.5 sm:w-[18px] sm:h-[18px]" />
+                </Link>
+
+                <div
+                  className="w-full sm:w-auto inline-flex items-center justify-center h-12 sm:h-14 px-6 sm:px-8 border border-[#C9A44A]/40 bg-[#C9A44A]/10 text-[#FCF6BA] font-heading font-extrabold text-[12px] sm:text-[14px] tracking-[1.5px] uppercase rounded-lg select-none min-h-[48px]"
+                >
+                  <span className="w-2 h-2 rounded-full bg-[#C9A44A] mr-2.5 animate-pulse" />
+                  REGISTRATION OPENS SOON
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

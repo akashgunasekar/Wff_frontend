@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Loader2, Save, Trash2, Plus, Edit2, AlertTriangle, X } from 'lucide-react';
+import { API_BASE } from '@/lib/api';
 
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -31,7 +32,6 @@ export default function AdminCategoriesPage() {
 
   const fetchCategories = useCallback(async () => {
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/admin/categories/index.php`, {
         credentials: 'include'
       });
@@ -77,7 +77,6 @@ export default function AdminCategoriesPage() {
         id: editingCat?.id
       };
       
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/admin/categories/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -103,7 +102,6 @@ export default function AdminCategoriesPage() {
     if (!confirm("Are you sure? This does NOT affect existing events using this category, but will remove it from the reusable library.")) return;
     
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/admin/categories/delete.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

@@ -8,6 +8,11 @@ export interface HeroSlide {
   price?: string;
   description?: string;
   event_id?: number | null;
+  slug?: string;
+  date_type?: 'single' | 'multi';
+  event_date?: string;
+  event_end_date?: string | null;
+  event_status?: string;
 }
 
 export interface EventCategory {
@@ -37,7 +42,9 @@ export interface Event {
   slug: string;
   event_name: string;
   subtitle: string;
+  date_type?: 'single' | 'multi';
   event_date: string;
+  event_end_date?: string | null;
   event_day: string;
   registration_time: string;
   show_time: string;
@@ -82,6 +89,14 @@ export interface Event {
       sort_order: number;
     }>;
     terms_content?: string;
+    pricing_tiers?: Array<{
+      tier?: string;
+      name?: string;
+      fee?: string;
+      total?: string;
+      description?: string;
+    }>;
+    clinical_testing_charge?: string;
   };
 }
 
@@ -106,10 +121,12 @@ export interface Official {
   role: string;
   designation: string;
   photo: string | null;
+  bio?: string;
   instagram?: string;
   phone?: string;
   sort_order?: number;
   display_order?: number;
+  status?: number;
 }
 
 export interface Judge {

@@ -1,10 +1,33 @@
+"use client";
+
+import { useMemo } from 'react';
 import { Container } from '@/components/ui/Container';
 import { Reveal } from '@/components/ui/Reveal';
-import { Gem, Medal, Users, BarChart3 } from 'lucide-react';
+import { Gem, Medal, Users, BarChart3, Trophy, Award, CheckCircle, ShieldCheck } from 'lucide-react';
 import Image from 'next/image';
+import { decodeHtml } from '@/lib/utils';
 
-export function ExcellenceSection() {
-  const principles = [
+interface ExcellenceSectionProps {
+  section?: {
+    title?: string;
+    subtitle?: string;
+    content?: string;
+  };
+}
+
+const iconMap: Record<string, any> = {
+  Gem,
+  Medal,
+  Users,
+  BarChart3,
+  Trophy,
+  Award,
+  CheckCircle,
+  ShieldCheck,
+};
+
+export function ExcellenceSection({ section }: ExcellenceSectionProps) {
+  const defaultPrinciples = [
     { 
       icon: Gem, 
       title: 'Precision', 
@@ -27,14 +50,35 @@ export function ExcellenceSection() {
     }
   ];
 
+  const principles = useMemo(() => {
+    if (section?.content) {
+      try {
+        const parsed = typeof section.content === 'object' ? section.content : JSON.parse(section.content);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((item: any) => ({
+            title: decodeHtml(item.title || ''),
+            desc: decodeHtml(item.description || item.desc || ''),
+            icon: iconMap[item.icon] || Medal
+          }));
+        }
+      } catch (e) {}
+    }
+    return defaultPrinciples;
+  }, [section?.content]);
+
+  const rawTitle = section?.title ? decodeHtml(section.title) : "The Mark Of Excellence";
+  const subtitle = section?.subtitle 
+    ? decodeHtml(section.subtitle) 
+    : "The principles that shape every WFF championship, from fair judging to professional event execution, creating a platform that athletes can be proud to be part of.";
+
   return (
-    <section className="w-full py-16 sm:py-20 lg:py-28 bg-white relative overflow-hidden">
+    <section className="w-full py-16 sm:py-20 lg:py-28 bg-[var(--surface)] relative overflow-hidden transition-colors border-t border-[var(--border-color)]">
       
       {/* Background Watermark Element */}
-      <div className="absolute right-[-10%] top-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none z-0 rotate-12 scale-[1.2] sm:scale-[1.5]">
-        <div className="w-[400px] h-[400px] sm:w-[600px] sm:h-[600px] rounded-full border-[20px] sm:border-[30px] border-dashed border-black flex items-center justify-center">
-          <div className="w-[300px] h-[300px] sm:w-[500px] sm:h-[500px] rounded-full border-[8px] sm:border-[10px] border-black flex items-center justify-center">
-             <span className="font-heading font-black text-[120px] sm:text-[180px] text-black">WFF</span>
+      <div className="absolute right-[-10%] top-1/2 -translate-y-1/2 opacity-[0.02] dark:opacity-[0.04] pointer-events-none z-0 rotate-12 scale-[1.2] sm:scale-[1.5]">
+        <div className="w-[400px] h-[400px] sm:w-[600px] sm:h-[600px] rounded-full border-[20px] sm:border-[30px] border-dashed border-current flex items-center justify-center">
+          <div className="w-[300px] h-[300px] sm:w-[500px] sm:h-[500px] rounded-full border-[8px] sm:border-[10px] border-current flex items-center justify-center">
+             <span className="font-heading font-black text-[120px] sm:text-[180px] text-current">WFF</span>
           </div>
         </div>
       </div>
@@ -45,20 +89,19 @@ export function ExcellenceSection() {
         <Reveal direction="up">
           <div className="flex flex-col items-center mb-10 sm:mb-16 lg:mb-20">
             <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-              <div className="w-8 sm:w-10 h-px bg-wff-gold" />
-              <span className="font-heading font-semibold text-[11px] sm:text-[13px] tracking-[0.2em] uppercase text-wff-gold">
+              <div className="w-8 sm:w-10 h-px bg-[var(--gold)]" />
+              <span className="font-heading font-bold text-[11px] sm:text-[13px] tracking-[2px] leading-[1.4] uppercase text-[var(--gold)]">
                 Our Values
               </span>
-              <div className="w-8 sm:w-10 h-px bg-wff-gold" />
+              <div className="w-8 sm:w-10 h-px bg-[var(--gold)]" />
             </div>
             
-            <h2 className="font-heading font-bold text-3xl sm:text-4xl md:text-5xl lg:text-[56px] uppercase leading-[1.08] tracking-tight mb-4 sm:mb-5">
-              <span className="text-wff-deep-navy">The Mark Of </span>
-              <span className="text-wff-gold">Excellence</span>
+            <h2 className="font-heading font-extrabold text-[clamp(32px,3.5vw,48px)] uppercase leading-[1.05] tracking-tight mb-4 sm:mb-5 text-[var(--text-primary)]">
+              {rawTitle}
             </h2>
             
-            <p className="font-body text-wff-muted text-[13.5px] sm:text-[15px] md:text-[16px] max-w-[700px] leading-[1.6]">
-              The principles that shape every WFF championship, from fair judging to professional event execution, creating a platform that athletes can be proud to be part of.
+            <p className="font-body font-normal text-[15px] sm:text-[16px] max-w-[650px] leading-[1.6] text-[var(--muted)] tracking-normal">
+              {subtitle}
             </p>
           </div>
         </Reveal>
@@ -70,19 +113,19 @@ export function ExcellenceSection() {
             const Icon = item.icon;
             
             return (
-              <Reveal key={item.title} delay={idx * 150} direction="up" className={`flex flex-col items-center px-4 lg:px-8 py-2 sm:py-4 ${!isLast ? 'lg:border-r lg:border-black/[0.08]' : ''} ${idx % 2 === 0 ? 'sm:max-lg:border-r sm:max-lg:border-black/[0.08]' : ''}`}>
+              <Reveal key={item.title} delay={idx * 150} direction="up" className={`flex flex-col items-center px-4 lg:px-8 py-2 sm:py-4 ${!isLast ? 'lg:border-r lg:border-[var(--border-color)]' : ''} ${idx % 2 === 0 ? 'sm:max-lg:border-r sm:max-lg:border-[var(--border-color)]' : ''}`}>
                 {/* Icon */}
                 <div className="mb-4 sm:mb-6 transform transition-transform duration-500 hover:scale-110 hover:-translate-y-1.5">
-                  <Icon size={44} strokeWidth={1.5} className="text-[#C9A44A] sm:w-14 sm:h-14" />
+                  <Icon size={44} strokeWidth={1.5} className="text-[var(--gold)] sm:w-14 sm:h-14" />
                 </div>
                 
                 {/* Title */}
-                <h3 className="font-heading font-bold text-lg sm:text-xl uppercase tracking-wider text-wff-deep-navy mb-2 sm:mb-3">
+                <h3 className="font-heading font-bold text-[21px] sm:text-[24px] uppercase tracking-normal text-[var(--text-primary)] mb-2 sm:mb-3">
                   {item.title}
                 </h3>
                 
                 {/* Description */}
-                <p className="font-body text-[13px] sm:text-[14px] text-wff-muted leading-[1.6] max-w-[240px]">
+                <p className="font-body font-normal text-[14px] sm:text-[15px] text-[var(--muted)] leading-[1.6] max-w-[260px]">
                   {item.desc}
                 </p>
               </Reveal>

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Loader2, Plus, Image as ImageIcon, Calendar } from 'lucide-react';
-import { resolveImageUrl } from '@/lib/api';
+import { resolveImageUrl, API_BASE } from '@/lib/api';
 
 export default function AdminGalleryPage() {
   const router = useRouter();
@@ -24,7 +24,6 @@ export default function AdminGalleryPage() {
   const fetchAlbums = useCallback(async () => {
     setLoading(true);
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/admin/gallery/index.php`, { credentials: 'include' });
       const json = await res.json();
       if (json.success) setAlbums(json.data);
@@ -48,7 +47,6 @@ export default function AdminGalleryPage() {
     e.preventDefault();
     setSaving(true);
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const endpoint = editingAlbum ? 'update.php' : 'create.php';
       const payload = editingAlbum ? { ...form, id: editingAlbum.id, cover_image: editingAlbum.cover_image } : form;
       
@@ -77,7 +75,6 @@ export default function AdminGalleryPage() {
   const handleDelete = async (id: number) => {
     if (!confirm("Delete this album? This will permanently delete all its images.")) return;
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/admin/gallery/delete.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

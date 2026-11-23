@@ -7,8 +7,8 @@ import AdminShell from '@/components/admin/AdminShell';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
-import { ChevronLeft, Loader2, Save, Trash2, Plus, AlertTriangle, X, Edit3, CheckSquare, Square, Users } from 'lucide-react';
-import { resolveImageUrl } from '@/lib/api';
+import { ChevronLeft, Loader2, Save, Trash2, Plus, AlertTriangle, X, Edit3, CheckSquare, Square, Users, Calendar, CalendarDays, CalendarRange } from 'lucide-react';
+import { resolveImageUrl, API_BASE } from '@/lib/api';
 
 export default function AdminEventDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -108,6 +108,21 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
     setSaving(true);
     setError('');
     setSuccess('');
+
+    // Multi-date validation
+    if (event.date_type === 'multi') {
+      if (!event.event_end_date) {
+        setError('Please select an end date for multi-day events.');
+        setSaving(false);
+        return;
+      }
+      if (event.event_end_date < event.event_date) {
+        setError('End date cannot be earlier than start date.');
+        setSaving(false);
+        return;
+      }
+    }
+
     try {
       const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/admin/events/update.php`, {
@@ -115,8 +130,16 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
-          id: event.id, event_name: event.event_name, slug: event.slug, event_date: event.event_date,
-          venue: event.venue, status: event.status, banner_image: event.banner_image || '', description: event.description || '',
+          id: event.id,
+          event_name: event.event_name,
+          slug: event.slug,
+          date_type: event.date_type || 'single',
+          event_date: event.event_date,
+          event_end_date: event.date_type === 'multi' ? (event.event_end_date || null) : null,
+          venue: event.venue,
+          status: event.status,
+          banner_image: event.banner_image || '',
+          description: event.description || '',
           tan_spray_price: event.tan_spray_price || 1000,
           cash_enabled: event.cash_enabled || false,
           content_meta: event.content_meta
@@ -433,28 +456,152 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
                   <Input required value={event.slug} onChange={e => setEvent({...event, slug: e.target.value})} />
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Event Duration & Date Configuration */}
+              <div className="p-4 rounded-xl border border-[var(--border-color)] bg-black/[0.02] dark:bg-white/[0.02] space-y-4 font-body">
                 <div>
-                  <label className="block text-xs font-display tracking-widest uppercase text-[#040A12]/60 mb-2">Event Date *</label>
-                  <Input type="date" required value={event.event_date} onChange={e => setEvent({...event, event_date: e.target.value})} />
+                  <label className="block text-xs font-semibold uppercase tracking-label text-[var(--muted)] mb-2 font-body">
+                    Event Duration Type *
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setEvent({ ...event, date_type: 'single', event_end_date: '' })}
+                      className={`p-3 rounded-lg border text-left transition-all flex items-start gap-2.5 ${
+                        (event.date_type || 'single') === 'single'
+                          ? 'border-[var(--gold)] bg-[var(--gold)]/15 text-[var(--text-primary)] ring-1 ring-[var(--gold)]'
+                          : 'border-[var(--border-color)] bg-black/5 dark:bg-white/5 text-[var(--muted)] hover:border-[var(--border-color)]/80'
+                      }`}
+                    >
+                      <Calendar className={`w-4 h-4 shrink-0 mt-0.5 ${(event.date_type || 'single') === 'single' ? 'text-[var(--gold)]' : 'text-[var(--muted)]'}`} />
+                      <div>
+                        <div className="font-heading font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]">
+                          Single Day
+                        </div>
+                        <div className="text-[11px] text-[var(--muted)] font-body">
+                          1-Day Championship
+                        </div>
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setEvent({ ...event, date_type: 'multi' })}
+                      className={`p-3 rounded-lg border text-left transition-all flex items-start gap-2.5 ${
+                        event.date_type === 'multi'
+                          ? 'border-[var(--gold)] bg-[var(--gold)]/15 text-[var(--text-primary)] ring-1 ring-[var(--gold)]'
+                          : 'border-[var(--border-color)] bg-black/5 dark:bg-white/5 text-[var(--muted)] hover:border-[var(--border-color)]/80'
+                      }`}
+                    >
+                      <CalendarDays className={`w-4 h-4 shrink-0 mt-0.5 ${event.date_type === 'multi' ? 'text-[var(--gold)]' : 'text-[var(--muted)]'}`} />
+                      <div>
+                        <div className="font-heading font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]">
+                          Multi-Day
+                        </div>
+                        <div className="text-[11px] text-[var(--muted)] font-body">
+                          Date Range (2+ Days)
+                        </div>
+                      </div>
+                    </button>
+                  </div>
                 </div>
+
+                {event.date_type === 'multi' ? (
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-semibold uppercase tracking-label text-[var(--muted)] mb-1.5 font-body">
+                          Start Date *
+                        </label>
+                        <Input
+                          type="date"
+                          required
+                          value={event.event_date || ''}
+                          onChange={e => setEvent({ ...event, event_date: e.target.value })}
+                          className="font-body text-base"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold uppercase tracking-label text-[var(--muted)] mb-1.5 font-body">
+                          End Date *
+                        </label>
+                        <Input
+                          type="date"
+                          required
+                          min={event.event_date || undefined}
+                          value={event.event_end_date || ''}
+                          onChange={e => setEvent({ ...event, event_end_date: e.target.value })}
+                          className="font-body text-base"
+                        />
+                      </div>
+                    </div>
+
+                    {event.event_date && event.event_end_date && (
+                      <div className="p-2.5 rounded bg-[var(--gold)]/10 border border-[var(--gold)]/20 text-xs text-[var(--text-primary)] font-body flex items-center justify-between">
+                        <span className="font-semibold text-xs flex items-center gap-1.5">
+                          <CalendarRange size={14} className="text-[var(--gold)]" />
+                          {new Date(event.event_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                          {' – '}
+                          {new Date(event.event_end_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        </span>
+                        {(() => {
+                          const s = new Date(event.event_date).getTime();
+                          const e = new Date(event.event_end_date).getTime();
+                          const diffDays = Math.round((e - s) / (1000 * 60 * 60 * 24)) + 1;
+                          if (diffDays > 0) {
+                            return (
+                              <span className="px-2 py-0.5 rounded bg-[var(--gold)]/20 text-[var(--gold)] font-heading font-extrabold text-[11px] uppercase tracking-wider">
+                                {diffDays} Days Duration
+                              </span>
+                            );
+                          } else {
+                            return (
+                              <span className="text-rose-500 font-bold text-xs">
+                                Invalid Range
+                              </span>
+                            );
+                          }
+                        })()}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-label text-[var(--muted)] mb-1.5 font-body">
+                      Event Date *
+                    </label>
+                    <Input
+                      type="date"
+                      required
+                      value={event.event_date || ''}
+                      onChange={e => setEvent({ ...event, event_date: e.target.value })}
+                      className="font-body text-base"
+                    />
+                    {event.event_date && (
+                      <p className="text-xs text-[var(--gold)] mt-1.5 font-body flex items-center gap-1.5">
+                        <Calendar size={13} />
+                        {new Date(event.event_date).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-display tracking-widest uppercase text-[#040A12]/60 mb-2">Status *</label>
-                  <Select required value={event.status} onChange={e => setEvent({...event, status: e.target.value})}>
+                  <label className="block text-xs font-semibold uppercase tracking-label text-[var(--muted)] mb-1.5 font-body">Status *</label>
+                  <Select required value={event.status} onChange={e => setEvent({...event, status: e.target.value})} className="font-body text-base">
                     <option value="open">Registration Open</option>
                     <option value="upcoming">Upcoming</option>
                     <option value="closed">Closed</option>
                   </Select>
                 </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-display tracking-widest uppercase text-[#040A12]/60 mb-2">Venue *</label>
-                  <Input required value={event.venue} onChange={e => setEvent({...event, venue: e.target.value})} />
+                  <label className="block text-xs font-semibold uppercase tracking-label text-[var(--muted)] mb-1.5 font-body">Venue *</label>
+                  <Input required value={event.venue} onChange={e => setEvent({...event, venue: e.target.value})} className="font-body text-base" />
                 </div>
                 <div>
-                  <label className="block text-xs font-display tracking-widest uppercase text-[#040A12]/60 mb-2">Tan Spray Price (₹) *</label>
-                  <Input type="number" required value={event.tan_spray_price || '1000'} onChange={e => setEvent({...event, tan_spray_price: e.target.value})} />
+                  <label className="block text-xs font-semibold uppercase tracking-label text-[var(--muted)] mb-1.5 font-body">Tan Spray Price (₹) *</label>
+                  <Input type="number" required value={event.tan_spray_price || '1000'} onChange={e => setEvent({...event, tan_spray_price: e.target.value})} className="font-body text-base" />
                 </div>
               </div>
               

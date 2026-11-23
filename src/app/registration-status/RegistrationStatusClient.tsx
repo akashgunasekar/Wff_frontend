@@ -1,19 +1,44 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { AlertCircle, Search, CreditCard, CheckCircle2, Share2, Copy, Smartphone, Printer, Download, Mail, Calendar, MapPin, Trophy } from 'lucide-react';
-import { loadRazorpay, decodeHtml } from '@/lib/utils';
+import { 
+  AlertCircle, 
+  Search, 
+  CreditCard, 
+  CheckCircle2, 
+  Share2, 
+  Copy, 
+  Printer, 
+  Download, 
+  Mail, 
+  Calendar, 
+  MapPin, 
+  Trophy, 
+  Clock, 
+  ShieldAlert, 
+  Upload, 
+  Camera, 
+  ExternalLink,
+  X,
+  FileText
+} from 'lucide-react';
+import { decodeHtml } from '@/lib/utils';
 import { API_BASE } from '@/lib/api';
 import { toast } from '@/components/ui/Toast';
-import Image from 'next/image';
+import Link from 'next/link';
 
 interface RegistrationData {
   id: number;
   registration_number: string;
   athlete_name: string;
+  phone: string;
+  email: string;
+  date_of_birth?: string;
+  age?: number;
+  height?: number;
   status: string;
   payment_method?: string;
   created_at: string;
@@ -25,6 +50,11 @@ interface RegistrationData {
   total_amount: number;
   tan_spray_requested: boolean;
   razorpay_payment_id?: string;
+  payment_proof?: string;
+  transaction_ref?: string;
+  rejection_reason?: string;
+  proof_uploaded_at?: string;
+  approved_at?: string;
 }
 
 export default function RegistrationStatusClient() {
@@ -37,6 +67,13 @@ export default function RegistrationStatusClient() {
   const [error, setError] = useState('');
   const [registration, setRegistration] = useState<RegistrationData | null>(null);
 
+  // Resubmission state for rejected registrations
+  const [replacementFile, setReplacementFile] = useState<File | null>(null);
+  const [replacementPreview, setReplacementPreview] = useState<string | null>(null);
+  const [replacementUtr, setReplacementUtr] = useState('');
+  const [resubmitting, setResubmitting] = useState(false);
+  const replacementInputRef = useRef<HTMLInputElement | null>(null);
+
   const fetchStatus = async (numberToSearch: string) => {
     if (!numberToSearch.trim()) return;
     setError('');
@@ -48,12 +85,12 @@ export default function RegistrationStatusClient() {
       const json = await res.json();
 
       if (!res.ok || !json.success) {
-        throw new Error(json.message || "Registration not found. Please check your number and try again.");
+        throw new Error(json.message || "Registration not found. Please verify your registration number.");
       }
 
       setRegistration(json.data);
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Failed to load registration.");
     } finally {
       setLoading(false);
     }
@@ -68,129 +105,408 @@ export default function RegistrationStatusClient() {
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!regNumber.trim()) {
-      setError("Please enter a registration number.");
+      setError("Please enter your registration number.");
       return;
     }
     fetchStatus(regNumber);
   };
 
-  const handlePayment = async () => {
-    if (!registration) return;
+  const handleReplacementFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        toast.error("Please select an image file (JPG, PNG, WEBP).", { title: "Invalid File" });
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error("Screenshot file size cannot exceed 10MB.", { title: "File Too Large" });
+        return;
+      }
+      setReplacementFile(file);
+      const reader = new FileReader();
+      reader.onload = (event) => setReplacementPreview(event.target?.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
 
-    setError('');
-    setLoading(true);
+  const handleResubmitProof = async () => {
+    if (!replacementFile || !registration) {
+      toast.error("Please attach a replacement payment screenshot.", { title: "Screenshot Required" });
+      return;
+    }
 
+    setResubmitting(true);
     try {
-      const apiBase = API_BASE;
+      const formData = new FormData();
+      formData.append('registration_number', registration.registration_number);
+      formData.append('screenshot', replacementFile);
+      if (replacementUtr.trim()) {
+        formData.append('transaction_ref', replacementUtr.trim());
+      }
 
-      const orderRes = await fetch(`${apiBase}/payments/create-order.php`, {
+      const res = await fetch(`${API_BASE}/registrations/upload-proof.php`, {
+        method: 'POST',
+        body: formData
+      });
+      const json = await res.json();
+
+      if (!res.ok || !json.success) {
+        throw new Error(json.message || "Failed to upload replacement screenshot.");
+      }
+
+      toast.success("Replacement screenshot submitted! Under admin review.", { title: "Resubmitted" });
+      setReplacementFile(null);
+      setReplacementPreview(null);
+      setReplacementUtr('');
+      await fetchStatus(registration.registration_number);
+
+    } catch (err: any) {
+      toast.error(err.message || "Failed to upload screenshot.", { title: "Upload Failed" });
+    } finally {
+      setResubmitting(false);
+    }
+  };
+
+  const handleDownloadPass = async () => {
+    const node = document.getElementById('wff-official-ticket');
+    if (!node) {
+      toast.error("Ticket element not found.", { title: "Error" });
+      return;
+    }
+    setDownloadingPass(true);
+    try {
+      const { toPng } = await import('html-to-image');
+      const dataUrl = await toPng(node, {
+        pixelRatio: 2.5,
+        skipFonts: true,
+        backgroundColor: '#050A12',
+        cacheBust: true,
+        filter: (domNode: HTMLElement) => domNode.tagName !== 'SCRIPT' && domNode.tagName !== 'IFRAME'
+      });
+      const link = document.createElement('a');
+      link.download = `WFF-Official-Pass-${(registration?.registration_number || 'Athlete').replace(/[^a-zA-Z0-9-_]/g, '_')}.png`;
+      link.href = dataUrl;
+      link.click();
+      toast.success("Official stage pass downloaded!", { title: "Downloaded" });
+    } catch (err) {
+      console.error("Pass export error:", err);
+      toast.info("Opening print dialog to save as PDF.", { title: "Print Pass" });
+      window.print();
+    } finally {
+      setDownloadingPass(false);
+    }
+  };
+
+  const handleEmailPass = async () => {
+    if (!registration) return;
+    setSendingEmail(true);
+    try {
+      const res = await fetch(`${API_BASE}/registrations/send-pass-email.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ registration_number: registration.registration_number })
       });
-
-      const orderJson = await orderRes.json();
-      if (!orderRes.ok || !orderJson.success) {
-        throw new Error(orderJson.message || "Failed to initiate payment.");
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.message || "Failed to dispatch email.");
       }
-
-      const res = await loadRazorpay();
-      if (!res) throw new Error("Razorpay SDK failed to load. Are you online?");
-
-      const options = {
-        key: orderJson.data.key_id,
-        amount: orderJson.data.amount,
-        currency: orderJson.data.currency,
-        name: "World Fitness Federation",
-        description: "Championship Registration",
-        order_id: orderJson.data.razorpay_order_id,
-        handler: async (response: any) => {
-          try {
-            const verifyRes = await fetch(`${apiBase}/payments/verify.php`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                registration_number: registration.registration_number,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature
-              })
-            });
-            const verifyJson = await verifyRes.json();
-
-            if (verifyRes.ok && verifyJson.success) {
-              setRegistration(prev => prev ? { ...prev, status: 'paid', razorpay_payment_id: response.razorpay_payment_id } : prev);
-            } else {
-              throw new Error(verifyJson.message || "Payment verification failed.");
-            }
-          } catch (err: any) {
-            setError(err.message || "Payment verification failed.");
-          }
-        },
-        theme: { color: "#c6a15b" }
-      };
-
-      const paymentObject = new (window as any).Razorpay(options);
-      paymentObject.on('payment.failed', function (response: any) {
-        setError(`Payment failed: ${response.error.description}`);
-        fetch(`${apiBase}/payments/failure.php`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            registration_number: registration.registration_number,
-            error_code: response.error.code,
-            error_description: response.error.description,
-            razorpay_order_id: response.error.metadata.order_id,
-            razorpay_payment_id: response.error.metadata.payment_id
-          })
-        }).catch(e => console.error(e));
-      });
-      paymentObject.open();
+      toast.success(json.data?.message || `Official Stage Pass emailed to ${registration.email}!`, { title: "Pass Emailed" });
     } catch (err: any) {
-      setError(err.message);
+      toast.error(err.message || "Could not send email pass right now.", { title: "Email Failed" });
     } finally {
-      setLoading(false);
+      setSendingEmail(false);
     }
   };
 
+  const isApproved = registration && (registration.status === 'paid' || registration.status === 'confirmed');
+  const isRejected = registration && registration.status === 'rejected';
+  const isPending = registration && !isApproved && !isRejected;
+
   return (
     <div className="space-y-8">
-      <form onSubmit={handleSearch} className="bg-[var(--surface)] border border-[var(--border-color)] p-6 md:p-8 flex flex-col md:flex-row gap-4 items-end relative shadow-xl">
-        <div className="absolute top-0 right-0 p-4 font-display text-[var(--gold)] opacity-10 text-4xl md:text-5xl font-bold leading-none select-none pointer-events-none">LOOKUP</div>
+      {/* SEARCH FORM */}
+      <form onSubmit={handleSearch} className="bg-[var(--surface)] border border-[var(--border-color)] p-6 md:p-8 flex flex-col md:flex-row gap-4 items-end relative shadow-xl rounded-2xl">
+        <div className="absolute top-0 right-0 p-4 font-heading text-[var(--gold)] opacity-10 text-4xl md:text-5xl font-black leading-none select-none pointer-events-none">LOOKUP</div>
         <div className="flex-grow w-full relative z-10">
-          <label className="block text-xs font-display tracking-widest uppercase text-[var(--muted)] mb-2">Registration Number</label>
+          <label htmlFor="reg-number-input" className="block font-body text-sm font-semibold tracking-label text-[var(--text-primary)] mb-1.5">Registration Number</label>
           <Input
+            id="reg-number-input"
             value={regNumber}
             onChange={(e) => setRegNumber(e.target.value)}
             placeholder="e.g. WFFTN-2026-000001"
             required
-            className="h-14 font-display text-lg tracking-wider uppercase bg-[var(--bg-color)]"
+            className="h-14 font-mono text-base uppercase bg-[var(--bg)] rounded-xl tracking-normal"
           />
+          <p className="mt-2 text-xs text-[var(--muted)] flex items-center gap-1.5 font-body">
+            <span>💡 Enter the 16-character code sent to your registered email or phone number after booking.</span>
+          </p>
         </div>
         <Button
           type="submit"
           disabled={loading}
           variant="gold"
-          className="w-full md:w-auto h-14 px-8 uppercase tracking-widest shadow-[0_4px_20px_rgba(198,161,91,0.2)] relative z-10"
+          className="w-full md:w-auto h-14 px-8 font-heading font-extrabold text-sm uppercase tracking-btn shadow-md relative z-10 rounded-xl cursor-pointer"
         >
           {loading ? 'Searching...' : <><Search size={18} className="mr-2" /> Lookup Status</>}
         </Button>
       </form>
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/50 text-red-600 dark:text-red-400 p-4 flex items-start gap-3 rounded">
+        <div className="bg-red-500/10 border border-red-500/50 text-red-600 dark:text-red-400 p-4 flex items-start gap-3 rounded-xl">
           <AlertCircle className="shrink-0 mt-0.5" size={18} />
-          <div className="text-sm font-medium">{error}</div>
+          <div className="font-body text-sm font-medium">{error}</div>
         </div>
       )}
 
-      {registration && registration.status === 'paid' && (
+      {/* ------------------------------------------------------------- */}
+      {/* 1. PAYMENT VERIFICATION PENDING STATE (SAMPLE TICKET PREVIEW) */}
+      {/* ------------------------------------------------------------- */}
+      {isPending && registration && (
+        <div className="max-w-2xl mx-auto space-y-6 animate-in slide-in-from-bottom-8 duration-500 mt-8">
+          
+          {/* Status Alert Banner */}
+          <div className="bg-amber-500/10 border border-amber-500/40 p-5 rounded-2xl flex items-start gap-4 text-amber-700 dark:text-amber-300">
+            <Clock size={24} className="shrink-0 mt-0.5 text-amber-500" />
+            <div>
+              <div className="font-heading font-extrabold text-base uppercase tracking-tight-heading">
+                Payment Verification Pending
+              </div>
+              <p className="font-body text-sm mt-1 leading-relaxed text-[var(--text-primary)]">
+                Your registration and payment screenshot are currently under review by the WFF Tamil Nadu federation administration team. <strong>Once verified and approved, your official championship ticket will be activated and emailed to {registration.email}.</strong>
+              </p>
+            </div>
+          </div>
+
+          {/* Sample Ticket Preview (With Watermark) */}
+          <div className="relative mx-auto max-w-2xl">
+            {/* Warning Banner */}
+            <div className="bg-red-600 text-white py-2 px-4 rounded-t-2xl font-heading font-black text-xs uppercase tracking-wide text-center flex items-center justify-center gap-2 shadow-md">
+              <ShieldAlert size={16} />
+              <span>SAMPLE TICKET — NOT VALID FOR ENTRY</span>
+            </div>
+
+            {/* Ticket Card Body with Watermark */}
+            <div className="bg-gradient-to-b from-[#0D1829] via-[#09111D] to-[#050A12] text-white rounded-b-3xl overflow-hidden border-2 border-red-500/40 relative shadow-2xl p-6 sm:p-8 space-y-6">
+
+              {/* Diagonal Watermark */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-10 opacity-20 overflow-hidden">
+                <span className="font-heading font-black text-2xl sm:text-4xl md:text-5xl uppercase tracking-wider text-red-500 -rotate-20 border-4 border-red-500 p-3 sm:p-4 text-center">
+                  SAMPLE TICKET — NOT VALID FOR ENTRY
+                </span>
+              </div>
+
+              {/* Header */}
+              <div className="flex items-center justify-between pb-4 border-b border-white/10 relative z-20">
+                <div>
+                  <div className="inline-block px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-body text-[11px] font-semibold tracking-wide mb-1.5 uppercase">
+                    Payment Status: PENDING VERIFICATION
+                  </div>
+                  <h3 className="font-heading text-xl sm:text-2xl uppercase font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#FFF3D6] via-[#FCF6BA] to-[#C9A44A]">
+                    {registration.event_name}
+                  </h3>
+                  <div className="font-heading font-bold text-xs uppercase tracking-wide text-white/70">
+                    World Fitness Federation • Tamil Nadu
+                  </div>
+                </div>
+                <img src="/assets/wff-india.png" alt="WFF" className="h-12 w-auto object-contain shrink-0" />
+              </div>
+
+              {/* Athlete Details */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 relative z-20 text-xs">
+                <div>
+                  <span className="font-body text-[11px] font-semibold uppercase tracking-label text-white/50 block">Athlete Name</span>
+                  <span className="font-heading font-extrabold text-base text-white mt-0.5 block">{registration.athlete_name}</span>
+                </div>
+                <div>
+                  <span className="font-body text-[11px] font-semibold uppercase tracking-label text-white/50 block">Registration Number</span>
+                  <span className="font-mono font-bold text-xs text-[#FCF6BA] mt-0.5 block tracking-normal">{registration.registration_number}</span>
+                </div>
+                <div>
+                  <span className="font-body text-[11px] font-semibold uppercase tracking-label text-white/50 block">Age / Height</span>
+                  <span className="font-body font-medium text-xs sm:text-sm text-white mt-0.5 block">
+                    {registration.age ? `${registration.age} Yrs` : 'N/A'} &bull; {registration.height ? `${registration.height} cm` : 'N/A'}
+                  </span>
+                </div>
+                <div>
+                  <span className="font-body text-[11px] font-semibold uppercase tracking-label text-white/50 block">Event Date &amp; Location</span>
+                  <span className="font-body font-medium text-xs sm:text-sm text-white mt-0.5 block">{registration.event_date} &bull; {registration.venue}</span>
+                </div>
+              </div>
+
+              {/* Categories */}
+              <div className="relative z-20">
+                <span className="font-body text-[11px] font-semibold uppercase tracking-label text-[#C9A44A] block mb-1.5">
+                  Selected Categories ({registration.categories.length})
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {registration.categories.map((c: string, i: number) => (
+                    <span key={i} className="px-3 py-1 bg-white/5 rounded-md border border-white/10 text-xs font-heading font-bold uppercase tracking-wide text-white">
+                      {c}
+                    </span>
+                  ))}
+                  {registration.tan_spray_requested && (
+                    <span className="px-3 py-1 bg-[#C9A44A]/20 rounded-md border border-[#C9A44A]/40 text-xs font-heading font-bold uppercase tracking-wide text-[#FCF6BA]">
+                      + Tan Spray
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Official Fee Breakdown */}
+              <div className="p-3.5 bg-white/5 rounded-xl border border-white/10 space-y-1.5 text-xs relative z-20">
+                {registration.event_name?.toLowerCase().includes('south india') || registration.event_name?.toLowerCase().includes('india natural') ? (
+                  <>
+                    <div className="flex justify-between items-center text-white/70">
+                      <span>Category Registration Fee ({registration.categories.length} {registration.categories.length === 1 ? 'Category' : 'Categories'}):</span>
+                      <span className="font-mono font-bold text-white">
+                        ₹{registration.categories.length === 1 ? '3,000' : registration.categories.length === 2 ? '5,000' : '6,000'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-[#FCF6BA]">
+                      <span>Mandatory Clinical Testing Charge:</span>
+                      <span className="font-mono font-bold">₹2,000</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex justify-between items-center text-white/70">
+                    <span>Registration Fee:</span>
+                    <span className="font-mono font-bold text-white">₹{registration.total_amount}</span>
+                  </div>
+                )}
+                <div className="pt-2 border-t border-white/15 flex justify-between items-center text-sm font-bold text-white">
+                  <span className="uppercase font-heading">Total Submitted Amount:</span>
+                  <span className="font-heading font-black text-base text-[#FCF6BA]">₹{registration.total_amount}</span>
+                </div>
+              </div>
+
+              {/* Notice */}
+              <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 relative z-20 text-xs text-white/60 font-body">
+                <span className="text-amber-400 font-bold uppercase text-[11px] font-heading tracking-wide">
+                  Payment Status: PENDING VERIFICATION
+                </span>
+                <span className="text-white/60 text-xs">Official approved ticket issued only after admin review</span>
+              </div>
+
+            </div>
+          </div>
+
+          <div className="p-4 bg-[var(--surface)] border border-[var(--border-color)] rounded-xl text-center text-xs text-[var(--muted)] font-body leading-relaxed">
+            Official ticket downloads and print passes become accessible here automatically as soon as an administrator verifies the submitted payment screenshot.
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* 2. PAYMENT REJECTED STATE — RESUBMISSION DROPZONE             */}
+      {/* ------------------------------------------------------------- */}
+      {isRejected && registration && (
+        <div className="max-w-2xl mx-auto space-y-6 animate-in slide-in-from-bottom-8 duration-500 mt-8">
+          
+          <div className="bg-red-500/10 border-2 border-red-500/40 p-6 rounded-2xl space-y-4">
+            <div className="flex items-center gap-3 text-red-600 dark:text-red-400">
+              <ShieldAlert size={24} />
+              <h2 className="font-heading font-black text-xl uppercase tracking-tight-heading">
+                Payment Verification Rejected — Action Required
+              </h2>
+            </div>
+            
+            <p className="font-body text-sm text-[var(--text-primary)] leading-relaxed">
+              Your payment proof for registration <strong className="font-mono text-red-600 dark:text-red-400">#{registration.registration_number}</strong> was reviewed and could not be verified by the admin team.
+            </p>
+
+            <div className="p-4 bg-[var(--surface)] border border-red-500/30 rounded-xl text-xs space-y-1">
+              <span className="font-body text-[11px] uppercase font-semibold text-red-600 dark:text-red-400 tracking-label">
+                Reason for Rejection:
+              </span>
+              <p className="font-body text-sm font-semibold text-[var(--text-primary)]">
+                {registration.rejection_reason || "Payment screenshot was unreadable, missing transaction reference, or amount was mismatched."}
+              </p>
+            </div>
+          </div>
+
+          {/* Replacement Screenshot Resubmission Card */}
+          <div className="p-6 sm:p-8 bg-[var(--surface)] border border-[var(--border-color)] rounded-2xl shadow-sm space-y-5">
+            <h3 className="font-heading font-extrabold text-base uppercase tracking-tight-heading text-[var(--text-primary)] flex items-center gap-2">
+              <Camera size={18} className="text-[var(--gold)]" />
+              <span>Upload Replacement Payment Screenshot</span>
+            </h3>
+            <p className="font-body text-sm text-[var(--muted)] leading-relaxed">
+              Please take a clear screenshot from your UPI app (Google Pay, PhonePe, Paytm) showing the successful payment of ₹{registration.total_amount} to WFF TAMILNADU and attach it below.
+            </p>
+
+            <input
+              type="file"
+              ref={replacementInputRef}
+              onChange={handleReplacementFileChange}
+              accept="image/png, image/jpeg, image/jpg, image/webp"
+              className="hidden"
+              id="replacement-screenshot-input"
+            />
+
+            {replacementPreview ? (
+              <div className="p-4 rounded-xl border border-emerald-500/40 bg-emerald-500/5 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3 min-w-0">
+                  <img src={replacementPreview} alt="Replacement Preview" className="w-14 h-14 object-cover rounded-lg border border-emerald-500/30 shrink-0" />
+                  <div className="min-w-0">
+                    <div className="font-body text-sm font-bold text-[var(--text-primary)] truncate">{replacementFile?.name}</div>
+                    <span className="font-body text-xs text-emerald-600 dark:text-emerald-400 font-semibold">Ready to resubmit</span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => replacementInputRef.current?.click()}
+                  className="px-3 py-1.5 rounded-lg border border-[var(--border-color)] font-heading font-bold text-xs uppercase tracking-btn hover:border-[var(--gold)] cursor-pointer"
+                >
+                  Change
+                </button>
+              </div>
+            ) : (
+              <div
+                onClick={() => replacementInputRef.current?.click()}
+                className="border-2 border-dashed border-[var(--border-color)] hover:border-[var(--gold)] rounded-2xl p-6 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2"
+              >
+                <Upload size={22} className="text-[var(--gold)]" />
+                <span className="font-body text-sm font-bold text-[var(--text-primary)]">Click to attach new payment screenshot</span>
+                <span className="font-body text-xs text-[var(--muted)]">JPEG, PNG, WEBP (Max 10MB)</span>
+              </div>
+            )}
+
+            <div>
+              <label htmlFor="resubmit-utr" className="block font-body text-xs sm:text-sm font-semibold tracking-label text-[var(--muted)] mb-1.5">
+                Transaction / UTR Reference (Optional)
+              </label>
+              <Input
+                id="resubmit-utr"
+                type="text"
+                value={replacementUtr}
+                onChange={(e) => setReplacementUtr(e.target.value)}
+                placeholder="e.g. 12-digit UTR No"
+                className="h-11 bg-[var(--bg)] text-sm rounded-xl"
+              />
+            </div>
+
+            <Button
+              onClick={handleResubmitProof}
+              disabled={resubmitting || !replacementFile}
+              className="w-full h-12 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-sm uppercase tracking-btn rounded-xl shadow-md cursor-pointer disabled:opacity-50"
+            >
+              {resubmitting ? 'Submitting for Re-verification...' : 'Resubmit Payment Proof for Admin Verification →'}
+            </Button>
+          </div>
+
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* 3. PAYMENT APPROVED & OFFICIAL TICKET ISSUED                  */}
+      {/* ------------------------------------------------------------- */}
+      {isApproved && registration && (
         <div className="max-w-2xl mx-auto animate-in slide-in-from-bottom-8 duration-500 mt-8">
           
           {/* LANYARD TOP STRAP */}
           <div className="flex flex-col items-center">
             <div className="w-28 sm:w-36 h-6 bg-gradient-to-r from-[#997328] via-[#F3E7BE] to-[#997328] rounded-t-md shadow-inner flex items-center justify-center border-t border-x border-[#C9A44A]/50">
-              <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.25em] text-[#040A12] drop-shadow-sm">
+              <span className="text-[10px] sm:text-[11px] font-heading font-black uppercase tracking-tight text-[#040A12] drop-shadow-sm">
                 WFF ATHLETE
               </span>
             </div>
@@ -222,14 +538,14 @@ export default function RegistrationStatusClient() {
 
               <div className="flex items-center justify-between gap-4 relative z-10">
                 <div className="min-w-0 flex-1">
-                  <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-md bg-[#C9A44A]/20 border border-[#C9A44A]/40 text-[#FCF6BA] text-[10px] font-black uppercase tracking-wider mb-2 whitespace-nowrap">
-                    <CheckCircle2 size={12} className="text-[#FCF6BA] shrink-0" />
-                    <span>Official Athlete Pass</span>
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#C9A44A]/20 border border-[#C9A44A]/40 text-[#FCF6BA] font-body text-xs font-bold uppercase tracking-wide mb-2 whitespace-nowrap">
+                    <CheckCircle2 size={13} className="text-[#FCF6BA] shrink-0" />
+                    <span>Official Approved Athlete Pass</span>
                   </div>
-                  <h3 className="font-heading text-2xl sm:text-3xl uppercase font-black tracking-wider leading-tight bg-gradient-to-r from-[#FFF3D6] via-[#FCF6BA] to-[#C9A44A] bg-clip-text text-transparent break-words">
+                  <h3 className="font-heading text-2xl sm:text-3xl lg:text-4xl uppercase font-black tracking-tight leading-tight bg-gradient-to-r from-[#FFF3D6] via-[#FCF6BA] to-[#C9A44A] bg-clip-text text-transparent break-words">
                     {decodeHtml(registration.event_name)}
                   </h3>
-                  <div className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-white/50 font-semibold mt-1">
+                  <div className="font-heading font-bold text-xs uppercase tracking-wide text-white/70 mt-1">
                     World Fitness Federation • Tamil Nadu
                   </div>
                 </div>
@@ -246,337 +562,134 @@ export default function RegistrationStatusClient() {
 
             {/* ATHLETE CREDENTIAL RIBBON */}
             <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-[#14233D] via-[#0E1A2E] to-[#14233D] border-b border-[#C9A44A]/20">
-              {/* Top Meta Line */}
               <div className="flex items-center justify-between gap-2 mb-2">
-                <span className="text-[9px] uppercase tracking-[0.25em] text-[#C9A44A] font-extrabold whitespace-nowrap">
-                  Registered Competitor
+                <span className="font-body text-[11px] uppercase tracking-label text-[#C9A44A] font-bold whitespace-nowrap">
+                  Registered Competitor (APPROVED)
                 </span>
                 <div className="bg-[#050B14] px-3 py-1 rounded-md border border-[#C9A44A]/40 flex items-center gap-2 shrink-0 whitespace-nowrap flex-nowrap">
-                  <span className="text-[9px] uppercase tracking-wider text-[#C9A44A] font-extrabold whitespace-nowrap">Pass ID:</span>
-                  <span className="font-mono font-bold text-xs sm:text-sm text-[#FCF6BA] tracking-wider whitespace-nowrap">
+                  <span className="font-body text-[11px] uppercase tracking-label text-[#C9A44A] font-bold whitespace-nowrap">Pass ID:</span>
+                  <span className="font-mono font-bold text-xs sm:text-sm text-[#FCF6BA] tracking-normal whitespace-nowrap">
                     {registration.registration_number}
                   </span>
                 </div>
               </div>
 
-              {/* Athlete Name - Full Width Block */}
-              <h3 className="font-heading text-2xl sm:text-3xl uppercase font-black text-white tracking-wide leading-tight break-words py-0.5">
+              <div className="font-heading text-2xl sm:text-3xl font-extrabold uppercase tracking-tight-heading text-white">
                 {registration.athlete_name}
-              </h3>
-
-              {/* Bottom Meta Line */}
-              <div className="flex items-center justify-between gap-4 mt-3 pt-2.5 border-t border-white/10 text-xs">
-                <div className="text-white/70 font-medium whitespace-nowrap">
-                  Enrolled: <strong className="text-[#FCF6BA] font-bold">{registration.categories?.length || 1} Divisions</strong>
-                </div>
-                <div className="text-[#FCF6BA] text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 shrink-0 whitespace-nowrap">
-                  <CheckCircle2 size={13} className="text-emerald-400 shrink-0" />
-                  <span>Official Athlete</span>
-                </div>
+              </div>
+              <div className="font-body text-xs sm:text-sm text-white/70 font-medium mt-1">
+                {registration.phone} &bull; {registration.email}
               </div>
             </div>
 
-            {/* Date & Venue Tiles */}
-            <div className="px-6 sm:px-8 py-4 grid grid-cols-1 sm:grid-cols-2 gap-3.5 border-b border-white/10 bg-black/20">
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/5">
-                <div className="w-8 h-8 rounded-lg bg-[#C9A44A]/15 border border-[#C9A44A]/30 flex items-center justify-center text-[#FCF6BA] shrink-0">
-                  <Calendar size={15} />
+            {/* EVENT DETAILS & DIVISIONS */}
+            <div className="px-6 sm:px-8 py-5 border-b border-white/10 space-y-4">
+              <div className="grid grid-cols-2 gap-4 text-xs">
+                <div>
+                  <span className="font-body text-[11px] font-semibold uppercase tracking-label text-white/50 block">Championship Date</span>
+                  <span className="font-body font-semibold text-xs sm:text-sm text-white mt-0.5 block">{registration.event_date}</span>
                 </div>
-                <div className="min-w-0">
-                  <div className="text-[8.5px] uppercase tracking-[0.2em] text-white/40 font-bold whitespace-nowrap">Event Date</div>
-                  <div className="font-sans font-bold text-xs sm:text-sm text-white uppercase tracking-wide leading-snug mt-0.5">{registration.event_date}</div>
+                <div>
+                  <span className="font-body text-[11px] font-semibold uppercase tracking-label text-white/50 block">Venue</span>
+                  <span className="font-body font-semibold text-xs sm:text-sm text-white mt-0.5 block truncate">{registration.venue}</span>
                 </div>
-              </div>
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/5 min-w-0">
-                <div className="w-8 h-8 rounded-lg bg-[#C9A44A]/15 border border-[#C9A44A]/30 flex items-center justify-center text-[#FCF6BA] shrink-0">
-                  <MapPin size={15} />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="text-[8.5px] uppercase tracking-[0.2em] text-white/40 font-bold whitespace-nowrap">Official Venue</div>
-                  <div className="font-sans font-bold text-xs sm:text-sm text-white uppercase tracking-wide break-words leading-snug mt-0.5">{decodeHtml(registration.venue || 'TBA')}</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Categories */}
-            <div className="px-6 sm:px-8 pt-5 pb-8">
-              <div className="flex items-center justify-between gap-2 mb-3.5">
-                <div className="text-[10px] uppercase tracking-[0.25em] text-[#C9A44A] font-extrabold flex items-center gap-1.5 whitespace-nowrap">
-                  <Trophy size={13} className="text-[#C9A44A] shrink-0" />
-                  <span>Enrolled Championship Categories</span>
-                </div>
-                <span className="text-[9px] font-black text-emerald-400 bg-emerald-500/15 border border-emerald-500/40 px-3 py-0.5 rounded-full uppercase tracking-wider whitespace-nowrap">
-                  Verified
-                </span>
-              </div>
-
-              <div className="space-y-2.5">
-                {registration.categories?.map((c: string, idx: number) => (
-                  <div key={idx} className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-white/[0.07] to-white/[0.02] border border-white/10 hover:border-[#C9A44A]/40 transition-colors">
-                    <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <span className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#BF953F] to-[#8A6318] text-[#040A12] text-xs font-black flex items-center justify-center shrink-0 shadow-sm">
-                        {idx + 1}
-                      </span>
-                      <span className="font-sans font-bold text-xs sm:text-[13px] uppercase text-white tracking-wide leading-normal break-words">
-                        {decodeHtml(c)}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-emerald-400 shrink-0 text-[10px] font-bold uppercase tracking-wider whitespace-nowrap pl-2">
-                      <CheckCircle2 size={14} className="shrink-0" />
-                      <span>Active</span>
-                    </div>
+                {registration.age && (
+                  <div>
+                    <span className="font-body text-[11px] font-semibold uppercase tracking-label text-white/50 block">Age</span>
+                    <span className="font-body font-semibold text-xs sm:text-sm text-white mt-0.5 block">{registration.age} Years</span>
                   </div>
-                ))}
-                {registration.tan_spray_requested && (
-                  <div className="px-4 py-3 rounded-xl bg-gradient-to-r from-[#C9A44A]/20 to-[#C9A44A]/5 border border-[#C9A44A]/40 flex items-center gap-2.5 text-xs font-bold text-[#FCF6BA] uppercase tracking-wider">
-                    <span className="w-2 h-2 rounded-full bg-[#FCF6BA] animate-pulse shrink-0"></span>
-                    <span>Official Pro Stage Tan Spray Included</span>
+                )}
+                {registration.height && (
+                  <div>
+                    <span className="font-body text-[11px] font-semibold uppercase tracking-label text-white/50 block">Height</span>
+                    <span className="font-body font-semibold text-xs sm:text-sm text-white mt-0.5 block">{registration.height} cm</span>
                   </div>
                 )}
               </div>
-            </div>
 
-            {/* Perforated Stub / QR */}
-            <div className="relative pt-6 pb-6 px-6 sm:px-8 bg-[#040810] border-t-2 border-dashed border-[#C9A44A]/30">
-              <div className="absolute -top-3.5 -left-4 w-7 h-7 rounded-full bg-[#F4F5F7] dark:bg-[#03070E] border-r-2 border-[#C9A44A]/30"></div>
-              <div className="absolute -top-3.5 -right-4 w-7 h-7 rounded-full bg-[#F4F5F7] dark:bg-[#03070E] border-l-2 border-[#C9A44A]/30"></div>
-
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-5 bg-gradient-to-br from-white/[0.04] to-transparent p-4 sm:p-5 rounded-2xl border border-white/10">
-                <div className="flex flex-col items-center text-center shrink-0">
-                  <div className="w-28 h-28 sm:w-32 sm:h-32 bg-white p-2 rounded-xl border-2 border-[#C9A44A] shadow-[0_0_20px_rgba(201,164,74,0.25)] flex items-center justify-center mb-1.5">
-                    <img
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(registration.registration_number)}`}
-                      alt="Verification QR"
-                      className="w-full h-full object-contain"
-                      crossOrigin="anonymous"
-                    />
-                  </div>
-                  <span className="text-[8px] uppercase tracking-[0.25em] text-[#FCF6BA] font-extrabold whitespace-nowrap">Scan for Stage Access</span>
-                </div>
-
-                <div className="flex-1 flex flex-col justify-between sm:items-end gap-3 text-center sm:text-right w-full sm:w-auto py-1">
-                  <div>
-                    <div className="text-[9px] uppercase tracking-[0.2em] text-white/40 font-bold mb-0.5 whitespace-nowrap">Total Registration Fee</div>
-                    <div className="font-heading text-3xl sm:text-4xl font-black text-white bg-gradient-to-r from-white via-[#FCF6BA] to-[#C9A44A] bg-clip-text text-transparent leading-none">₹{registration.total_amount}</div>
-                  </div>
-                  <div className="flex flex-col sm:items-end gap-1.5">
-                    <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider border shadow-sm bg-emerald-500/20 text-emerald-300 border-emerald-500/40 whitespace-nowrap`}>
-                      <CheckCircle2 size={13} className="shrink-0" />
-                      <span>PAID &amp; VERIFIED</span>
-                    </div>
-                    <div className="text-[9px] uppercase font-mono text-white/40 whitespace-nowrap">
-                      Ref: {registration.razorpay_payment_id || 'ONLINE-CONFIRMED'}
-                    </div>
-                  </div>
+              <div>
+                <span className="font-body text-[11px] font-semibold uppercase tracking-label text-[#C9A44A] block mb-2">
+                  Enrolled Divisions ({registration.categories.length})
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {registration.categories.map((c: string, i: number) => (
+                    <span key={i} className="px-3 py-1 bg-white/5 rounded-md border border-white/10 text-xs font-heading font-bold uppercase tracking-wide text-white">
+                      {c}
+                    </span>
+                  ))}
+                  {registration.tan_spray_requested && (
+                    <span className="px-3 py-1 bg-[#C9A44A]/20 rounded-md border border-[#C9A44A]/40 text-xs font-heading font-bold uppercase tracking-wide text-[#FCF6BA]">
+                      + Tan Spray
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
 
-            <div className="h-1.5 w-full bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]"></div>
-          </div>
-
-          {/* Share and Print Actions */}
-          <div className="mt-8 space-y-3.5">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <button 
-                type="button"
-                disabled={downloadingPass}
-                onClick={async () => {
-                  const node = document.getElementById('wff-official-ticket');
-                  if (!node) {
-                    toast.error("Ticket element not found.", { title: "Error" });
-                    return;
-                  }
-                  setDownloadingPass(true);
-                  try {
-                    const { toPng } = await import('html-to-image');
-                    const dataUrl = await toPng(node, {
-                      pixelRatio: 2.5,
-                      skipFonts: true,
-                      backgroundColor: '#050A12',
-                      cacheBust: true,
-                      filter: (domNode: HTMLElement) => {
-                        return domNode.tagName !== 'SCRIPT' && domNode.tagName !== 'IFRAME';
-                      }
-                    });
-                    const link = document.createElement('a');
-                    link.download = `WFF-Stage-Pass-${(registration.registration_number || 'Athlete').replace(/[^a-zA-Z0-9-_]/g, '_')}.png`;
-                    link.href = dataUrl;
-                    link.click();
-                    toast.success("Stage pass downloaded to your device!", { title: "Pass Downloaded" });
-                  } catch (err) {
-                    console.error("Failed to download pass:", err);
-                    toast.info("Opening print dialog to save as PDF / Image.", { title: "Saving Pass" });
-                    window.print();
-                  } finally {
-                    setDownloadingPass(false);
-                  }
-                }}
-                className="bg-gradient-to-r from-[#BF953F] via-[#E8CE7A] to-[#B38728] hover:brightness-110 text-[#040A12] font-heading font-black uppercase tracking-[0.15em] h-13 py-3.5 px-6 rounded-xl text-sm shadow-[0_8px_25px_rgba(191,149,63,0.35)] flex items-center justify-center gap-2 cursor-pointer transition-all hover:-translate-y-0.5 disabled:opacity-60"
-              >
-                <Download size={18} className={downloadingPass ? 'animate-bounce' : ''} />
-                <span>{downloadingPass ? 'Generating Pass...' : 'Download Pass'}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/registration-status?regNumber=${encodeURIComponent(registration.registration_number)}` : '';
-                  const shareText = `🏆 WFF Tamil Nadu Registration Confirmed!\n\nAthlete: ${registration.athlete_name}\nEvent: ${decodeHtml(registration.event_name)}\nReg No: ${registration.registration_number}\n\nView official ticket here: ${shareUrl}`;
-                  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank');
-                }}
-                className="bg-[#25D366] hover:bg-[#1EBE5D] text-white font-heading font-black uppercase tracking-[0.15em] h-13 py-3.5 px-6 rounded-xl text-sm shadow-[0_8px_25px_rgba(37,211,102,0.35)] flex items-center justify-center gap-2 cursor-pointer transition-all hover:-translate-y-0.5"
-              >
-                <Smartphone size={18} className="text-white" />
-                <span className="text-white">Share on WhatsApp</span>
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-              <button
-                type="button"
-                disabled={sendingEmail}
-                onClick={async () => {
-                  if (!registration?.registration_number) return;
-                  setSendingEmail(true);
-                  try {
-                    const res = await fetch(`${API_BASE}/registrations/send-pass-email.php`, {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ registration_number: registration.registration_number })
-                    });
-                    const json = await res.json();
-                    if (json.success) {
-                      toast.success(json.data?.message || "Stage pass sent to registered email!", { title: "Pass Emailed" });
-                    } else {
-                      toast.info("Pass dispatched to registered email.", { title: "Email Dispatched" });
-                    }
-                  } catch (err) {
-                    toast.info("Pass dispatched to registered email.", { title: "Email Dispatched" });
-                  } finally {
-                    setSendingEmail(false);
-                  }
-                }}
-                className="bg-white dark:bg-[#0E1A2B] hover:bg-gray-100 dark:hover:bg-[#14233A] text-[#040A12] dark:text-white border border-black/10 dark:border-white/10 font-heading font-bold text-xs uppercase tracking-wider py-3 px-3 rounded-xl shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-              >
-                <Mail size={15} className={`text-[#C9A44A] ${sendingEmail ? 'animate-spin' : ''}`} />
-                <span>{sendingEmail ? 'Sending...' : 'Email Pass'}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => window.print()}
-                className="bg-white dark:bg-[#0E1A2B] hover:bg-gray-100 dark:hover:bg-[#14233A] text-[#040A12] dark:text-white border border-black/10 dark:border-white/10 font-heading font-bold text-xs uppercase tracking-wider py-3 px-3 rounded-xl shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-              >
-                <Printer size={15} className="text-[#C9A44A]" />
-                <span>Print Pass</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/registration-status?regNumber=${encodeURIComponent(registration.registration_number)}` : '';
-                  const shareText = `🏆 WFF Tamil Nadu Registration Confirmed!\n\nAthlete: ${registration.athlete_name}\nEvent: ${decodeHtml(registration.event_name)}\nReg No: ${registration.registration_number}\n\nView official ticket here: ${shareUrl}`;
-                  if (typeof navigator !== 'undefined' && navigator.share) {
-                    navigator.share({ title: 'WFF Official Ticket', text: shareText, url: shareUrl }).catch(() => {});
-                  } else if (typeof navigator !== 'undefined' && navigator.clipboard) {
-                    navigator.clipboard.writeText(shareUrl);
-                    toast.success("Ticket link copied!", { title: "Copied" });
-                  }
-                }}
-                className="bg-white dark:bg-[#0E1A2B] hover:bg-gray-100 dark:hover:bg-[#14233A] text-[#040A12] dark:text-white border border-black/10 dark:border-white/10 font-heading font-bold text-xs uppercase tracking-wider py-3 px-3 rounded-xl shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-              >
-                <Share2 size={15} className="text-[#C9A44A]" />
-                <span>Share</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/registration-status?regNumber=${encodeURIComponent(registration.registration_number)}` : '';
-                  if (typeof navigator !== 'undefined' && navigator.clipboard) {
-                    navigator.clipboard.writeText(shareUrl);
-                    toast.success("Ticket link copied to clipboard!", { title: "Link Copied" });
-                  }
-                }}
-                className="bg-white dark:bg-[#0E1A2B] hover:bg-gray-100 dark:hover:bg-[#14233A] text-[#040A12] dark:text-white border border-black/10 dark:border-white/10 font-heading font-bold text-xs uppercase tracking-wider py-3 px-3 rounded-xl shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-              >
-                <Copy size={15} className="text-[#C9A44A]" />
-                <span>Copy Link</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {registration && registration.status !== 'paid' && (
-        <div className="bg-[var(--surface)] border border-[var(--border-color)] p-6 md:p-8 animate-in fade-in slide-in-from-bottom-4 duration-500 mt-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-6 border-b border-[var(--border-color)] gap-4">
-            <div>
-              <div className="text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Registration Number</div>
-              <div className="font-display text-2xl tracking-wider text-[var(--text-primary)]">{registration.registration_number}</div>
-            </div>
-            <div className="flex flex-col items-start sm:items-end">
-              <div className="text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Status</div>
-              <div className="px-3 py-1 bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 text-[10px] font-bold uppercase tracking-widest rounded-sm border border-yellow-500/30">
-                {registration.status.replace('_', ' ')}
+            {/* QR CODE & APPROVAL BADGE */}
+            <div className="px-6 sm:px-8 py-6 bg-black/40 flex flex-col sm:flex-row items-center justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <div className="w-20 h-20 bg-white p-1 rounded-xl shrink-0">
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(registration.registration_number)}`}
+                    alt="Ticket QR"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div>
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-body text-xs font-bold uppercase tracking-wide mb-1">
+                    <CheckCircle2 size={13} />
+                    <span>APPROVED &bull; VALID FOR ENTRY</span>
+                  </div>
+                  <div className="font-body text-xs text-white/60">
+                    Scan at athlete weigh-in &amp; registration desk
+                  </div>
+                </div>
+              </div>
+              <div className="text-right shrink-0">
+                <span className="font-body text-[11px] font-semibold uppercase tracking-label text-white/50 block">Fee Paid</span>
+                <span className="font-heading font-black text-2xl text-[var(--gold)]">₹{registration.total_amount}</span>
               </div>
             </div>
+
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-8">
-            <div>
-              <div className="text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Athlete Name</div>
-              <div className="font-medium text-[var(--text-primary)] text-lg">{registration.athlete_name}</div>
-            </div>
-            <div>
-              <div className="text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Amount Due</div>
-              <div className="font-medium text-[var(--gold)] text-lg">₹{registration.total_amount}</div>
-            </div>
-            <div className="sm:col-span-2">
-              <div className="text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Championship</div>
-              <div className="font-medium text-[var(--text-primary)] text-lg">{registration.event_name}</div>
-            </div>
-            <div className="sm:col-span-2 border-t border-[var(--border-color)] pt-8">
-              <div className="text-[10px] uppercase tracking-widest text-[var(--muted)] mb-3">Categories Selected</div>
-              <ul className="space-y-2">
-                {registration.categories.map((c: string, idx: number) => (
-                  <li key={idx} className="font-medium text-[var(--text-primary)] flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-[var(--gold)] inline-block"></span>
-                    {c}
-                  </li>
-                ))}
-              </ul>
-              {registration.tan_spray_requested && (
-                <div className="mt-4 text-xs font-bold text-[var(--gold)] uppercase tracking-widest flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-[var(--gold)] inline-block"></span>
-                  + TAN SPRAY ADDED
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="bg-black/20 border border-[var(--border-color)] p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-              <h3 className="font-display text-sm uppercase tracking-widest text-[var(--text-primary)] mb-2">
-                Pending Payment
-              </h3>
-              <p className="text-sm text-[var(--muted)]">
-                Please complete your payment of ₹{registration.total_amount} to confirm your registration and receive your digital ticket.
-              </p>
-            </div>
-
+          {/* OFFICIAL PASS ACTIONS */}
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <Button
-              onClick={handlePayment}
-              disabled={loading}
-              variant="gold"
-              className="uppercase tracking-widest w-full md:w-auto h-14 px-8 text-sm font-bold shadow-[0_4px_20px_rgba(198,161,91,0.2)] shrink-0"
+              onClick={handleDownloadPass}
+              disabled={downloadingPass}
+              className="h-12 px-6 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-sm uppercase tracking-btn rounded-xl shadow-md cursor-pointer hover:brightness-110 transition-all"
             >
-              {loading ? 'Processing...' : <><CreditCard size={18} className="mr-2" /> Pay ₹{registration.total_amount}</>}
+              <Download size={16} className="mr-2" />
+              {downloadingPass ? 'Exporting...' : 'Download Pass Image (PNG)'}
             </Button>
+            <Button
+              onClick={handleEmailPass}
+              disabled={sendingEmail}
+              className="h-12 px-5 bg-[var(--surface)] border border-[var(--gold)]/50 text-[var(--gold)] hover:bg-[var(--gold)]/10 font-heading font-bold text-sm uppercase tracking-btn rounded-xl cursor-pointer transition-all"
+            >
+              <Mail size={16} className="mr-2" />
+              {sendingEmail ? 'Sending Pass...' : 'Email Pass to Me'}
+            </Button>
+            <Button
+              onClick={() => window.print()}
+              variant="secondary"
+              className="h-12 px-5 border border-[var(--border-color)] font-heading font-bold text-sm uppercase tracking-btn rounded-xl cursor-pointer"
+            >
+              <Printer size={16} className="mr-2" /> Print Official Pass
+            </Button>
+            <Link
+              href="/"
+              className="inline-flex items-center justify-center h-12 px-5 bg-[var(--surface)] border border-[var(--border-color)] text-[var(--text-primary)] hover:border-[var(--gold)] font-heading font-bold text-sm uppercase tracking-btn rounded-xl transition-all"
+            >
+              Return Home
+            </Link>
           </div>
+
         </div>
       )}
+
     </div>
   );
 }

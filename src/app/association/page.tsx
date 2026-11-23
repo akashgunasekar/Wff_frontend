@@ -19,10 +19,10 @@ export default async function AssociationPage() {
         </div>
         
         <div className="relative z-10 text-center px-6">
-          <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl text-white uppercase leading-tight mb-4 tracking-wider drop-shadow-xl animate-fade-up">
-            Leadership & <span className="text-gold-gradient">Officials</span>
+          <h1 className="font-heading text-[clamp(36px,4.5vw,64px)] text-white uppercase leading-[0.95] mb-4 tracking-[-1px] font-black drop-shadow-xl animate-fade-up">
+            Leadership &amp; <span className="text-gold-gradient">Officials</span>
           </h1>
-          <p className="text-wff-muted text-lg max-w-2xl mx-auto font-medium animate-fade-up [animation-delay:150ms]">
+          <p className="font-body text-wff-muted text-[15px] sm:text-[16px] max-w-[650px] mx-auto font-normal leading-[1.6] animate-fade-up [animation-delay:150ms]">
             The dedicated individuals upholding the integrity, transparency, and prestige of natural bodybuilding in Tamil Nadu.
           </p>
         </div>

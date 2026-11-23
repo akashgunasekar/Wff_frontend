@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { Official } from '@/types';
 import { Container } from '@/components/ui/Container';
 import { Phone } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, decodeHtml } from '@/lib/utils';
 
 const InstagramIcon = ({ size = 18 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -32,13 +32,13 @@ export default function AssociationClient({ officials }: { officials: Official[]
       <Container>
 
         {/* Filtering Tabs */}
-        <div className="flex flex-wrap justify-center gap-4 md:mb-20 mb-8">
+        <div className="flex flex-wrap justify-center gap-3 md:mb-16 mb-8">
           {roles.map(role => (
             <button
               key={role}
               onClick={() => setFilter(role)}
               className={cn(
-                "px-7 py-3 rounded-full text-[11px] font-bold uppercase tracking-widest transition-all duration-300 shadow-sm",
+                "px-6 py-2.5 rounded-full text-[12px] font-heading font-bold uppercase tracking-[1px] transition-all duration-300 shadow-sm cursor-pointer",
                 filter === role
                   ? "bg-[#040A12] text-white border border-[#040A12] shadow-[0_8px_20px_rgba(4,10,18,0.15)]"
                   : "bg-white border border-black/5 text-[#040A12]/60 hover:text-[#040A12] hover:border-[#C9A44A]/40 hover:shadow-md"
@@ -68,7 +68,7 @@ export default function AssociationClient({ officials }: { officials: Official[]
                     />
                   ) : (
                     <div className="w-32 h-32 rounded-full bg-white flex items-center justify-center border-4 border-[#C9A44A]/20 shadow-[0_0_30px_rgba(201,164,74,0.15)] group-hover:border-[#C9A44A]/50 transition-colors duration-500 relative z-20">
-                      <span className="text-5xl text-[#C9A44A] font-heading">{official.name.charAt(0)}</span>
+                      <span className="text-5xl text-[#C9A44A] font-heading font-black">{official.name.charAt(0)}</span>
                     </div>
                   )}
                 </div>
@@ -78,13 +78,13 @@ export default function AssociationClient({ officials }: { officials: Official[]
                 {/* Glow Line */}
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]"></div>
 
-                <span className="inline-block px-5 py-2 bg-gradient-to-r from-[#BF953F]/10 to-[#B38728]/10 text-[#C9A44A] text-[9px] font-bold uppercase tracking-[0.2em] rounded-sm mb-5">
-                  {official.role}
+                <span className="inline-block px-4 py-1.5 bg-gradient-to-r from-[#BF953F]/10 to-[#B38728]/10 text-[#C9A44A] text-[10px] sm:text-[11px] font-heading font-bold uppercase tracking-[1.5px] rounded-sm mb-4 leading-[1.4]">
+                  {decodeHtml(official.role || '')}
                 </span>
 
-                <h3 className="font-heading text-[22px] text-[#040A12] uppercase tracking-wider mb-2 leading-snug">{official.name}</h3>
+                <h3 className="font-heading text-[19px] sm:text-[22px] text-[#040A12] uppercase tracking-normal mb-1.5 leading-[1.2] font-bold">{decodeHtml(official.name || '')}</h3>
                 {official.designation && (
-                  <p className="text-[#040A12]/50 text-xs font-bold uppercase tracking-widest mb-6">{official.designation}</p>
+                  <p className="text-[#040A12]/60 text-[13px] sm:text-[14px] font-body font-medium leading-[1.5] mb-5">{decodeHtml(official.designation)}</p>
                 )}
 
                 {(official.instagram || official.phone) && (

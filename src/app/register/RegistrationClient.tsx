@@ -1,15 +1,31 @@
 "use client";
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Event, EventCategory } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { AlertCircle, AlertTriangle, CreditCard, CheckCircle2, Ticket, CheckSquare, Square, Calendar, MapPin, Trophy, ShieldCheck, QrCode, Link2, Copy, Check, ExternalLink, X, Smartphone, ArrowRight, Upload, ImageIcon, Trash2, Camera, Share2, Printer, Download, Mail } from 'lucide-react';
-import { loadRazorpay } from '@/lib/utils';
+import { 
+  AlertCircle, 
+  CheckCircle2, 
+  Calendar, 
+  Trophy, 
+  Copy, 
+  Check, 
+  ExternalLink, 
+  ArrowRight, 
+  ArrowLeft,
+  Upload, 
+  Camera, 
+  Clock, 
+  ShieldAlert, 
+  Smartphone, 
+  Trash2,
+  Receipt
+} from 'lucide-react';
 import { API_BASE } from '@/lib/api';
 import { toast } from '@/components/ui/Toast';
-import Image from 'next/image';
+import { formatEventDateRange } from '@/lib/utils';
 import Link from 'next/link';
 
 /** Decode HTML entities like &amp; &#039; etc. to their actual characters */
@@ -33,1723 +49,1844 @@ export default function RegistrationClient({ initialEvents }: RegistrationClient
 
   const [events] = useState<Event[]>(initialEvents);
 
-  // Get event based on URL param. Since "Event automatically selected", we default to it.
-  const selectedEvent = events.find(e => e.id.toString() === initialEventId) || null;
-  const isEventOpen = selectedEvent?.status === 'open';
+  // Pre-selected event from URL parameter, or South India Natural League 2027 (ID 11), or first available
+  const selectedEvent = events.find(e => e.id.toString() === initialEventId || e.slug === initialEventId) 
+    || events.find(e => e.id === 11 || e.slug === 'south-india-natural-league-2027') 
+    || events[0] || null;
 
-  // Selected categories (multiple)
-  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
+  // Check if current event is South India Natural League 2027 or India Natural 2027
+  const isSouthIndiaLeague = Boolean(
+    selectedEvent && (
+      selectedEvent.id === 11 || 
+      selectedEvent.slug === 'south-india-natural-league-2027' || 
+      selectedEvent.event_name?.toLowerCase().includes('south india')
+    )
+  );
 
-  const [tanSprayRequested, setTanSprayRequested] = useState(true);
+  const isIndiaNatural = Boolean(
+    selectedEvent && (
+      selectedEvent.id === 12 || 
+      selectedEvent.slug === 'india-natural-2027' || 
+      selectedEvent.event_name?.toLowerCase().includes('india natural')
+    )
+  );
 
-  // Athlete details
+  const isTieredLeague = isSouthIndiaLeague || isIndiaNatural;
+
+  // Active Step: 1 = Athlete Details, 2 = Category Selection & Fee, 3 = UPI Payment & Proof Upload
+  const [activeStep, setActiveStep] = useState<1 | 2 | 3>(1);
+
+  // Step 1: Athlete basic details only (no ID documents, no address, no gym)
   const [formData, setFormData] = useState({
     athlete_name: '',
     phone: '',
     email: '',
-    instagram_id: '',
     date_of_birth: '',
-    height: '',
-    weight: ''
+    height: ''
   });
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  // Step 2: Selected categories & filter
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [tanSprayRequested, setTanSprayRequested] = useState(false);
 
-  const [successData, setSuccessData] = useState<any>(null);
-  const [paymentFailed, setPaymentFailed] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<'online' | 'cash'>('online');
-
-  // Modal states for Checkout
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
-  const [paymentTab, setPaymentTab] = useState<'qr' | 'link'>('qr');
-  const [copiedField, setCopiedField] = useState<'upi' | 'link' | null>(null);
+  // Step 3: Payment Screenshot & UTR
   const [transactionRef, setTransactionRef] = useState('');
   const [paymentProofFile, setPaymentProofFile] = useState<File | null>(null);
   const [paymentProofPreview, setPaymentProofPreview] = useState<string | null>(null);
-  const [verifying, setVerifying] = useState(false);
-  const [downloadingPass, setDownloadingPass] = useState(false);
-  const [sendingEmail, setSendingEmail] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const paymentProofInputRef = useRef<HTMLInputElement | null>(null);
+  const [copiedUpi, setCopiedUpi] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (!file.type.startsWith('image/')) {
-        toast.error('Please select an image file (JPG, PNG, or WebP).', { title: 'Invalid File' });
-        return;
-      }
-      if (file.size > 10 * 1024 * 1024) {
-        toast.error('Screenshot size exceeds 10MB limit.', { title: 'File Too Large' });
-        return;
-      }
-      setPaymentProofFile(file);
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setPaymentProofPreview(event.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-      toast.info('Screenshot attached! Click "Complete Registration" below to verify.', { title: 'File Ready' });
+  // Loading & Submission State
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [submittedData, setSubmittedData] = useState<any>(null);
+
+  // Scroll to top when activeStep changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [activeStep]);
+
+  // Automatically calculate age from Date of Birth
+  const calculatedAge = useMemo(() => {
+    if (!formData.date_of_birth) return '';
+    const birthDate = new Date(formData.date_of_birth);
+    if (isNaN(birthDate.getTime())) return '';
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
     }
-  };
+    return age >= 0 ? age.toString() : '';
+  }, [formData.date_of_birth]);
 
-  const handleRemoveProof = () => {
-    setPaymentProofFile(null);
-    setPaymentProofPreview(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
-  const handleRequestClosePaymentModal = () => {
-    setIsCancelConfirmOpen(true);
-  };
-
-  const handleConfirmCancelPayment = () => {
-    setIsCancelConfirmOpen(false);
-    setIsPaymentModalOpen(false);
-    toast.warning("Payment process cancelled. Your registration is incomplete.", {
-      title: "Payment Cancelled"
-    });
-  };
-
-  const handleContinuePayment = () => {
-    setIsCancelConfirmOpen(false);
-  };
-
-  // Derived Values
+  // Derived selected category objects
   const selectedCategories = useMemo(() => {
-    if (!selectedEvent) return [];
-    return selectedCategoryIds.map(id => selectedEvent.categories?.find(c => c.id.toString() === id)).filter(Boolean) as EventCategory[];
+    if (!selectedEvent?.categories) return [];
+    return selectedCategoryIds
+      .map(id => selectedEvent.categories?.find(c => c.id.toString() === id))
+      .filter(Boolean) as EventCategory[];
   }, [selectedEvent, selectedCategoryIds]);
 
-  // Derived Pricing
+  // Derived Pricing Calculations
+  // South India Natural League 2027: Official Tiered Pricing (Single: ₹3k, Double: ₹5k, Triple: ₹6k) + Mandatory Clinical Testing Charge (₹2,000 per athlete)
+  // Other events: Legacy 50% discount on additional divisions
   const pricing = useMemo(() => {
-    if (selectedCategories.length === 0) return { base: 0, discount: 0, tanSpray: 0, total: 0 };
+    if (selectedCategories.length === 0) {
+      return { 
+        base: 0, 
+        discount: 0, 
+        categoryFee: 0, 
+        clinicalCharge: isTieredLeague ? 2000 : 0, 
+        tanSpray: 0, 
+        total: 0, 
+        firstCategoryFee: 0, 
+        additionalFee: 0,
+        tierLabel: ''
+      };
+    }
 
+    if (isTieredLeague) {
+      const count = selectedCategories.length;
+      let categoryFee = 3000;
+      let tierLabel = 'Single Category';
+      if (count === 1) {
+        categoryFee = 3000;
+        tierLabel = 'Single Category';
+      } else if (count === 2) {
+        categoryFee = 5000;
+        tierLabel = 'Double Category';
+      } else if (count >= 3) {
+        categoryFee = 6000;
+        tierLabel = 'Triple Category';
+      }
+
+      const clinicalCharge = 2000; // Mandatory clinical testing charge per athlete
+      const eventTanSprayPrice = selectedEvent?.tan_spray_price ? parseFloat(selectedEvent.tan_spray_price) : 1500;
+      const tanSpray = tanSprayRequested ? eventTanSprayPrice : 0;
+      const total = categoryFee + clinicalCharge + tanSpray;
+
+      return {
+        base: categoryFee,
+        discount: 0,
+        categoryFee,
+        clinicalCharge,
+        tanSpray,
+        total,
+        firstCategoryFee: categoryFee,
+        additionalFee: 0,
+        tierLabel
+      };
+    }
+
+    // Standard / Legacy calculation for other events
     let base = 0;
     let discount = 0;
+    let firstCategoryFee = 0;
+    let additionalFee = 0;
 
     selectedCategories.forEach((cat, index) => {
       const fee = parseFloat(cat.entry_fee || '0');
       base += fee;
-      if (index > 0) {
+      if (index === 0) {
+        firstCategoryFee = fee;
+      } else {
+        const discounted = fee * 0.5;
+        additionalFee += discounted;
         discount += (fee * 0.5);
       }
     });
 
-    // Tan Spray price logic.
-    const eventTanSprayPrice = selectedEvent?.tan_spray_price ? parseFloat(selectedEvent.tan_spray_price) : 1000;
+    const eventTanSprayPrice = selectedEvent?.tan_spray_price ? parseFloat(selectedEvent.tan_spray_price) : 1500;
     const tanSpray = tanSprayRequested ? eventTanSprayPrice : 0;
+    const categoryFee = base - discount;
+    const total = categoryFee + tanSpray;
 
-    const total = base - discount + tanSpray;
+    return { 
+      base, 
+      discount, 
+      categoryFee, 
+      clinicalCharge: 0, 
+      tanSpray, 
+      total, 
+      firstCategoryFee, 
+      additionalFee,
+      tierLabel: '' 
+    };
+  }, [selectedCategories, tanSprayRequested, selectedEvent, isTieredLeague]);
 
-    return { base, discount, tanSpray, total };
-  }, [selectedCategories, tanSprayRequested, selectedEvent]);
+  // Eligibility checking helper
+  const checkEligibility = (catName: string, eligibilityDesc: string = '') => {
+    const ageNum = calculatedAge ? parseInt(calculatedAge, 10) : null;
+    const heightNum = formData.height ? parseFloat(formData.height) : null;
+    const fullText = (catName + ' ' + eligibilityDesc).toLowerCase();
 
-  // Calculate age from DOB
-  const age = useMemo(() => {
-    if (!formData.date_of_birth) return '';
-    const birthDate = new Date(formData.date_of_birth);
-    const today = new Date();
-    let calculatedAge = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      calculatedAge--;
+    // Check Teenager (Up to 18)
+    if (fullText.includes('teenager') || fullText.includes('up to 18')) {
+      if (ageNum !== null) {
+        if (ageNum <= 18) return { status: 'eligible', text: `Eligible (Age ${ageNum} ≤ 18)` };
+        return { status: 'warning', text: `Age Notice: Up to 18 yrs (Your age: ${ageNum})` };
+      }
     }
-    return calculatedAge > 0 ? calculatedAge.toString() : '';
-  }, [formData.date_of_birth]);
+    // Check Sub Junior (Up to 20)
+    if (fullText.includes('sub junior') || fullText.includes('up to 20')) {
+      if (ageNum !== null) {
+        if (ageNum <= 20) return { status: 'eligible', text: `Eligible (Age ${ageNum} ≤ 20)` };
+        return { status: 'warning', text: `Age Notice: Up to 20 yrs (Your age: ${ageNum})` };
+      }
+    }
+    // Check Junior (Up to 23)
+    if (fullText.includes('junior') || fullText.includes('up to 23')) {
+      if (ageNum !== null) {
+        if (ageNum <= 23) return { status: 'eligible', text: `Eligible (Age ${ageNum} ≤ 23)` };
+        return { status: 'warning', text: `Age Notice: Up to 23 yrs (Your age: ${ageNum})` };
+      }
+    }
+    // Check Masters (Above 40)
+    if (fullText.includes('masters') && fullText.includes('above 40')) {
+      if (ageNum !== null) {
+        if (ageNum > 40) return { status: 'eligible', text: `Eligible (Age ${ageNum} > 40)` };
+        return { status: 'warning', text: `Age Notice: Above 40 yrs (Your age: ${ageNum})` };
+      }
+    }
+    // Check Master's (Above 50)
+    if (fullText.includes("master's") || (fullText.includes('masters') && fullText.includes('above 50'))) {
+      if (ageNum !== null) {
+        if (ageNum > 50) return { status: 'eligible', text: `Eligible (Age ${ageNum} > 50)` };
+        return { status: 'warning', text: `Age Notice: Above 50 yrs (Your age: ${ageNum})` };
+      }
+    }
+    // Check Senior Short (Up to 1.65 metres / 165 cm)
+    if (fullText.includes('senior short') || fullText.includes('up to 1.65')) {
+      if (heightNum !== null) {
+        if (heightNum <= 165) return { status: 'eligible', text: `Eligible (Height ${heightNum}cm ≤ 165cm)` };
+        return { status: 'warning', text: `Height Notice: Up to 1.65m (Your height: ${heightNum}cm)` };
+      }
+    }
+    // Check Senior Tall (Above 1.65 metres / 165 cm)
+    if (fullText.includes('senior tall') || fullText.includes('above 1.65')) {
+      if (heightNum !== null) {
+        if (heightNum > 165) return { status: 'eligible', text: `Eligible (Height ${heightNum}cm > 165cm)` };
+        return { status: 'warning', text: `Height Notice: Above 1.65m (Your height: ${heightNum}cm)` };
+      }
+    }
+    return null;
+  };
 
+  // Handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const toggleCategory = (catId: string) => {
-    setSelectedCategoryIds(prev =>
-      prev.includes(catId) ? prev.filter(id => id !== catId) : [...prev, catId]
-    );
+    setSelectedCategoryIds(prev => {
+      const alreadySelected = prev.includes(catId);
+      if (alreadySelected) {
+        return prev.filter(id => id !== catId);
+      }
+      // If Tiered League, restrict to maximum 3 categories
+      if (isTieredLeague && prev.length >= 3) {
+        toast.warning(`${selectedEvent?.event_name || 'This championship'} allows a maximum of 3 competition categories (Triple Category entry).`, {
+          title: "Maximum Categories Reached"
+        });
+        return prev;
+      }
+      return [...prev, catId];
+    });
   };
 
-  const copyToClipboard = (text: string, type: 'upi' | 'link') => {
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(text);
-      setCopiedField(type);
-      toast.success(type === 'upi' ? 'UPI ID copied to clipboard' : 'Payment link copied to clipboard', { title: 'Copied' });
-      setTimeout(() => setCopiedField(null), 2500);
-    }
-  };
+  const handlePaymentProofChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  const confirmPaymentCompletion = async () => {
-    if (!paymentProofFile) {
-      toast.error("Please upload your payment screenshot before completing registration.", {
-        title: "Screenshot Required"
-      });
+    // Validate type
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+    if (!validTypes.includes(file.type)) {
+      setError('Please upload a valid image (JPG, PNG, or WebP).');
+      toast.error('Invalid file format. Please upload JPG, PNG, or WebP.');
       return;
     }
 
-    if (!successData?.registration_number) {
-      toast.error("Registration information is missing. Please submit again.", {
-        title: "Registration Missing"
-      });
+    // Validate size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      setError('Payment screenshot must be under 10MB.');
+      toast.error('File too large (max 10MB).');
       return;
     }
 
-    setVerifying(true);
-    try {
-      const formDataUpload = new FormData();
-      formDataUpload.append('registration_number', successData.registration_number);
-      formDataUpload.append('screenshot', paymentProofFile);
-      if (transactionRef.trim()) {
-        formDataUpload.append('transaction_ref', transactionRef.trim());
-      }
-
-      const res = await fetch(`${API_BASE}/registrations/upload-proof.php`, {
-        method: 'POST',
-        body: formDataUpload
-      });
-
-      const json = await res.json();
-      if (!res.ok || !json.success) {
-        throw new Error(json.message || "Failed to upload payment screenshot.");
-      }
-
-      setSuccessData((prev: any) => ({
-        ...prev,
-        status: 'paid',
-        razorpay_payment_id: transactionRef.trim() || 'UPI-PROOF-VERIFIED',
-        payment_proof: json.data?.payment_proof || paymentProofPreview
-      }));
-
-      setVerifying(false);
-      setIsPaymentModalOpen(false);
-      toast.success("Payment screenshot uploaded! Registration confirmed.", { title: "Registration Confirmed" });
-    } catch (err: any) {
-      setVerifying(false);
-      toast.error(err.message || "Failed to upload screenshot. Please try again.", { title: "Upload Failed" });
-    }
-  };
-
-  // If there's no event selected in the URL, prompt them to go back.
-  if (!selectedEvent) {
-    return (
-      <div className="bg-wff-surface border border-wff-border p-12 text-center rounded-sm">
-        <h2 className="text-xl text-wff-text-primary font-heading uppercase tracking-widest mb-4">No Event Selected</h2>
-        <p className="text-wff-muted mb-8">Please select an event from the calendar to register.</p>
-        <Button onClick={() => window.location.href = '/events'} variant="gold">View Events</Button>
-      </div>
-    );
-  }
-
-  if (selectedEvent.status === 'upcoming') {
-    return (
-      <div className="bg-wff-surface border border-wff-border p-12 text-center rounded-sm">
-        <h2 className="text-2xl text-wff-gold font-heading uppercase tracking-widest mb-4">Registration Opens Soon</h2>
-        <p className="text-wff-muted mb-8">Registration for {selectedEvent.event_name} is not yet open.</p>
-        <Button onClick={() => window.location.href = `/events/${selectedEvent.slug}`} variant="secondary">Back to Event</Button>
-      </div>
-    );
-  }
-
-  if (selectedEvent.status === 'closed') {
-    return (
-      <div className="bg-wff-surface border border-wff-border p-12 text-center rounded-sm">
-        <h2 className="text-2xl text-red-500 font-heading uppercase tracking-widest mb-4">Registration Closed</h2>
-        <p className="text-wff-muted mb-8">Registration for {selectedEvent.event_name} has been closed.</p>
-        <Button onClick={() => window.location.href = `/events/${selectedEvent.slug}`} variant="secondary">Back to Event</Button>
-      </div>
-    );
-  }
-
-  const submitRegistration = async () => {
     setError('');
+    setPaymentProofFile(file);
 
-    if (selectedCategoryIds.length === 0) {
-      const msg = "Please select at least one category.";
-      setError(msg);
-      toast.error(msg, { title: "Category Required" });
-      return;
-    }
+    // Create preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPaymentProofPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+    toast.success('Screenshot attached successfully');
+  };
+
+  const copyUpiToClipboard = () => {
+    const upiId = "nabbawffchennai@okicici";
+    navigator.clipboard.writeText(upiId).then(() => {
+      setCopiedUpi(true);
+      toast.success("UPI ID copied to clipboard: " + upiId);
+      setTimeout(() => setCopiedUpi(false), 2500);
+    });
+  };
+
+  // STEP 1 VALIDATION
+  const validateStep1 = (): boolean => {
+    setError('');
     if (!formData.athlete_name.trim()) {
-      const msg = "Athlete name is required.";
-      setError(msg);
-      toast.error(msg, { title: "Name Required" });
-      return;
+      setError('Please enter your full name.');
+      return false;
     }
-    if (!formData.phone.trim()) {
-      const msg = "Phone number is required.";
-      setError(msg);
-      toast.error(msg, { title: "Phone Required" });
-      return;
+    const phoneClean = formData.phone.replace(/\D/g, '');
+    if (!phoneClean || phoneClean.length < 10) {
+      setError('Please enter a valid 10-digit mobile number.');
+      return false;
     }
-    if (!formData.email.trim()) {
-      const msg = "Email address is required.";
-      setError(msg);
-      toast.error(msg, { title: "Email Required" });
-      return;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email.trim() || !emailRegex.test(formData.email.trim())) {
+      setError('Please enter a valid email address for ticket delivery.');
+      return false;
     }
     if (!formData.date_of_birth) {
-      const msg = "Date of birth is required.";
-      setError(msg);
-      toast.error(msg, { title: "Date of Birth Required" });
+      setError('Please select your date of birth.');
+      return false;
+    }
+    const heightNum = parseFloat(formData.height);
+    if (isNaN(heightNum) || heightNum <= 50 || heightNum >= 250) {
+      setError('Please enter a valid height in centimetres (e.g. 175).');
+      return false;
+    }
+    return true;
+  };
+
+  const goToStep2 = () => {
+    if (validateStep1()) {
+      setActiveStep(2);
+    }
+  };
+
+  const goToStep3 = () => {
+    setError('');
+    if (selectedCategoryIds.length === 0) {
+      setError('Please select at least one competition division to proceed.');
+      return;
+    }
+    setActiveStep(3);
+  };
+
+  // FINAL SUBMISSION HANDLER
+  const handleSubmitRegistration = async () => {
+    if (!validateStep1()) {
+      setActiveStep(1);
+      return;
+    }
+    if (selectedCategoryIds.length === 0) {
+      setError('Please select at least one division.');
+      setActiveStep(2);
+      return;
+    }
+    if (!paymentProofFile) {
+      setError('Please upload your UPI payment screenshot to complete registration.');
+      toast.warning('Payment screenshot is required.');
       return;
     }
 
     setLoading(true);
+    setError('');
+
     try {
-      const payload = {
+      // 1. Create registration record
+      const regPayload = {
         event_id: selectedEvent.id,
-        category_ids: selectedCategoryIds,
+        category_ids: selectedCategoryIds.map(id => parseInt(id, 10)),
+        athlete_name: formData.athlete_name.trim(),
+        phone: formData.phone.trim(),
+        email: formData.email.trim(),
+        date_of_birth: formData.date_of_birth,
+        height: parseFloat(formData.height),
         tan_spray_requested: tanSprayRequested,
-        payment_method: paymentMethod,
-        ...formData
+        payment_method: 'upi'
       };
 
       const res = await fetch(`${API_BASE}/registrations/create.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(regPayload)
       });
 
       const json = await res.json();
-
       if (!res.ok || !json.success) {
-        throw new Error(json.message || "Failed to submit registration.");
+        throw new Error(json.message || 'Registration creation failed.');
       }
 
-      const regData = {
-        registration_number: json.data.registration_number,
-        status: json.data.status,
-        athlete_name: formData.athlete_name,
-        phone: formData.phone,
-        email: formData.email,
-        instagram_id: formData.instagram_id,
-        date_of_birth: formData.date_of_birth,
-        height: formData.height,
-        weight: formData.weight,
-        event_name: selectedEvent.event_name,
-        event_date: selectedEvent.event_date,
-        venue: selectedEvent.venue,
-        categories: selectedCategories.map(c => c.name),
-        tan_spray_requested: tanSprayRequested,
-        total_amount: json.data.total_amount,
-        payment_method: json.data.payment_method || paymentMethod
-      };
+      const regNumber = json.data.registration_number;
 
-      setSuccessData(regData);
-      setLoading(false);
-
-      if (json.data.payment_method === 'cash' || paymentMethod === 'cash') {
-        // Direct ticket
-        toast.success("Registration submitted! Payment due at desk.", { title: "Registration Reserved" });
-      } else {
-        // Open the Checkout Modal with QR Code and Link options
-        setIsPaymentModalOpen(true);
+      // 2. Upload payment proof screenshot
+      const formDataUpload = new FormData();
+      formDataUpload.append('registration_number', regNumber);
+      formDataUpload.append('screenshot', paymentProofFile);
+      if (transactionRef.trim()) {
+        formDataUpload.append('transaction_ref', transactionRef.trim());
       }
 
-    } catch (err: any) {
-      const msg = err.message || "Failed to submit registration.";
-      setError(msg);
-      toast.error(msg, { title: "Submission Failed" });
-      setLoading(false);
-    }
-  };
-
-  const handlePayment = async (regNumber: string, amount: number) => {
-    setPaymentFailed(false);
-
-    try {
-      const apiBase = API_BASE;
-      const orderRes = await fetch(`${apiBase}/payments/create-order.php`, {
+      const uploadRes = await fetch(`${API_BASE}/registrations/upload-proof.php`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ registration_number: regNumber })
+        body: formDataUpload
       });
-
-      const orderJson = await orderRes.json();
-      if (!orderRes.ok || !orderJson.success) {
-        throw new Error(orderJson.message || "Failed to initiate payment.");
+      const uploadJson = await uploadRes.json();
+      if (!uploadRes.ok || !uploadJson.success) {
+        console.warn("Screenshot upload warning:", uploadJson.message);
       }
 
-      const res = await loadRazorpay();
-      if (!res) throw new Error("Razorpay SDK failed to load. Are you online?");
-
-      const options = {
-        key: orderJson.data.key_id,
-        amount: orderJson.data.amount,
-        currency: orderJson.data.currency,
-        name: "World Fitness Federation",
-        description: "Championship Registration",
-        order_id: orderJson.data.razorpay_order_id,
-        handler: async (response: any) => {
-          try {
-            const verifyRes = await fetch(`${apiBase}/payments/verify.php`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                registration_number: regNumber,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature
-              })
-            });
-            const verifyJson = await verifyRes.json();
-
-            if (verifyRes.ok && verifyJson.success) {
-              setSuccessData((prev: any) => ({ ...prev, status: 'paid', razorpay_payment_id: response.razorpay_payment_id }));
-              setIsPaymentModalOpen(false);
-            } else {
-              throw new Error(verifyJson.message || "Payment verification failed.");
-            }
-          } catch (err: any) {
-            setPaymentFailed(true);
-          }
-        },
-        prefill: {
-          name: formData.athlete_name,
-          contact: formData.phone,
-          email: formData.email
-        },
-        theme: { color: "#c6a15b" },
-        modal: {
-          ondismiss: function () {
-            setLoading(false);
-          }
-        }
-      };
-
-      const paymentObject = new (window as any).Razorpay(options);
-
-      paymentObject.on('payment.failed', function (response: any) {
-        setPaymentFailed(true);
-
-        fetch(`${apiBase}/payments/failure.php`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            registration_number: regNumber,
-            error_code: response.error.code,
-            error_description: response.error.description,
-            razorpay_order_id: response.error.metadata.order_id,
-            razorpay_payment_id: response.error.metadata.payment_id
-          })
-        }).catch(e => console.error("Failure logging failed", e));
+      // 3. Set submitted data to render Sample Ticket Preview & Confirmation
+      setSubmittedData({
+        registration_number: regNumber,
+        athlete_name: formData.athlete_name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        event_name: selectedEvent.event_name,
+        event_date: formatEventDateRange(selectedEvent.event_date, selectedEvent.event_end_date, selectedEvent.date_type),
+        venue: selectedEvent.venue,
+        categories: selectedCategories.map(c => decodeHtml(c.name)),
+        category_fee: pricing.categoryFee,
+        clinical_charge: pricing.clinicalCharge,
+        total_amount: pricing.total,
+        date_of_birth: formData.date_of_birth,
+        age: calculatedAge,
+        height: formData.height,
+        tan_spray_requested: tanSprayRequested,
+        isSouthIndiaLeague: isTieredLeague
       });
 
-      paymentObject.open();
+      toast.success("Registration submitted! Pending admin verification.");
     } catch (err: any) {
-      const msg = err.message || "Payment initiation failed.";
-      setError(msg);
-      toast.error(msg, { title: "Payment Error" });
-      setPaymentFailed(true);
+      console.error(err);
+      setError(err.message || 'Something went wrong submitting your registration.');
+      toast.error(err.message || 'Submission failed');
+    } finally {
       setLoading(false);
     }
   };
 
   // -------------------------------------------------------------
-  // RENDER: FAILURE STATE
+  // GUARD: NO EVENT OR CLOSED EVENT
   // -------------------------------------------------------------
-  if (paymentFailed) {
+  if (!selectedEvent) {
     return (
-      <div className="w-full flex justify-center items-center py-20 px-4 bg-gray-50 min-h-[70vh]">
-        <div className="w-full max-w-xl bg-white rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.08)] border border-black/5 overflow-hidden animate-in fade-in zoom-in-95 duration-500">
-          <div className="bg-red-500/5 p-10 flex flex-col items-center text-center border-b border-red-500/10">
-            <div className="w-24 h-24 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mb-6 shadow-inner relative">
-              <div className="absolute inset-0 rounded-full border-4 border-red-500/20 animate-pulse"></div>
-              <AlertCircle size={48} strokeWidth={2.5} />
-            </div>
-            <h2 className="font-heading text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-[#040A12] mb-3">
-              Payment Failed
-            </h2>
-            <p className="text-[#040A12]/60 font-medium text-sm md:text-base max-w-sm leading-relaxed">
-              Your transaction could not be completed. Your registration details have been saved securely.
-            </p>
-          </div>
+      <div className="w-full max-w-xl mx-auto my-12 sm:my-20 p-6 sm:p-8 bg-[var(--surface)] border border-[var(--border-color)] text-center rounded-2xl shadow-lg box-border">
+        <h2 className="text-xl sm:text-2xl text-[var(--text-primary)] font-heading font-extrabold uppercase tracking-tight-heading mb-3">No Event Selected</h2>
+        <p className="font-body text-[var(--muted)] text-sm sm:text-base leading-relaxed mb-6">Please select an upcoming championship from the official events calendar.</p>
+        <Link href="/events" className="inline-flex items-center justify-center h-12 px-8 bg-gradient-to-r from-[#BF953F] to-[#B38728] text-[#040A12] font-heading font-extrabold text-sm uppercase tracking-btn rounded-xl shadow-md hover:brightness-110 transition-all">
+          Browse Championships
+        </Link>
+      </div>
+    );
+  }
 
-          <div className="p-8 md:p-10 bg-white">
-            <div className="bg-[#F8F9FA] p-6 rounded-lg border border-black/5 mb-8">
-              <div className="flex justify-between items-center border-b border-black/5 pb-4 mb-4">
-                <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#040A12]/50">Registration No.</span>
-                <span className="font-mono font-bold text-[#040A12]">{successData?.registration_number}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#040A12]/50">Amount Pending</span>
-                <span className="font-heading font-bold text-xl text-[#040A12]">₹{successData?.total_amount}</span>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button onClick={() => window.location.href = `/events/${selectedEvent?.slug}`} className="flex-1 bg-white text-[#040A12] border border-black/10 hover:bg-gray-50 hover:border-black/20 shadow-sm h-14 uppercase tracking-widest text-xs font-bold">
-                Back to Event
-              </Button>
-              <Button onClick={() => handlePayment(successData.registration_number, successData.total_amount)} className="flex-1 bg-red-600 text-white hover:bg-red-700 shadow-[0_10px_20px_rgba(220,38,38,0.2)] border-0 h-14 uppercase tracking-widest text-xs font-bold transition-all hover:-translate-y-0.5">
-                Retry Payment
-              </Button>
-            </div>
-          </div>
+  if (selectedEvent.status !== 'open') {
+    return (
+      <div className="w-full max-w-xl mx-auto my-12 sm:my-20 p-6 sm:p-8 bg-[var(--surface)] border border-[var(--border-color)] text-center rounded-2xl shadow-lg box-border">
+        <div className="w-14 h-14 mx-auto rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-500 flex items-center justify-center mb-4">
+          <Clock size={28} />
+        </div>
+        <h2 className="text-xl sm:text-2xl text-[var(--text-primary)] font-heading font-extrabold uppercase tracking-tight-heading mb-2">
+          Registration Not Open
+        </h2>
+        <p className="font-heading font-extrabold text-base text-[var(--gold)] uppercase tracking-wider mb-3">
+          {selectedEvent.event_name}
+        </p>
+        <p className="font-body text-[var(--muted)] text-sm sm:text-base leading-relaxed mb-6">
+          Online athlete registration for this upcoming championship is not open yet. Please check back soon or explore the official championship details.
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Link href={`/events/${selectedEvent.slug}`} className="w-full sm:w-auto inline-flex items-center justify-center h-12 px-8 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-sm uppercase tracking-btn rounded-xl shadow-md hover:brightness-110 transition-all">
+            Championship Details
+          </Link>
+          <Link href="/events" className="w-full sm:w-auto inline-flex items-center justify-center h-12 px-6 border border-[var(--border-color)] text-[var(--text-primary)] font-heading font-bold text-sm uppercase rounded-xl hover:border-[var(--gold)] transition-colors">
+            All Championships
+          </Link>
         </div>
       </div>
     );
   }
 
   // -------------------------------------------------------------
-  // RENDER: SUCCESS STATE (DIGITAL TICKET & SHARE)
+  // RENDER: SUBMISSION SUCCESS & SAMPLE TICKET PREVIEW
   // -------------------------------------------------------------
-  if (successData?.status === 'paid' || successData?.payment_method === 'cash') {
-    const isCash = successData.payment_method === 'cash';
-    const isCashPaid = successData.status === 'paid';
-    const athleteName = formData.athlete_name || successData.athlete_name || 'Athlete';
-    const shareUrl = typeof window !== 'undefined'
-      ? `${window.location.origin}/registration-status?regNumber=${encodeURIComponent(successData.registration_number)}`
-      : `/registration-status?regNumber=${encodeURIComponent(successData.registration_number)}`;
-
-    const shareText = `🏆 WFF Tamil Nadu Registration Confirmed!\n\nAthlete: ${athleteName}\nEvent: ${decodeHtml(successData.event_name)}\nReg No: ${successData.registration_number}\n\nView official ticket here: ${shareUrl}`;
-
-    const handleDownloadPass = async () => {
-      const node = document.getElementById('wff-official-ticket');
-      if (!node) {
-        toast.error("Ticket element not found.", { title: "Error" });
-        return;
-      }
-      setDownloadingPass(true);
-      try {
-        const { toPng } = await import('html-to-image');
-        const dataUrl = await toPng(node, {
-          pixelRatio: 2.5,
-          skipFonts: true,
-          backgroundColor: '#050A12',
-          cacheBust: true,
-          filter: (domNode: HTMLElement) => {
-            return domNode.tagName !== 'SCRIPT' && domNode.tagName !== 'IFRAME';
-          }
-        });
-        const link = document.createElement('a');
-        link.download = `WFF-Stage-Pass-${(successData.registration_number || 'Athlete').replace(/[^a-zA-Z0-9-_]/g, '_')}.png`;
-        link.href = dataUrl;
-        link.click();
-        toast.success("Stage pass downloaded to your device!", { title: "Pass Downloaded" });
-      } catch (err) {
-        console.error("Failed to download pass:", err);
-        // Fallback: If canvas download blocked by browser security, trigger window.print
-        toast.info("Opening print dialog to save as PDF / Image.", { title: "Saving Pass" });
-        window.print();
-      } finally {
-        setDownloadingPass(false);
-      }
-    };
-
-    const handleSendPassEmail = async () => {
-      if (!successData?.registration_number) return;
-      setSendingEmail(true);
-      try {
-        const res = await fetch(`${API_BASE}/registrations/send-pass-email.php`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ registration_number: successData.registration_number })
-        });
-        const json = await res.json();
-        if (json.success) {
-          toast.success(json.data?.message || "Stage pass sent to your email!", { title: "Pass Emailed" });
-        } else {
-          toast.info("Pass dispatched to registered email.", { title: "Email Sent" });
-        }
-      } catch (err) {
-        toast.info("Pass dispatched to registered email.", { title: "Email Sent" });
-      } finally {
-        setSendingEmail(false);
-      }
-    };
-
-    const handleShareNative = () => {
-      if (typeof navigator !== 'undefined' && navigator.share) {
-        navigator.share({
-          title: 'WFF Official Registration Ticket',
-          text: shareText,
-          url: shareUrl,
-        }).catch(err => {
-          if (err.name !== 'AbortError') {
-            handleCopyLink();
-          }
-        });
-      } else {
-        handleCopyLink();
-      }
-    };
-
-    const handleWhatsAppShare = () => {
-      const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
-      window.open(whatsappUrl, '_blank');
-    };
-
-    const handleCopyLink = () => {
-      if (typeof navigator !== 'undefined' && navigator.clipboard) {
-        navigator.clipboard.writeText(shareUrl);
-        toast.success("Ticket link copied to clipboard!", { title: "Link Copied" });
-      }
-    };
-
-    const userEmail = formData.email || successData?.email;
-
+  if (submittedData) {
     return (
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 animate-in slide-in-from-bottom-8 duration-500 py-6">
+      <div className="w-full min-h-[85vh] bg-[var(--bg)] py-8 sm:py-12 px-4 sm:px-6 transition-colors overflow-x-clip box-border">
+        <div className="w-full max-w-3xl mx-auto animate-in fade-in zoom-in-95 duration-400 min-w-0">
 
-        {/* TOP CELEBRATION BADGE */}
-        <div className="text-center mb-6">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-[0.2em] mb-3">
-            <CheckCircle2 size={14} className="animate-pulse" />
-            <span>Registration Confirmed</span>
-          </div>
-          <h2 className="font-heading text-2xl sm:text-3xl uppercase tracking-wider text-[#040A12] dark:text-white font-extrabold">
-            Your Official Stage Pass
-          </h2>
-          <p className="text-[#040A12]/60 dark:text-white/60 mt-1 text-xs sm:text-sm font-medium">
-            Present this digital credential or QR code at athlete check-in &amp; weigh-in.
-          </p>
-
-          {/* Email Confirmation Notice */}
-          {userEmail && (
-            <div className="inline-flex items-center justify-center gap-2 px-4 py-2 mt-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-center max-w-lg">
-              <Mail size={15} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
-              <span className="text-xs font-semibold text-[#040A12] dark:text-white">
-                Official pass &amp; receipt sent to <strong className="text-[#C9A44A]">{userEmail}</strong>
-              </span>
+          {/* Submission Success Notice */}
+          <div className="bg-amber-500/10 border-2 border-amber-500/40 rounded-2xl p-5 sm:p-8 text-center mb-8 box-border">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-4">
+              <Clock size={30} />
             </div>
-          )}
-        </div>
 
-        {/* ========================================================= */}
-        {/* AUTHENTIC CHAMPIONSHIP ATHLETE EVENT PASS / LANYARD BADGE */}
-        {/* ========================================================= */}
-        <div className="relative mx-auto">
+            <h1 className="font-heading font-black text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight-heading text-[var(--text-primary)] mb-2 break-words">
+              Registration Submitted Successfully!
+            </h1>
+            <p className="font-body text-sm sm:text-base text-[var(--muted)] max-w-xl mx-auto leading-relaxed">
+              Your payment screenshot has been submitted for verification. Our administration team will verify your payment. <strong>Once approved, your official WFF Tamil Nadu championship ticket will be sent to your registered email address.</strong>
+            </p>
 
-          {/* Lanyard Top Strap Effect */}
-          <div className="flex flex-col items-center">
-            {/* Lanyard Ribbon */}
-            <div className="w-28 sm:w-36 h-6 bg-gradient-to-r from-[#997328] via-[#F3E7BE] to-[#997328] rounded-t-md shadow-inner flex items-center justify-center border-t border-x border-[#C9A44A]/50">
-              <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.25em] text-[#040A12] drop-shadow-sm">
-                WFF ATHLETE
-              </span>
-            </div>
-            {/* Lanyard Clip Ring */}
-            <div className="w-10 h-3 bg-gradient-to-b from-gray-400 to-gray-600 rounded-sm shadow-sm flex items-center justify-center">
-              <div className="w-6 h-1 bg-black/40 rounded-full"></div>
+            {/* Registration Key Summary Details */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 sm:gap-3 max-w-xl mx-auto mt-6 text-left">
+              <div className="p-3 bg-[var(--surface)] border border-[var(--border-color)] rounded-xl">
+                <span className="font-body text-[11px] font-semibold text-[var(--muted)] block tracking-label">Registration No.</span>
+                <span className="font-mono font-bold text-xs sm:text-sm text-[var(--gold)] break-all tracking-normal">{submittedData.registration_number}</span>
+              </div>
+              <div className="p-3 bg-[var(--surface)] border border-[var(--border-color)] rounded-xl">
+                <span className="font-body text-[11px] font-semibold text-[var(--muted)] block tracking-label">Athlete Name</span>
+                <span className="font-body font-bold text-sm text-[var(--text-primary)] truncate block">{submittedData.athlete_name}</span>
+              </div>
+              <div className="p-3 bg-[var(--surface)] border border-[var(--border-color)] rounded-xl sm:col-span-2 md:col-span-1">
+                <span className="font-body text-[11px] font-semibold text-[var(--muted)] block tracking-label">Amount Submitted</span>
+                <span className="font-heading font-black text-base sm:text-lg text-[var(--text-primary)]">₹{submittedData.total_amount}</span>
+              </div>
+              <div className="p-3 bg-[var(--surface)] border border-[var(--border-color)] rounded-xl sm:col-span-2">
+                <span className="font-body text-[11px] font-semibold text-[var(--muted)] block tracking-label">Registered Email Address</span>
+                <span className="font-body font-medium text-xs sm:text-sm text-[var(--text-primary)] truncate block">{submittedData.email}</span>
+              </div>
+              <div className="p-3 bg-amber-500/15 border border-amber-500/30 rounded-xl sm:col-span-2 md:col-span-1">
+                <span className="font-body text-[11px] font-semibold text-amber-700 dark:text-amber-400 block tracking-label">Payment Status</span>
+                <span className="font-body font-bold text-xs sm:text-sm text-amber-600 dark:text-amber-300">PENDING VERIFICATION</span>
+              </div>
             </div>
           </div>
 
-          {/* MAIN VIP PASS CARD */}
-          <div
-            id="wff-official-ticket"
-            className="bg-gradient-to-b from-[#0D1829] via-[#09111D] to-[#050A12] text-white rounded-3xl overflow-hidden border-2 border-[#C9A44A]/40 relative shadow-2xl"
-          >
-            {/* Gold Hologram Top Strip */}
-            <div className="h-2 w-full bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] via-[#B38728] via-[#FBF5B7] to-[#AA771C]"></div>
+          {/* SAMPLE TICKET PREVIEW (NOT VALID FOR ENTRY) */}
+          <div className="relative mx-auto max-w-2xl w-full min-w-0 box-border">
 
-            {/* Lanyard Punch Hole */}
-            <div className="flex justify-center -mt-1 mb-2">
-              <div className="w-14 h-3.5 bg-black/70 rounded-full border border-[#C9A44A]/40 flex items-center justify-center">
-                <div className="w-10 h-1.5 bg-[#0D1829] rounded-full"></div>
-              </div>
+            {/* Sample Warning Ribbon Header */}
+            <div className="bg-red-600 text-white py-2.5 px-3 sm:px-4 rounded-t-2xl font-heading font-black text-xs sm:text-sm uppercase tracking-wide text-center flex items-center justify-center gap-2 shadow-md leading-tight">
+              <ShieldAlert size={16} className="shrink-0" />
+              <span>SAMPLE TICKET — NOT VALID FOR ENTRY</span>
             </div>
 
-            {/* PASS HEADER: FEDERATION & EVENT */}
-            <div className="px-6 sm:px-8 pt-2 pb-5 border-b border-white/10 relative">
-              {/* Watermark Logo */}
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 opacity-10 pointer-events-none">
-                <img src="/assets/wff-india.png" alt="WFF" className="w-40 h-40 object-contain" />
+            {/* Main Ticket Card with Watermark */}
+            <div className="bg-gradient-to-b from-[#0D1829] via-[#09111D] to-[#050A12] text-white rounded-b-3xl overflow-hidden border-2 border-red-500/40 relative shadow-2xl p-4 sm:p-6 md:p-8 space-y-5 sm:space-y-6 box-border">
+
+              {/* Diagonal Watermark Across Ticket */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-10 opacity-20 overflow-hidden">
+                <span className="font-heading font-black text-2xl sm:text-4xl md:text-5xl uppercase tracking-wider text-red-500 -rotate-20 border-4 border-red-500 p-3 sm:p-4 text-center">
+                  SAMPLE TICKET — NOT VALID FOR ENTRY
+                </span>
               </div>
 
-              <div className="flex items-center justify-between gap-4 relative z-10">
-                <div className="min-w-0 flex-1">
-                  <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-md bg-[#C9A44A]/20 border border-[#C9A44A]/40 text-[#FCF6BA] text-[10px] font-black uppercase tracking-wider mb-2 whitespace-nowrap">
-                    <Trophy size={12} className="text-[#FCF6BA] shrink-0" />
-                    <span>Official Athlete Pass</span>
+              {/* Ticket Header */}
+              <div className="flex items-center justify-between gap-3 pb-4 border-b border-white/10 relative z-20">
+                <div className="min-w-0">
+                  <div className="inline-block px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-body text-[11px] font-semibold tracking-wide mb-1.5">
+                    PENDING VERIFICATION
                   </div>
-                  <h3 className="font-heading text-2xl sm:text-3xl uppercase font-black tracking-wider leading-tight bg-gradient-to-r from-[#FFF3D6] via-[#FCF6BA] to-[#C9A44A] bg-clip-text text-transparent break-words">
-                    {decodeHtml(successData.event_name)}
+                  <h3 className="font-heading text-xl sm:text-2xl uppercase font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#FFF3D6] via-[#FCF6BA] to-[#C9A44A] truncate">
+                    {submittedData.event_name}
                   </h3>
-                  <div className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-white/50 font-semibold mt-1">
+                  <div className="font-heading font-bold text-xs uppercase tracking-wide text-white/70 truncate">
                     World Fitness Federation • Tamil Nadu
                   </div>
                 </div>
+                <img src="/assets/wff-india.png" alt="WFF" className="h-10 sm:h-12 w-auto object-contain shrink-0" />
+              </div>
 
-                <div className="shrink-0">
-                  <img
-                    src="/assets/wff-india.png"
-                    alt="WFF Official"
-                    className="h-14 sm:h-16 w-auto object-contain drop-shadow-[0_0_12px_rgba(201,164,74,0.4)]"
-                  />
+              {/* Athlete Details Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 relative z-20 text-xs">
+                <div>
+                  <span className="font-body text-[11px] font-semibold uppercase tracking-label text-white/50 block">Athlete Name</span>
+                  <span className="font-heading font-extrabold text-sm sm:text-base text-white mt-0.5 block truncate">{submittedData.athlete_name}</span>
+                </div>
+                <div>
+                  <span className="font-body text-[11px] font-semibold uppercase tracking-label text-white/50 block">Registration Number</span>
+                  <span className="font-mono font-bold text-xs text-[#FCF6BA] mt-0.5 block truncate tracking-normal">{submittedData.registration_number}</span>
+                </div>
+                <div>
+                  <span className="font-body text-[11px] font-semibold uppercase tracking-label text-white/50 block">Age / Height</span>
+                  <span className="font-body font-medium text-xs sm:text-sm text-white mt-0.5 block">{submittedData.age} Yrs &bull; {submittedData.height} cm</span>
+                </div>
+                <div>
+                  <span className="font-body text-[11px] font-semibold uppercase tracking-label text-white/50 block">Event Date &amp; Location</span>
+                  <span className="font-body font-medium text-xs sm:text-sm text-white mt-0.5 block">{submittedData.event_date} &bull; {submittedData.venue}</span>
                 </div>
               </div>
-            </div>
 
-            {/* ATHLETE CREDENTIAL RIBBON */}
-            <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-[#14233D] via-[#0E1A2E] to-[#14233D] border-b border-[#C9A44A]/20">
-              {/* Top Meta Line */}
-              <div className="flex items-center justify-between gap-2 mb-2">
-                <span className="text-[9px] uppercase tracking-[0.25em] text-[#C9A44A] font-extrabold whitespace-nowrap">
-                  Registered Competitor
+              {/* Selected Categories */}
+              <div className="relative z-20">
+                <span className="font-body text-[11px] font-semibold uppercase tracking-label text-[#C9A44A] block mb-1.5">
+                  Selected Categories ({submittedData.categories.length})
                 </span>
-                <div className="bg-[#050B14] px-3 py-1 rounded-md border border-[#C9A44A]/40 flex items-center gap-2 shrink-0 whitespace-nowrap flex-nowrap">
-                  <span className="text-[9px] uppercase tracking-wider text-[#C9A44A] font-extrabold whitespace-nowrap">Pass ID:</span>
-                  <span className="font-mono font-bold text-xs sm:text-sm text-[#FCF6BA] tracking-wider whitespace-nowrap">
-                    {successData.registration_number}
-                  </span>
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                  {submittedData.categories.map((c: string, i: number) => (
+                    <span key={i} className="px-2.5 py-1 bg-white/5 rounded-md border border-white/10 text-xs font-heading font-bold uppercase tracking-wide text-white">
+                      {c}
+                    </span>
+                  ))}
+                  {submittedData.tan_spray_requested && (
+                    <span className="px-2.5 py-1 bg-[#C9A44A]/20 rounded-md border border-[#C9A44A]/40 text-xs font-heading font-bold uppercase tracking-wide text-[#FCF6BA]">
+                      + Tan Spray
+                    </span>
+                  )}
                 </div>
               </div>
 
-              {/* Athlete Name - Full Width Block */}
-              <h3 className="font-heading text-2xl sm:text-3xl uppercase font-black text-white tracking-wide leading-tight break-words py-0.5">
-                {athleteName}
-              </h3>
-
-              {/* Bottom Meta Line */}
-              <div className="flex items-center justify-between gap-4 mt-3 pt-2.5 border-t border-white/10 text-xs">
-                <div className="text-white/70 font-medium whitespace-nowrap">
-                  Enrolled: <strong className="text-[#FCF6BA] font-bold">{successData.categories?.length || 1} Divisions</strong>
+              {/* Official Fee Breakdown Inside Sample Ticket */}
+              <div className="p-3.5 bg-white/5 rounded-xl border border-white/10 space-y-2 text-xs relative z-20">
+                <div className="flex justify-between items-center text-white/80">
+                  <span>Category Registration Fee ({submittedData.categories.length} {submittedData.categories.length === 1 ? 'Category' : 'Categories'}):</span>
+                  <span className="font-mono font-bold text-white text-sm">₹{submittedData.category_fee}</span>
                 </div>
-                <div className="text-[#FCF6BA] text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 shrink-0 whitespace-nowrap">
-                  <CheckCircle2 size={13} className="text-emerald-400 shrink-0" />
-                  <span>Official Athlete</span>
-                </div>
-              </div>
-            </div>
-
-            {/* EVENT SCHEDULE & VENUE TILES */}
-            <div className="px-6 sm:px-8 py-4 grid grid-cols-1 sm:grid-cols-2 gap-3.5 border-b border-white/10 bg-black/20">
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/5">
-                <div className="w-8 h-8 rounded-lg bg-[#C9A44A]/15 border border-[#C9A44A]/30 flex items-center justify-center text-[#FCF6BA] shrink-0">
-                  <Calendar size={15} />
-                </div>
-                <div className="min-w-0">
-                  <div className="text-[8.5px] uppercase tracking-[0.2em] text-white/40 font-bold whitespace-nowrap">Date &amp; Schedule</div>
-                  <div className="font-sans font-bold text-xs sm:text-sm text-white uppercase tracking-wide leading-snug mt-0.5">
-                    {successData.event_date}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/5 min-w-0">
-                <div className="w-8 h-8 rounded-lg bg-[#C9A44A]/15 border border-[#C9A44A]/30 flex items-center justify-center text-[#FCF6BA] shrink-0">
-                  <MapPin size={15} />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="text-[8.5px] uppercase tracking-[0.2em] text-white/40 font-bold whitespace-nowrap">Official Venue</div>
-                  <div className="font-sans font-bold text-xs sm:text-sm text-white uppercase tracking-wide break-words leading-snug mt-0.5">
-                    {decodeHtml(successData.venue)}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* CONFIRMED DIVISIONS & CATEGORIES LIST */}
-            <div className="px-6 sm:px-8 pt-5 pb-8">
-              <div className="flex items-center justify-between gap-2 mb-3.5">
-                <div className="text-[10px] uppercase tracking-[0.25em] text-[#C9A44A] font-extrabold flex items-center gap-1.5 whitespace-nowrap">
-                  <Trophy size={13} className="text-[#C9A44A] shrink-0" />
-                  <span>Enrolled Championship Categories</span>
-                </div>
-                <span className="text-[9px] font-black text-emerald-400 bg-emerald-500/15 border border-emerald-500/40 px-3 py-0.5 rounded-full uppercase tracking-wider whitespace-nowrap">
-                  Verified
-                </span>
-              </div>
-
-              <div className="space-y-2.5">
-                {successData.categories?.map((catName: string, idx: number) => (
-                  <div
-                    key={idx}
-                    className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-white/[0.07] to-white/[0.02] border border-white/10 hover:border-[#C9A44A]/40 transition-colors"
-                  >
-                    <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <span className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#BF953F] to-[#8A6318] text-[#040A12] text-xs font-black flex items-center justify-center shrink-0 shadow-sm">
-                        {idx + 1}
-                      </span>
-                      <span className="font-sans font-bold text-xs sm:text-[13px] uppercase text-white tracking-wide leading-normal break-words">
-                        {decodeHtml(catName)}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-emerald-400 shrink-0 text-[10px] font-bold uppercase tracking-wider whitespace-nowrap pl-2">
-                      <CheckCircle2 size={14} className="shrink-0" />
-                      <span>Active</span>
-                    </div>
-                  </div>
-                ))}
-
-                {(successData.tan_spray_requested || tanSprayRequested) && (
-                  <div className="px-4 py-3 rounded-xl bg-gradient-to-r from-[#C9A44A]/20 to-[#C9A44A]/5 border border-[#C9A44A]/40 flex items-center gap-2.5 text-xs font-bold text-[#FCF6BA] uppercase tracking-wider">
-                    <span className="w-2 h-2 rounded-full bg-[#FCF6BA] animate-pulse shrink-0"></span>
-                    <span>Official Pro Stage Tan Spray Included</span>
+                {submittedData.clinical_charge > 0 && (
+                  <div className="flex justify-between items-center text-[#FCF6BA]">
+                    <span>Mandatory Clinical Testing Charge:</span>
+                    <span className="font-mono font-bold text-sm">₹{submittedData.clinical_charge}</span>
                   </div>
                 )}
-              </div>
-            </div>
-
-            {/* PERFORATED PASS TEAR STUB WITH SCANNER QR */}
-            <div className="relative pt-6 pb-6 px-6 sm:px-8 bg-[#040810] border-t-2 border-dashed border-[#C9A44A]/30">
-
-              {/* Perforation Cutout Circles */}
-              <div className="absolute -top-3.5 -left-4 w-7 h-7 rounded-full bg-[#F4F5F7] dark:bg-[#03070E] border-r-2 border-[#C9A44A]/30"></div>
-              <div className="absolute -top-3.5 -right-4 w-7 h-7 rounded-full bg-[#F4F5F7] dark:bg-[#03070E] border-l-2 border-[#C9A44A]/30"></div>
-
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-5 bg-gradient-to-br from-white/[0.04] to-transparent p-4 sm:p-5 rounded-2xl border border-white/10">
-
-                {/* QR Code Container */}
-                <div className="flex flex-col items-center text-center shrink-0">
-                  <div className="w-28 h-28 sm:w-32 sm:h-32 bg-white p-2 rounded-xl border-2 border-[#C9A44A] shadow-[0_0_20px_rgba(201,164,74,0.25)] flex items-center justify-center mb-1.5">
-                    <img
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(successData.registration_number)}`}
-                      alt="Athlete Verification QR Code"
-                      className="w-full h-full object-contain"
-                      crossOrigin="anonymous"
-                    />
+                {submittedData.tan_spray_requested && (
+                  <div className="flex justify-between items-center text-white/80">
+                    <span>Pro Tan Spray Service:</span>
+                    <span className="font-mono font-bold text-sm">+ Applied</span>
                   </div>
-                  <span className="text-[8px] uppercase tracking-[0.25em] text-[#FCF6BA] font-extrabold whitespace-nowrap">
-                    Scan for Stage Access
-                  </span>
+                )}
+                <div className="pt-2 border-t border-white/15 flex justify-between items-center text-sm font-bold text-white">
+                  <span className="uppercase font-heading font-extrabold tracking-wide">Total Submitted Amount:</span>
+                  <span className="font-heading font-black text-lg text-[#FCF6BA]">₹{submittedData.total_amount}</span>
                 </div>
-
-                {/* Status & Payment Info */}
-                <div className="flex-1 flex flex-col justify-between sm:items-end gap-3 text-center sm:text-right w-full sm:w-auto py-1">
-                  <div>
-                    <div className="text-[9px] uppercase tracking-[0.2em] text-white/40 font-bold mb-0.5 whitespace-nowrap">Total Registration Fee</div>
-                    <div className="font-heading text-3xl sm:text-4xl font-black text-white bg-gradient-to-r from-white via-[#FCF6BA] to-[#C9A44A] bg-clip-text text-transparent leading-none">
-                      ₹{successData.total_amount}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col sm:items-end gap-1.5">
-                    <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider border shadow-sm whitespace-nowrap ${isCash && !isCashPaid ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'}`}>
-                      <CheckCircle2 size={13} className="shrink-0" />
-                      <span>{isCash && !isCashPaid ? 'PAY AT DESK' : 'PAID & VERIFIED'}</span>
-                    </div>
-
-                    <div className="text-[9px] uppercase font-mono text-white/40 whitespace-nowrap">
-                      Ref: {isCash && !isCashPaid ? 'CASH-VENUE' : successData.razorpay_payment_id || 'UPI-PROOF-VERIFIED'}
-                    </div>
-                  </div>
-                </div>
-
               </div>
 
-              {isCash && !isCashPaid && (
-                <div className="mt-3 p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-xl text-center">
-                  <p className="text-[11px] text-amber-300 font-bold uppercase tracking-wider">
-                    ⚠️ Official stage chest number will be issued upon completing payment at the weigh-in counter.
-                  </p>
+              {/* Ticket Footer Status Bar */}
+              <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3 relative z-20 text-xs">
+                <div className="flex items-center gap-2 text-amber-400">
+                  <Clock size={15} className="shrink-0" />
+                  <span className="font-body font-bold text-xs uppercase tracking-wide">Payment Status: PENDING VERIFICATION</span>
                 </div>
-              )}
+                <div className="font-body text-white/60 text-xs">
+                  Official ticket sent only upon admin payment approval
+                </div>
+              </div>
+
             </div>
-
-            {/* Bottom Holographic Gold Trim */}
-            <div className="h-1.5 w-full bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]"></div>
-          </div>
-        </div>
-
-        {/* ========================================================= */}
-        {/* SHARING & ACTION BUTTONS */}
-        {/* ========================================================= */}
-        <div className="mt-8 space-y-3.5">
-
-          {/* Primary Action Buttons */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <button
-              type="button"
-              disabled={downloadingPass}
-              onClick={handleDownloadPass}
-              className="bg-gradient-to-r from-[#BF953F] via-[#E8CE7A] to-[#B38728] hover:brightness-110 text-[#040A12] font-heading font-black uppercase tracking-[0.15em] h-13 py-3.5 px-6 rounded-xl text-sm shadow-[0_8px_25px_rgba(191,149,63,0.35)] flex items-center justify-center gap-2 cursor-pointer transition-all hover:-translate-y-0.5 disabled:opacity-60"
-            >
-              <Download size={18} className={downloadingPass ? 'animate-bounce' : ''} />
-              <span>{downloadingPass ? 'Generating Pass...' : 'Download Pass'}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={handleWhatsAppShare}
-              className="bg-[#25D366] hover:bg-[#1EBE5D] text-white font-heading font-black uppercase tracking-[0.15em] h-13 py-3.5 px-6 rounded-xl text-sm shadow-[0_8px_25px_rgba(37,211,102,0.35)] flex items-center justify-center gap-2 cursor-pointer transition-all hover:-translate-y-0.5"
-            >
-              <Smartphone size={18} className="text-white" />
-              <span className="text-white">Share on WhatsApp</span>
-            </button>
           </div>
 
-          {/* Secondary Utility Buttons */}
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-            <button
-              type="button"
-              disabled={sendingEmail}
-              onClick={handleSendPassEmail}
-              className="bg-white dark:bg-[#0E1A2B] hover:bg-gray-100 dark:hover:bg-[#14233A] text-[#040A12] dark:text-white border border-black/10 dark:border-white/10 font-heading font-bold text-xs uppercase tracking-wider py-3 px-2 rounded-xl shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-colors col-span-2 sm:col-span-1"
-            >
-              <Mail size={15} className={`text-[#C9A44A] ${sendingEmail ? 'animate-spin' : ''}`} />
-              <span>{sendingEmail ? 'Sending...' : 'Email Pass'}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => window.print()}
-              className="bg-white dark:bg-[#0E1A2B] hover:bg-gray-100 dark:hover:bg-[#14233A] text-[#040A12] dark:text-white border border-black/10 dark:border-white/10 font-heading font-bold text-xs uppercase tracking-wider py-3 px-2 rounded-xl shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-            >
-              <Printer size={15} className="text-[#C9A44A]" />
-              <span>Print Pass</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={handleShareNative}
-              className="bg-white dark:bg-[#0E1A2B] hover:bg-gray-100 dark:hover:bg-[#14233A] text-[#040A12] dark:text-white border border-black/10 dark:border-white/10 font-heading font-bold text-xs uppercase tracking-wider py-3 px-2 rounded-xl shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-            >
-              <Share2 size={15} className="text-[#C9A44A]" />
-              <span>Share</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={handleCopyLink}
-              className="bg-white dark:bg-[#0E1A2B] hover:bg-gray-100 dark:hover:bg-[#14233A] text-[#040A12] dark:text-white border border-black/10 dark:border-white/10 font-heading font-bold text-xs uppercase tracking-wider py-3 px-2 rounded-xl shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-            >
-              <Copy size={15} className="text-[#C9A44A]" />
-              <span>Copy Link</span>
-            </button>
-
+          {/* Action Links */}
+          <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
             <Link
-              href={`/registration-status?regNumber=${encodeURIComponent(successData.registration_number)}`}
-              className="bg-white dark:bg-[#0E1A2B] hover:bg-gray-100 dark:hover:bg-[#14233A] text-[#040A12] dark:text-white border border-black/10 dark:border-white/10 font-heading font-bold text-xs uppercase tracking-wider py-3 px-2 rounded-xl shadow-sm flex items-center justify-center gap-1.5 transition-colors text-center"
+              href={`/registration-status?regNumber=${encodeURIComponent(submittedData.registration_number)}`}
+              className="inline-flex items-center justify-center h-12 px-6 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-sm uppercase tracking-btn rounded-xl shadow-md text-center hover:brightness-110 transition-all"
             >
-              <ExternalLink size={15} className="text-[#C9A44A]" />
-              <span>Online Pass</span>
+              <ExternalLink size={15} className="mr-2 shrink-0" /> Check Live Status
             </Link>
-          </div>
-
-          {/* Back to Events Navigation */}
-          <div className="text-center pt-3">
             <Link
-              href="/events"
-              className="inline-flex items-center gap-2 font-heading font-bold text-xs uppercase tracking-widest text-[#040A12]/60 dark:text-white/60 hover:text-[#C9A44A] dark:hover:text-[#C9A44A] transition-colors"
+              href="/"
+              className="inline-flex items-center justify-center h-12 px-6 bg-[var(--surface)] border border-[var(--border-color)] text-[var(--text-primary)] hover:border-[var(--gold)] font-heading font-bold text-sm uppercase tracking-btn rounded-xl transition-all text-center"
             >
-              Explore More Championships &amp; Events <ArrowRight size={14} />
+              Return to Homepage
             </Link>
           </div>
 
         </div>
-
       </div>
     );
   }
 
   // -------------------------------------------------------------
-  // RENDER: REGISTRATION FORM
+  // RENDER: MAIN REGISTRATION FLOW (STEP 1, STEP 2, STEP 3)
   // -------------------------------------------------------------
   return (
-    <div className="w-full font-body text-[#040A12]">
+    <div className="w-full bg-[var(--bg)] min-h-[90vh] py-6 sm:py-8 md:py-12 font-body text-[var(--text-primary)] transition-colors overflow-x-clip box-border">
+      <div className="w-full max-w-[1200px] mx-auto px-4 sm:px-5 md:px-6 lg:px-8 box-border min-w-0">
 
-      {/* FULL WIDTH HERO SECTION */}
-      <section className="w-full bg-[#040A12] relative overflow-hidden text-white h-[65vh] min-h-[700px] md:min-h-[500px] flex items-center">
-        <div className="absolute inset-0 z-0">
-          <img src="/assets/wff_hero_banner.png" alt="Hero" className="w-full h-full object-cover object-[center_top] opacity-30 mix-blend-luminosity" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#040A12] via-[#040A12]/90 to-transparent"></div>
-        </div>
+        {/* ========================================================= */}
+        {/* RESPONSIVE REGISTRATION STEPPER                           */}
+        {/* ========================================================= */}
 
-        <div className="w-full max-w-[1440px] mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
-          <div className="lg:w-1/2 w-full">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-8 h-[2px] bg-[#C9A44A]" />
-              <span className="font-heading font-bold text-[10px] tracking-[0.25em] uppercase text-[#C9A44A]">Official Portal</span>
-              <div className="w-8 h-[2px] bg-[#C9A44A]" />
-            </div>
-
-            <h1 className="font-heading font-extrabold uppercase leading-[0.9] tracking-tight mb-6">
-              <span className="block text-white text-[48px] md:text-[64px]">Athlete</span>
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[48px] md:text-[64px]">Registration</span>
-            </h1>
-
-            <p className="text-white/70 text-[15px] max-w-[500px] leading-[1.6]">
-              Complete your registration below. Please ensure all details match your official documents. All information is secured and sent directly to the federation backend.
-            </p>
+        {/* 1. Mobile Stepper (Viewport < 768px) */}
+        <div className="block md:hidden mb-6">
+          <div className="flex items-center justify-between mb-2 px-1">
+            <span className="text-[11px] font-heading font-bold uppercase tracking-tight-heading text-[var(--gold)]">
+              STEP {activeStep} OF 3
+            </span>
+            <span className="font-body text-xs font-medium text-[var(--muted)]">
+              {activeStep === 1 ? 'Competitor Info' : activeStep === 2 ? 'Division Entry' : 'UPI Payment'}
+            </span>
           </div>
 
-          <div className="lg:w-1/2 w-full flex lg:justify-end">
-            {/* Event Card */}
-            <div className="bg-[#040A12]/80 backdrop-blur-md border border-white/10 p-6 rounded-sm flex flex-col sm:flex-row items-start sm:items-center gap-6 w-full max-w-[550px] shadow-2xl">
-              <img src={selectedEvent.banner_image || '/assets/wff_hero_banner.png'} alt="Event" className="w-full sm:w-32 h-32 object-cover rounded-sm border border-white/5 shrink-0" />
-              <div>
-                <h3 className="font-heading font-bold text-xl uppercase leading-tight text-white mb-4">{selectedEvent.event_name}</h3>
-                <div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
-                  <div className="flex items-center gap-3">
-                    <Calendar size={18} className="text-[#C9A44A] shrink-0" />
-                    <span className="text-[12px] font-bold text-white/80">{selectedEvent.event_date}</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <MapPin size={18} className="text-[#C9A44A] shrink-0 mt-0.5" />
-                    <span className="text-[12px] font-bold text-white/80 max-w-[180px] leading-snug">{selectedEvent.venue}</span>
+          <div className="grid grid-cols-3 gap-1.5 p-1.5 rounded-xl bg-[var(--surface)] border border-[var(--border-color)] shadow-xs">
+            {/* Step 1 Button */}
+            <button
+              type="button"
+              onClick={() => setActiveStep(1)}
+              className={`flex items-center justify-center gap-1.5 py-2 px-1 rounded-lg text-center transition-all cursor-pointer min-w-0 ${
+                activeStep === 1
+                  ? 'bg-[var(--gold)] text-black font-extrabold shadow-xs'
+                  : formData.athlete_name && formData.phone
+                  ? 'bg-[var(--gold-surface)] text-[var(--gold)] font-bold'
+                  : 'text-[var(--muted)] opacity-70'
+              }`}
+            >
+              <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-heading font-black shrink-0 ${
+                activeStep === 1 
+                  ? 'bg-black text-[var(--gold)]' 
+                  : formData.athlete_name && formData.phone 
+                  ? 'bg-[var(--gold)] text-black' 
+                  : 'border border-[var(--border-color)] text-[var(--text-primary)]'
+              }`}>
+                {formData.athlete_name && formData.phone ? '✓' : '1'}
+              </span>
+              <span className="font-heading font-bold text-xs uppercase tracking-tight truncate">
+                Details
+              </span>
+            </button>
+
+            {/* Step 2 Button */}
+            <button
+              type="button"
+              onClick={() => {
+                if (formData.athlete_name && formData.phone) setActiveStep(2);
+                else toast.warning("Complete athlete details first.", { title: "Step 1 Incomplete" });
+              }}
+              className={`flex items-center justify-center gap-1.5 py-2 px-1 rounded-lg text-center transition-all cursor-pointer min-w-0 ${
+                activeStep === 2
+                  ? 'bg-[var(--gold)] text-black font-extrabold shadow-xs'
+                  : selectedCategoryIds.length > 0
+                  ? 'bg-[var(--gold-surface)] text-[var(--gold)] font-bold'
+                  : 'text-[var(--muted)] opacity-70'
+              }`}
+            >
+              <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-heading font-black shrink-0 ${
+                activeStep === 2 
+                  ? 'bg-black text-[var(--gold)]' 
+                  : selectedCategoryIds.length > 0 
+                  ? 'bg-[var(--gold)] text-black' 
+                  : 'border border-[var(--border-color)] text-[var(--text-primary)]'
+              }`}>
+                {selectedCategoryIds.length > 0 ? '✓' : '2'}
+              </span>
+              <span className="font-heading font-bold text-xs uppercase tracking-tight truncate">
+                Categories
+              </span>
+            </button>
+
+            {/* Step 3 Button */}
+            <button
+              type="button"
+              onClick={() => {
+                if (formData.athlete_name && selectedCategoryIds.length > 0) setActiveStep(3);
+                else toast.warning("Choose categories before moving to payment.", { title: "Step Locked" });
+              }}
+              className={`flex items-center justify-center gap-1.5 py-2 px-1 rounded-lg text-center transition-all cursor-pointer min-w-0 ${
+                activeStep === 3
+                  ? 'bg-[var(--gold)] text-black font-extrabold shadow-xs'
+                  : 'text-[var(--muted)] opacity-70'
+              }`}
+            >
+              <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-heading font-black shrink-0 ${
+                activeStep === 3 ? 'bg-black text-[var(--gold)]' : 'border border-[var(--border-color)] text-[var(--text-primary)]'
+              }`}>
+                3
+              </span>
+              <span className="font-heading font-bold text-xs uppercase tracking-tight truncate">
+                Payment
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* 2. Tablet & Desktop Stepper (Viewport >= 768px) */}
+        <div className="hidden md:block mb-8 lg:mb-10">
+          <div className="bg-[var(--surface)] p-3 lg:p-4 rounded-2xl border border-[var(--border-color)] shadow-xs flex items-center justify-between gap-3 lg:gap-4 transition-colors">
+            
+            {/* Step 1 Pill */}
+            <button
+              type="button"
+              onClick={() => setActiveStep(1)}
+              className={`flex-1 flex items-center gap-3 p-2.5 lg:p-3 rounded-xl transition-all text-left cursor-pointer min-w-0 ${
+                activeStep === 1 
+                  ? 'bg-[var(--gold-surface)] border border-[var(--gold)]/50 text-[var(--gold)] shadow-xs' 
+                  : 'hover:bg-black/5 dark:hover:bg-white/5 text-[var(--muted)]'
+              }`}
+            >
+              <div className={`w-7 h-7 lg:w-8 lg:h-8 rounded-full flex items-center justify-center font-heading font-black text-xs shrink-0 ${
+                activeStep === 1 ? 'bg-[var(--gold)] text-[#040A12]' : 'bg-[var(--bg)] border border-[var(--border-color)] text-[var(--text-primary)]'
+              }`}>
+                {formData.athlete_name && formData.phone ? '✓' : '1'}
+              </div>
+              <div className="min-w-0">
+                <span className="font-body text-[11px] font-semibold text-[var(--muted)] block tracking-label">Step 1</span>
+                <div className="font-heading font-bold text-xs lg:text-sm uppercase tracking-tight-heading text-[var(--text-primary)] truncate">
+                  Athlete Details
+                </div>
+              </div>
+            </button>
+
+            <div className="w-4 lg:w-8 h-[1px] bg-[var(--border-color)] shrink-0" />
+
+            {/* Step 2 Pill */}
+            <button
+              type="button"
+              onClick={() => {
+                if (formData.athlete_name && formData.phone) setActiveStep(2);
+                else toast.warning("Complete athlete details first.", { title: "Step 1 Incomplete" });
+              }}
+              className={`flex-1 flex items-center gap-3 p-2.5 lg:p-3 rounded-xl transition-all text-left cursor-pointer min-w-0 ${
+                activeStep === 2 
+                  ? 'bg-[var(--gold-surface)] border border-[var(--gold)]/50 text-[var(--gold)] shadow-xs' 
+                  : 'hover:bg-black/5 dark:hover:bg-white/5 text-[var(--muted)]'
+              }`}
+            >
+              <div className={`w-7 h-7 lg:w-8 lg:h-8 rounded-full flex items-center justify-center font-heading font-black text-xs shrink-0 ${
+                activeStep === 2 ? 'bg-[var(--gold)] text-[#040A12]' : 'bg-[var(--bg)] border border-[var(--border-color)] text-[var(--text-primary)]'
+              }`}>
+                {selectedCategoryIds.length > 0 ? '✓' : '2'}
+              </div>
+              <div className="min-w-0">
+                <span className="font-body text-[11px] font-semibold text-[var(--muted)] block tracking-label">Step 2</span>
+                <div className="font-heading font-bold text-xs lg:text-sm uppercase tracking-tight-heading text-[var(--text-primary)] truncate">
+                  Categories ({selectedCategoryIds.length})
+                </div>
+              </div>
+            </button>
+
+            <div className="w-4 lg:w-8 h-[1px] bg-[var(--border-color)] shrink-0" />
+
+            {/* Step 3 Pill */}
+            <button
+              type="button"
+              onClick={() => {
+                if (formData.athlete_name && selectedCategoryIds.length > 0) setActiveStep(3);
+                else toast.warning("Choose categories before moving to payment.", { title: "Step Locked" });
+              }}
+              className={`flex-1 flex items-center gap-3 p-2.5 lg:p-3 rounded-xl transition-all text-left cursor-pointer min-w-0 ${
+                activeStep === 3 
+                  ? 'bg-[var(--gold-surface)] border border-[var(--gold)]/50 text-[var(--gold)] shadow-xs' 
+                  : 'hover:bg-black/5 dark:hover:bg-white/5 text-[var(--muted)]'
+              }`}
+            >
+              <div className={`w-7 h-7 lg:w-8 lg:h-8 rounded-full flex items-center justify-center font-heading font-black text-xs shrink-0 ${
+                activeStep === 3 ? 'bg-[var(--gold)] text-[#040A12]' : 'bg-[var(--bg)] border border-[var(--border-color)] text-[var(--text-primary)]'
+              }`}>
+                3
+              </div>
+              <div className="min-w-0">
+                <span className="font-body text-[11px] font-semibold text-[var(--muted)] block tracking-label">Step 3</span>
+                <div className="font-heading font-bold text-xs lg:text-sm uppercase tracking-tight-heading text-[var(--text-primary)] truncate">
+                  UPI Payment &amp; Proof
+                </div>
+              </div>
+            </button>
+
+          </div>
+        </div>
+
+        {/* Global Error Banner */}
+        {error && (
+          <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/40 text-red-600 dark:text-red-400 flex items-start gap-3 box-border">
+            <AlertCircle size={20} className="shrink-0 mt-0.5" />
+            <div className="font-body text-sm font-semibold break-words min-w-0">{error}</div>
+          </div>
+        )}
+
+        {/* ========================================================= */}
+        {/* STEP 1: ATHLETE DETAILS (ONLY 6 REQUIRED FIELDS)          */}
+        {/* ========================================================= */}
+        {activeStep === 1 && (
+          <div className="space-y-6 animate-in fade-in duration-300 w-full min-w-0 box-border">
+            {/* Header */}
+            <div className="border-b border-[var(--border-color)] pb-4 sm:pb-5">
+              <span className="font-heading font-bold text-xs uppercase tracking-tight-heading text-[var(--gold)]">Step 1 of 3</span>
+              <h1 className="font-heading font-black text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight-heading text-[var(--text-primary)] mt-1 break-words">
+                ENTER ATHLETE DETAILS
+              </h1>
+              <p className="font-body text-sm sm:text-base text-[var(--muted)] mt-1 leading-relaxed">
+                Provide your basic competitor details. No identity proofs or sensitive documents required.
+              </p>
+            </div>
+
+            {/* Selected Championship Info */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-[var(--surface)] border border-[var(--border-color)] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 box-border">
+              <div className="flex items-start sm:items-center gap-3.5 min-w-0">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[var(--gold-surface)] border border-[var(--gold)]/30 flex items-center justify-center text-[var(--gold)] shrink-0">
+                  <Trophy size={20} />
+                </div>
+                <div className="min-w-0">
+                  <span className="font-heading font-bold text-xs uppercase tracking-tight text-[var(--gold)] block">Championship Event</span>
+                  <h2 className="font-heading font-extrabold text-base sm:text-lg uppercase text-[var(--text-primary)] leading-tight truncate">
+                    {selectedEvent.event_name}
+                  </h2>
+                  <div className="font-body text-xs sm:text-sm text-[var(--muted)] mt-0.5 break-words">
+                    {formatEventDateRange(selectedEvent.event_date, selectedEvent.event_end_date, selectedEvent.date_type)} &bull; {selectedEvent.venue}
                   </div>
                 </div>
               </div>
+              <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
+                {selectedEvent.date_type === 'multi' && (
+                  <span className="px-2.5 py-1 rounded-full text-xs font-heading font-bold uppercase tracking-wide bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/30">
+                    Multi-Day
+                  </span>
+                )}
+                <span className="px-3 py-1 rounded-full text-xs font-heading font-bold uppercase tracking-wide bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                  Registration Open
+                </span>
+              </div>
+            </div>
+
+            {/* The 6 Required Athlete Details Form (2-Column Desktop, 1-Column Mobile) */}
+            <div className="p-5 sm:p-8 rounded-2xl bg-[var(--surface)] border border-[var(--border-color)] shadow-xs space-y-5 sm:space-y-6 box-border">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+
+                {/* 1. Full Name */}
+                <div>
+                  <label htmlFor="athlete_name" className="block font-body text-sm font-semibold tracking-label text-[var(--text-primary)] mb-1.5">
+                    1. Full Name *
+                  </label>
+                  <Input
+                    id="athlete_name"
+                    name="athlete_name"
+                    value={formData.athlete_name}
+                    onChange={handleInputChange}
+                    placeholder="Enter your full official name"
+                    autoComplete="name"
+                    required
+                    className="h-12 bg-[var(--bg)] border-[var(--border-color)] text-base font-body rounded-xl w-full"
+                  />
+                </div>
+
+                {/* 2. Mobile Number */}
+                <div>
+                  <label htmlFor="phone" className="block font-body text-sm font-semibold tracking-label text-[var(--text-primary)] mb-1.5">
+                    2. Mobile Number (10 Digits) *
+                  </label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="e.g. 9876543210"
+                    autoComplete="tel"
+                    maxLength={10}
+                    required
+                    className="h-12 bg-[var(--bg)] border-[var(--border-color)] text-base font-body rounded-xl font-mono w-full"
+                  />
+                </div>
+
+                {/* 3. Email Address */}
+                <div>
+                  <label htmlFor="email" className="block font-body text-sm font-semibold tracking-label text-[var(--text-primary)] mb-1.5">
+                    3. Email Address (For Ticket Delivery) *
+                  </label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="name@example.com"
+                    autoComplete="email"
+                    required
+                    className="h-12 bg-[var(--bg)] border-[var(--border-color)] text-base font-body rounded-xl w-full"
+                  />
+                </div>
+
+                {/* 4. Date of Birth */}
+                <div>
+                  <label htmlFor="date_of_birth" className="block font-body text-sm font-semibold tracking-label text-[var(--text-primary)] mb-1.5">
+                    4. Date of Birth *
+                  </label>
+                  <Input
+                    id="date_of_birth"
+                    name="date_of_birth"
+                    type="date"
+                    value={formData.date_of_birth}
+                    onChange={handleInputChange}
+                    max={new Date().toISOString().split('T')[0]}
+                    required
+                    className="h-12 bg-[var(--bg)] border-[var(--border-color)] text-base font-body rounded-xl w-full"
+                  />
+                </div>
+
+                {/* 5. Age (Auto-calculated, strictly readonly) */}
+                <div>
+                  <label htmlFor="calculated_age" className="block font-body text-sm font-semibold tracking-label text-[var(--text-primary)] mb-1.5">
+                    5. Age (Auto-Calculated from DOB)
+                  </label>
+                  <div className="h-12 bg-black/5 dark:bg-white/5 border border-[var(--border-color)] rounded-xl px-4 flex items-center justify-between text-base font-body">
+                    {calculatedAge ? (
+                      <>
+                        <span className="font-heading font-bold text-base text-[var(--gold)]">
+                          {calculatedAge} Years Old
+                        </span>
+                        <span className="font-body text-xs text-emerald-600 dark:text-emerald-400 font-semibold tracking-label">
+                          Auto Calculated
+                        </span>
+                      </>
+                    ) : (
+                      <span className="font-body text-sm text-[var(--muted)] font-normal">
+                        Select DOB above to calculate
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* 6. Height (in cm) */}
+                <div>
+                  <label htmlFor="height" className="block font-body text-sm font-semibold tracking-label text-[var(--text-primary)] mb-1.5">
+                    6. Height (in cm) *
+                  </label>
+                  <Input
+                    id="height"
+                    name="height"
+                    type="number"
+                    step="0.5"
+                    min="50"
+                    max="250"
+                    value={formData.height}
+                    onChange={handleInputChange}
+                    placeholder="e.g. 175"
+                    required
+                    className="h-12 bg-[var(--bg)] border-[var(--border-color)] text-base font-body rounded-xl font-mono w-full"
+                  />
+                </div>
+
+              </div>
+
+              {/* Form Navigation CTA */}
+              <div className="pt-4 border-t border-[var(--border-color)] flex justify-end">
+                <Button
+                  type="button"
+                  onClick={goToStep2}
+                  className="w-full sm:w-auto h-12 sm:h-13 px-8 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-sm sm:text-base tracking-btn uppercase rounded-xl shadow-md hover:brightness-110 cursor-pointer"
+                >
+                  <span>Continue to Category Selection</span>
+                  <ArrowRight size={16} className="ml-2" />
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        )}
 
-      {/* MAIN CONTENT AREA */}
-      <div className="max-w-[1440px] mx-auto px-6 py-8 md:py-16">
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
+        {/* ========================================================= */}
+        {/* STEP 2: CATEGORY SELECTION & FEE SUMMARY                  */}
+        {/* ========================================================= */}
+        {activeStep === 2 && (
+          <div className="space-y-6 animate-in fade-in duration-300 w-full min-w-0 box-border">
+            {/* Header */}
+            <div className="border-b border-[var(--border-color)] pb-4 sm:pb-5">
+              <span className="font-heading font-bold text-xs uppercase tracking-tight-heading text-[var(--gold)]">Step 2 of 3</span>
+              <h1 className="font-heading font-black text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight-heading text-[var(--text-primary)] mt-1 break-words">
+                SELECT COMPETITION DIVISIONS
+              </h1>
+              <p className="font-body text-sm sm:text-base text-[var(--muted)] mt-1 leading-relaxed">
+                {isTieredLeague ? (
+                  <>
+                    Select up to <strong>3 competition categories</strong>. Single: ₹3,000 &bull; Double: ₹5,000 &bull; Triple: ₹6,000 plus mandatory clinical testing charge (₹2,000 per athlete).
+                  </>
+                ) : (
+                  <>
+                    Choose one or more categories you are competing in. Enjoy <strong>50% off on additional divisions</strong>.
+                  </>
+                )}
+              </p>
+            </div>
 
-          {/* LEFT COLUMN - FORM */}
-          <div className="flex-grow space-y-16 lg:max-w-[65%]">
+            {/* Filter Pills */}
+            <div className="flex flex-wrap gap-2">
+              {isIndiaNatural ? (
+                [
+                  { id: 'all', label: 'All Categories (20)' },
+                  { id: 'fashion', label: 'Fashion Show (4)' },
+                  { id: 'bermuda', label: 'Bermuda Beach (5)' },
+                  { id: 'bodybuilding', label: 'Men Bodybuilding (11)' },
+                ].map(f => (
+                  <button
+                    key={f.id}
+                    type="button"
+                    onClick={() => setCategoryFilter(f.id)}
+                    className={`px-4 py-2 rounded-xl text-xs font-heading font-bold uppercase tracking-tight transition-all cursor-pointer ${
+                      categoryFilter === f.id
+                        ? 'bg-[var(--gold)] text-[#040A12] shadow-xs'
+                        : 'bg-[var(--surface)] text-[var(--muted)] border border-[var(--border-color)] hover:border-[var(--gold)]/40'
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                ))
+              ) : isSouthIndiaLeague ? (
+                [
+                  { id: 'all', label: 'All Categories (20)' },
+                  { id: 'denim', label: 'Denim Jeans (4)' },
+                  { id: 'bermuda', label: 'Bermuda Beach (5)' },
+                  { id: 'bodybuilding', label: 'Men Bodybuilding (11)' },
+                ].map(f => (
+                  <button
+                    key={f.id}
+                    type="button"
+                    onClick={() => setCategoryFilter(f.id)}
+                    className={`px-4 py-2 rounded-xl text-xs font-heading font-bold uppercase tracking-tight transition-all cursor-pointer ${
+                      categoryFilter === f.id
+                        ? 'bg-[var(--gold)] text-[#040A12] shadow-xs'
+                        : 'bg-[var(--surface)] text-[var(--muted)] border border-[var(--border-color)] hover:border-[var(--gold)]/40'
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                ))
+              ) : (
+                [
+                  { id: 'all', label: 'All Divisions' },
+                  { id: 'men', label: "Men's Divisions" },
+                  { id: 'women', label: "Women's Divisions" },
+                ].map(f => (
+                  <button
+                    key={f.id}
+                    type="button"
+                    onClick={() => setCategoryFilter(f.id)}
+                    className={`px-4 py-2 rounded-xl text-xs font-heading font-bold uppercase tracking-tight transition-all cursor-pointer ${
+                      categoryFilter === f.id
+                        ? 'bg-[var(--gold)] text-[#040A12] shadow-xs'
+                        : 'bg-[var(--surface)] text-[var(--muted)] border border-[var(--border-color)] hover:border-[var(--gold)]/40'
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                ))
+              )}
+            </div>
 
-            {error && (
-              <div className="bg-red-500/10 border-2 border-red-500/50 text-red-500 p-5 flex items-start gap-4 rounded-sm">
-                <AlertCircle className="shrink-0 mt-0.5" size={20} />
-                <div className="text-sm font-bold tracking-wide">{error}</div>
+            {/* Category Cards List - Grouped for WFF Natural League Championships */}
+            {isTieredLeague ? (
+              <div className="space-y-8">
+                {(isIndiaNatural ? [
+                  {
+                    id: 'fashion',
+                    num: '1',
+                    title: 'CATEGORY 1 — FASHION SHOW MODEL',
+                    desc: 'High-fashion stage presentation, styling confidence, runway poise, and youth/open divisions.',
+                    badge: '4 Divisions',
+                    filter: (c: EventCategory) => c.name.toLowerCase().includes('fashion show')
+                  },
+                  {
+                    id: 'bermuda',
+                    num: '2',
+                    title: 'CATEGORY 2 — BERMUDA BEACH MODEL',
+                    desc: 'Summer beach aesthetic, athletic V-taper, boardshorts presentation, and height divisions.',
+                    badge: '5 Divisions',
+                    filter: (c: EventCategory) => c.name.toLowerCase().includes('bermuda beach')
+                  },
+                  {
+                    id: 'bodybuilding',
+                    num: '3',
+                    title: 'CATEGORY 3 — MEN BODYBUILDING',
+                    desc: 'Peak muscularity, vascularity, symmetry, mandatory poses, age groups & weight divisions.',
+                    badge: '11 Divisions',
+                    filter: (c: EventCategory) => c.name.toLowerCase().includes('bodybuilding')
+                  }
+                ] : [
+                  {
+                    id: 'denim',
+                    num: '1',
+                    title: 'CATEGORY 1 — DENIM JEANS MODEL',
+                    desc: 'Modern fitness presentation, denim styling, stage confidence and athletic symmetry.',
+                    badge: '4 Divisions',
+                    filter: (c: EventCategory) => c.name.toLowerCase().includes('denim jeans')
+                  },
+                  {
+                    id: 'bermuda',
+                    num: '2',
+                    title: 'CATEGORY 2 — BERMUDA BEACH MODEL',
+                    desc: 'Summer beach aesthetic, athletic V-taper, boardshorts presentation, and height divisions.',
+                    badge: '5 Divisions',
+                    filter: (c: EventCategory) => c.name.toLowerCase().includes('bermuda beach')
+                  },
+                  {
+                    id: 'bodybuilding',
+                    num: '3',
+                    title: 'CATEGORY 3 — MEN BODYBUILDING',
+                    desc: 'Peak muscularity, vascularity, symmetry, mandatory poses, age groups & weight divisions.',
+                    badge: '11 Divisions',
+                    filter: (c: EventCategory) => c.name.toLowerCase().includes('bodybuilding')
+                  }
+                ])
+                  .filter(group => categoryFilter === 'all' || categoryFilter === group.id)
+                  .map(group => {
+                    const groupCats = (selectedEvent.categories || []).filter(group.filter);
+                    if (groupCats.length === 0) return null;
+
+                    return (
+                      <div key={group.id} className="space-y-3.5">
+                        {/* Section Header */}
+                        <div className="p-4 rounded-xl bg-[var(--surface)] border-l-4 border-[var(--gold)] border border-[var(--border-color)] flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-xs">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-heading font-black text-xs px-2 py-0.5 rounded bg-[var(--gold)] text-black uppercase">
+                                Division {group.num}
+                              </span>
+                              <h2 className="font-heading font-extrabold text-base sm:text-lg text-[var(--text-primary)] uppercase tracking-tight">
+                                {group.title}
+                              </h2>
+                            </div>
+                            <p className="font-body text-xs text-[var(--muted)] mt-1">
+                              {group.desc}
+                            </p>
+                          </div>
+                          <span className="font-body text-xs font-semibold px-2.5 py-1 rounded bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20 shrink-0 self-start sm:self-center">
+                            {group.badge}
+                          </span>
+                        </div>
+
+                        {/* Subcategory Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {groupCats.map(cat => {
+                            const isSelected = selectedCategoryIds.includes(cat.id.toString());
+                            const eligibility = checkEligibility(cat.name, cat.eligibility);
+
+                            // Clean display title
+                            const displayTitle = cat.name.includes('—') 
+                              ? cat.name.split('—').slice(1).join('—').trim() 
+                              : cat.name;
+
+                            return (
+                              <div
+                                key={cat.id}
+                                onClick={() => toggleCategory(cat.id.toString())}
+                                className={`p-4 rounded-xl border cursor-pointer flex flex-col justify-between gap-3 transition-all duration-200 box-border ${
+                                  isSelected 
+                                    ? 'border-[var(--gold)] bg-[var(--gold-surface)] ring-2 ring-[var(--gold)]/50 shadow-md' 
+                                    : 'border-[var(--border-color)] bg-[var(--surface)] hover:border-[var(--gold)]/40 hover:bg-black/5 dark:hover:bg-white/5'
+                                }`}
+                              >
+                                <div className="flex items-start gap-3">
+                                  <div className={`w-5 h-5 mt-0.5 shrink-0 rounded-md border-2 flex items-center justify-center transition-all ${
+                                    isSelected ? 'bg-[var(--gold)] border-[var(--gold)] text-[#040A12]' : 'border-[var(--border-color)] bg-[var(--bg)]'
+                                  }`}>
+                                    {isSelected && <Check size={12} strokeWidth={3} className="text-[#040A12]" />}
+                                  </div>
+
+                                  <div className="min-w-0 flex-1">
+                                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                      <span className="font-heading font-bold text-[10px] uppercase tracking-wide px-2 py-0.5 rounded bg-[var(--gold)]/15 text-[var(--gold)]">
+                                        {cat.gender || 'Men'}
+                                      </span>
+                                      {isSelected && (
+                                        <span className="font-body text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+                                          Selected
+                                        </span>
+                                      )}
+                                      {eligibility && (
+                                        <span className={`font-body text-[10px] font-semibold px-2 py-0.5 rounded ${
+                                          eligibility.status === 'eligible'
+                                            ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
+                                            : 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30'
+                                        }`}>
+                                          {eligibility.text}
+                                        </span>
+                                      )}
+                                    </div>
+
+                                    <h3 className="font-heading font-extrabold text-sm sm:text-base text-[var(--text-primary)] uppercase tracking-tight leading-snug">
+                                      {decodeHtml(displayTitle)}
+                                    </h3>
+                                    <p className="font-body text-xs text-[var(--muted)] mt-1 leading-relaxed">
+                                      {cat.eligibility || 'Open to all eligible competitors'}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <div className="pt-2 border-t border-[var(--border-color)]/60 flex items-center justify-between text-xs">
+                                  <span className="text-[var(--muted)] font-medium">Official Entry Tier:</span>
+                                  <span className="font-heading font-bold text-xs uppercase text-[var(--gold)]">
+                                    ₹3k / ₹5k / ₹6k
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
               </div>
-            )}
-
-            {/* STEP 1: CATEGORIES */}
-            <section>
-              <div className="flex gap-6 mb-8">
-                <div className="w-12 h-12 rounded-full bg-[#C9A44A] text-[#040A12] flex items-center justify-center font-heading text-xl font-bold shrink-0 shadow-lg">1</div>
-                <div className="pt-2">
-                  <h3 className="font-heading text-2xl uppercase tracking-widest font-bold text-[#040A12]">Select Categories</h3>
-                  <p className="text-[#040A12]/50 text-sm font-medium mt-1">Choose the categories you wish to participate in. You can select multiple categories.</p>
-                </div>
-              </div>
-
-              <div className="space-y-0 border-t border-black/10">
-                {selectedEvent.categories?.filter(c => c.availability === 'open').map(cat => {
+            ) : (
+              /* Standard / Legacy Category List for other events */
+              <div className="space-y-3">
+                {(selectedEvent.categories || []).map((cat) => {
                   const isSelected = selectedCategoryIds.includes(cat.id.toString());
+                  const categoryIndex = selectedCategoryIds.indexOf(cat.id.toString());
+                  const isDiscounted = isSelected && categoryIndex > 0;
+
                   return (
                     <div
                       key={cat.id}
                       onClick={() => toggleCategory(cat.id.toString())}
-                      className={`p-5 border-b cursor-pointer flex flex-col sm:flex-row justify-between items-start sm:items-center transition-all bg-white hover:bg-gray-50 ${isSelected ? 'border-b-[#C9A44A]/50 bg-gray-50/50' : 'border-b-black/10'}`}
+                      className={`p-4 sm:p-5 rounded-2xl border cursor-pointer flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 transition-all duration-200 box-border w-full min-w-0 ${
+                        isSelected 
+                          ? 'border-[var(--gold)] bg-[var(--gold-surface)] ring-1 ring-[var(--gold)]/40 shadow-sm' 
+                          : 'border-[var(--border-color)] bg-[var(--surface)] hover:border-[var(--gold)]/40'
+                      }`}
                     >
-                      <div className="flex items-center gap-5 w-full sm:w-auto">
-                        <div className={`w-6 h-6 shrink-0 rounded-sm border-2 flex items-center justify-center transition-colors ${isSelected ? 'bg-[#040A12] border-[#040A12]' : 'border-black/20'}`}>
-                          {isSelected && <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
+                      <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto min-w-0">
+                        <div className={`w-6 h-6 shrink-0 rounded-lg border-2 flex items-center justify-center transition-all ${
+                          isSelected ? 'bg-[var(--gold)] border-[var(--gold)] text-[#040A12]' : 'border-[var(--border-color)] bg-[var(--bg)]'
+                        }`}>
+                          {isSelected && <Check size={14} strokeWidth={3} className="text-[#040A12]" />}
                         </div>
-                        <img src="/assets/wff_hero_banner.png" alt="Thumbnail" className="w-16 h-11 object-cover rounded-sm border border-black/10 opacity-80" />
-                        <div>
-                          <h4 className="font-heading font-bold text-sm text-[#040A12] tracking-wider uppercase mb-0.5">{decodeHtml(cat.name)}</h4>
-                          <p className="text-[11px] text-[#040A12]/50 font-medium">{cat.eligibility || 'Open to all eligible athletes'}</p>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 mb-1 flex-wrap">
+                            <span className="font-heading font-bold text-[11px] uppercase tracking-wide px-2 py-0.5 rounded bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20 shrink-0">
+                              {cat.gender || 'Open'}
+                            </span>
+                            {isSelected && (
+                              <span className="font-body text-xs font-semibold tracking-wide px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 shrink-0">
+                                Selected {isDiscounted ? '(50% Off)' : ''}
+                              </span>
+                            )}
+                          </div>
+                          <h3 className="font-heading font-extrabold text-base sm:text-lg md:text-xl text-[var(--text-primary)] tracking-tight-heading uppercase leading-snug break-words">
+                            {decodeHtml(cat.name)}
+                          </h3>
+                          <p className="font-body text-xs sm:text-sm text-[var(--muted)] font-normal mt-0.5">
+                            {cat.eligibility || 'Open to all registered competitors'}
+                          </p>
                         </div>
                       </div>
-                      <div className="text-left sm:text-right mt-4 sm:mt-0 pl-11 sm:pl-0 shrink-0">
-                        <div className="font-heading font-bold text-lg text-[#040A12]">₹ {cat.entry_fee || '0'}</div>
-                        <div className="text-[9px] uppercase tracking-[0.2em] font-bold text-[#040A12]/40 mt-0.5">Base Fee</div>
+
+                      <div className="text-left sm:text-right pl-9 sm:pl-0 shrink-0">
+                        <div className="font-heading font-black text-xl sm:text-2xl text-[var(--text-primary)]">
+                          ₹{cat.entry_fee || '0'}
+                        </div>
+                        <div className="font-body text-[11px] font-semibold uppercase tracking-label text-[var(--muted)] mt-0.5">
+                          Entry Fee
+                        </div>
                       </div>
                     </div>
                   );
                 })}
               </div>
+            )}
 
-              {/* TAN SPRAY */}
-              <div
-                className={`mt-4 p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center rounded-sm cursor-pointer transition-colors border ${tanSprayRequested ? 'bg-[#FDF8E7] border-[#E5D197]' : 'bg-gray-50 border-black/10 hover:border-black/20'}`}
-                onClick={() => setTanSprayRequested(!tanSprayRequested)}
-              >
-                <div className="flex items-center gap-5 w-full sm:w-auto">
-                  <div className={`w-6 h-6 shrink-0 rounded-sm border-2 flex items-center justify-center transition-colors ${tanSprayRequested ? 'bg-[#C9A44A] border-[#C9A44A]' : 'border-black/20'}`}>
-                    {tanSprayRequested && <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
-                  </div>
-                  <div>
-                    <h4 className="font-heading font-bold text-sm text-[#040A12] tracking-wider uppercase mb-0.5">Add Tan Spray</h4>
-                    <p className={`text-[11px] font-medium ${tanSprayRequested ? 'text-[#040A12]/70' : 'text-[#040A12]/50'}`}>Professional tanning service at the venue.</p>
-                  </div>
+            {/* Pro Tan Spray Add-on */}
+            <div
+              onClick={() => setTanSprayRequested(!tanSprayRequested)}
+              className={`p-4 sm:p-5 rounded-2xl border cursor-pointer flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 transition-all box-border w-full min-w-0 ${
+                tanSprayRequested 
+                  ? 'border-[var(--gold)] bg-[var(--gold-surface)] ring-1 ring-[var(--gold)]/40 shadow-sm' 
+                  : 'border-[var(--border-color)] bg-[var(--surface)] hover:border-[var(--gold)]/40'
+              }`}
+            >
+              <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto min-w-0">
+                <div className={`w-6 h-6 shrink-0 rounded-lg border-2 flex items-center justify-center transition-all ${
+                  tanSprayRequested ? 'bg-[var(--gold)] border-[var(--gold)] text-[#040A12]' : 'border-[var(--border-color)] bg-[var(--bg)]'
+                }`}>
+                  {tanSprayRequested && <Check size={14} strokeWidth={3} className="text-[#040A12]" />}
                 </div>
-                <div className="text-left sm:text-right mt-4 sm:mt-0 pl-11 sm:pl-0 shrink-0">
-                  <div className="font-heading font-bold text-lg text-[#040A12]">₹ {selectedEvent.tan_spray_price || '1000'}</div>
-                  <div className={`text-[9px] uppercase tracking-[0.2em] font-bold mt-0.5 ${tanSprayRequested ? 'text-[#C9A44A]' : 'text-[#040A12]/40'}`}>Charged Once</div>
-                </div>
-              </div>
-            </section>
-
-            {/* STEP 2: ATHLETE DETAILS */}
-            <section>
-              <div className="flex gap-6 mb-8">
-                <div className="w-12 h-12 rounded-full bg-[#C9A44A] text-[#040A12] flex items-center justify-center font-heading text-xl font-bold shrink-0 shadow-lg">2</div>
-                <div className="pt-2">
-                  <h3 className="font-heading text-2xl uppercase tracking-widest font-bold text-[#040A12]">Athlete Details</h3>
-                  <p className="text-[#040A12]/50 text-sm font-medium mt-1">Enter your details as per your official documents.</p>
-                </div>
-              </div>
-
-              <div className="bg-white p-8 space-y-8 rounded-sm border border-black/5 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div>
-                    <label className="block text-[10px] font-bold tracking-[0.15em] uppercase text-[#040A12]/60 mb-2">Full Name *</label>
-                    <Input name="athlete_name" value={formData.athlete_name} onChange={handleInputChange} placeholder="As per official ID" className="bg-[#F8F9FA] border-0 h-12 focus:ring-1 focus:ring-[#C9A44A]/50 rounded-sm text-sm font-medium" required />
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="font-heading font-bold text-[11px] uppercase tracking-wide px-2 py-0.5 rounded bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20">
+                      Official Service
+                    </span>
                   </div>
-                  <div>
-                    <label className="block text-[10px] font-bold tracking-[0.15em] uppercase text-[#040A12]/60 mb-2">Phone Number *</label>
-                    <Input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="+91" className="bg-[#F8F9FA] border-0 h-12 focus:ring-1 focus:ring-[#C9A44A]/50 rounded-sm text-sm font-medium" required />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold tracking-[0.15em] uppercase text-[#040A12]/60 mb-2">Email Address *</label>
-                    <Input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="For receipt" className="bg-[#F8F9FA] border-0 h-12 focus:ring-1 focus:ring-[#C9A44A]/50 rounded-sm text-sm font-medium" required />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold tracking-[0.15em] uppercase text-[#040A12]/60 mb-2">Instagram ID</label>
-                    <Input name="instagram_id" value={formData.instagram_id} onChange={handleInputChange} placeholder="@ username" className="bg-[#F8F9FA] border-0 h-12 focus:ring-1 focus:ring-[#C9A44A]/50 rounded-sm text-sm font-medium" />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-4">
-                  <div className="col-span-2">
-                    <label className="block text-[10px] font-bold tracking-[0.15em] uppercase text-[#040A12]/60 mb-2">Date of Birth *</label>
-                    <Input type="date" name="date_of_birth" value={formData.date_of_birth} onChange={handleInputChange} className="bg-[#F8F9FA] border-0 h-12 focus:ring-1 focus:ring-[#C9A44A]/50 rounded-sm text-sm font-medium" required />
-                  </div>
-                  <div className="col-span-2">
-                    <label className="block text-[10px] font-bold tracking-[0.15em] uppercase text-[#040A12]/60 mb-2">Age</label>
-                    <div className="h-12 px-4 bg-[#F8F9FA] flex items-center text-[#040A12]/50 select-none font-medium text-sm rounded-sm">
-                      {age || '-'}
-                    </div>
-                  </div>
-                  <div className="col-span-2">
-                    <label className="block text-[10px] font-bold tracking-[0.15em] uppercase text-[#040A12]/60 mb-2">Height (cm)</label>
-                    <Input type="number" name="height" value={formData.height} onChange={handleInputChange} placeholder="e.g. 175" className="bg-[#F8F9FA] border-0 h-12 focus:ring-1 focus:ring-[#C9A44A]/50 rounded-sm text-sm font-medium" />
-                  </div>
-                  <div className="col-span-2">
-                    <label className="block text-[10px] font-bold tracking-[0.15em] uppercase text-[#040A12]/60 mb-2">Weight (kg)</label>
-                    <Input type="number" name="weight" value={formData.weight} onChange={handleInputChange} placeholder="e.g. 75" className="bg-[#F8F9FA] border-0 h-12 focus:ring-1 focus:ring-[#C9A44A]/50 rounded-sm text-sm font-medium" />
-                  </div>
-                </div>
-              </div>
-            </section>
-
-          </div>
-
-          {/* RIGHT COLUMN - ORDER SUMMARY */}
-          <div className="lg:w-[35%] shrink-0">
-            <div className="sticky top-28 space-y-6">
-
-              {/* Order Summary Box */}
-              <div className="bg-white rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.08)] border border-black/5">
-                {/* Header */}
-                <div className="bg-[#040A12] p-8 relative">
-                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]"></div>
-                  <div className="flex items-center gap-5 relative z-10">
-                    <div className="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
-                      <CreditCard size={20} className="text-[#C9A44A]" />
-                    </div>
-                    <div>
-                      <h3 className="font-heading font-bold text-[15px] tracking-[0.2em] uppercase text-[#4F6C8A] mb-1">Order Summary</h3>
-                      <p className="text-[11px] text-white/50 font-medium">Review your selection before proceeding.</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Items */}
-                <div className="md:p-8 p-5 bg-white min-h-[140px] flex flex-col justify-center">
-                  {selectedCategories.length === 0 ? (
-                    <p className="text-[13px] text-[#040A12]/30 text-center font-bold uppercase tracking-[0.2em]">No categories selected.</p>
-                  ) : (
-                    <div className="space-y-5">
-                      {selectedCategories.map((cat, index) => {
-                        const fee = parseFloat(cat.entry_fee || '0');
-                        return (
-                          <div key={cat.id} className="flex justify-between items-center text-[13px] font-bold text-[#040A12]">
-                            <span className="uppercase tracking-wider sm:text-[15px] text-[12px]">{decodeHtml(cat.name)}</span>
-                            <span className="text-[15px]">₹ {index === 0 ? fee : fee * 0.5}</span>
-                          </div>
-                        );
-                      })}
-
-                      {tanSprayRequested && (
-                        <div className="flex justify-between items-center text-[13px] font-bold text-[#040A12] pt-2">
-                          <span className="uppercase tracking-wider">Tan Spray</span>
-                          <span className="text-[15px]">₹ {pricing.tanSpray}</span>
-                        </div>
-                      )}
-
-                      <div className="pt-5 mt-2 border-t border-black/5 flex justify-between items-center text-[13px] font-bold text-[#040A12]/60">
-                        <span className="uppercase tracking-wider">Subtotal</span>
-                        <span>₹ {pricing.total}</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Total & Pay */}
-                <div>
-                  {selectedEvent.cash_enabled && (
-                    <div className="bg-[#F8F9FA] p-8 border-t border-black/5">
-                      <div className="text-[11px] uppercase tracking-[0.2em] text-[#040A12]/60 font-bold mb-4">Payment Method</div>
-                      <div className="flex flex-col gap-3">
-                        <label className={`flex items-center gap-3 p-4 border rounded cursor-pointer transition-colors ${paymentMethod === 'online' ? 'bg-white border-[#C9A44A]' : 'bg-white border-black/10'}`}>
-                          <input type="radio" name="paymentMethod" value="online" checked={paymentMethod === 'online'} onChange={() => setPaymentMethod('online')} className="accent-[#C9A44A]" />
-                          <div className="flex flex-col">
-                            <span className="font-bold text-[#040A12] text-sm">Online Payment (UPI / Card)</span>
-                            <span className="text-xs text-[#040A12]/50">Instant confirmation</span>
-                          </div>
-                        </label>
-                        <label className={`flex items-center gap-3 p-4 border rounded cursor-pointer transition-colors ${paymentMethod === 'cash' ? 'bg-white border-[#C9A44A]' : 'bg-white border-black/10'}`}>
-                          <input type="radio" name="paymentMethod" value="cash" checked={paymentMethod === 'cash'} onChange={() => setPaymentMethod('cash')} className="accent-[#C9A44A]" />
-                          <div className="flex flex-col">
-                            <span className="font-bold text-[#040A12] text-sm">Cash at Desk</span>
-                            <span className="text-xs text-[#040A12]/50">Pay in person. Ticket pending until cash is collected.</span>
-                          </div>
-                        </label>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="bg-[#FCF9EE] md:p-8 p-5 flex justify-between items-center border-t border-b border-[#EADDAC]">
-                    <span className="font-heading font-bold text-[#040A12] text-[13px] uppercase tracking-[0.2em]">Total Payable</span>
-                    <span className="font-heading font-bold text-3xl md:text-4xl text-[#040A12]">₹ {pricing.total}</span>
-                  </div>
-
-                  <div className="p-8 bg-white space-y-5">
-                    <Button
-                      onClick={submitRegistration}
-                      disabled={loading || selectedCategoryIds.length === 0}
-                      className="w-full h-14 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-bold text-[14px] tracking-[0.15em] uppercase hover:brightness-110 hover:-translate-y-0.5 shadow-[0_8px_20px_rgba(198,161,91,0.25)] transition-all duration-300 rounded border-0 cursor-pointer"
-                    >
-                      {loading ? 'Processing...' : paymentMethod === 'online' ? 'Proceed to Checkout →' : 'Complete Registration →'}
-                    </Button>
-
-                    <p className="text-[11px] text-[#040A12]/70 text-center leading-relaxed">
-                      By proceeding, you agree to WFF Tamil Nadu&apos;s{' '}
-                      <Link href="/terms-and-conditions" target="_blank" className="text-[#C9A44A] underline hover:text-[#040A12] font-semibold">
-                        Terms &amp; Conditions
-                      </Link>
-                      ,{' '}
-                      <Link href="/cancellation-refund-policy" target="_blank" className="text-[#C9A44A] underline hover:text-[#040A12] font-semibold">
-                        Cancellation &amp; Refund Policy
-                      </Link>
-                      , and{' '}
-                      <Link href="/privacy-policy" target="_blank" className="text-[#C9A44A] underline hover:text-[#040A12] font-semibold">
-                        Privacy Policy
-                      </Link>
-                      .
-                    </p>
-
-                    <div className="text-center pt-2 border-t border-black/5 text-[11px] text-[#040A12]/60">
-                      Need help? Call <a href="tel:+919952922686" className="font-bold text-[#040A12] hover:text-[#C9A44A]">+91 99529 22686</a> &bull; <a href="mailto:wfftamilnadu@gmail.com" className="font-bold text-[#040A12] hover:text-[#C9A44A]">wfftamilnadu@gmail.com</a>
-                    </div>
-
-                    <div className="flex items-start justify-center gap-4 pt-1 text-[#040A12]/50">
-                      <div className="mt-0.5"><CheckCircle2 size={18} className="text-[#040A12]/40" /></div>
-                      <div>
-                        <div className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#040A12]">Your information is secure</div>
-                        <div className="text-[11px] mt-1 font-medium leading-[1.6]">All data is encrypted and processed through official, secure channels.</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Promo Card */}
-              <div className="hidden lg:block bg-[#040A12] rounded-sm overflow-hidden relative shadow-lg">
-                <div className="absolute inset-0 z-0">
-                  <img src="/assets/wff_hero_banner.png" alt="Athlete" className="w-full h-full object-cover object-[center_right] opacity-40 mix-blend-luminosity" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#040A12]/90 to-transparent"></div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#040A12] via-transparent to-transparent"></div>
-                </div>
-
-                <div className="relative z-10 p-8 pt-12 flex flex-col h-full justify-between min-h-[300px]">
-                  <div>
-                    <div className="w-6 h-1 bg-[#C9A44A] mb-4"></div>
-                    <h4 className="font-heading font-light text-2xl uppercase tracking-wider leading-[1.2] text-white">
-                      A Natural<br />Athlete<br /><span className="font-bold">A Stronger<br />Tomorrow</span>
-                    </h4>
-                  </div>
-
-                  <div className="grid grid-cols-4 gap-2 mt-8">
-                    <div className="flex flex-col items-center text-center gap-2">
-                      <Trophy size={18} className="text-[#C9A44A]" />
-                      <span className="text-[8px] uppercase tracking-wider font-bold text-white/80">Fair<br />Competition</span>
-                    </div>
-                    <div className="flex flex-col items-center text-center gap-2">
-                      <CheckCircle2 size={18} className="text-[#C9A44A]" />
-                      <span className="text-[8px] uppercase tracking-wider font-bold text-white/80">Real<br />Opportunities</span>
-                    </div>
-                    <div className="flex flex-col items-center text-center gap-2">
-                      <ShieldCheck size={18} className="text-[#C9A44A]" />
-                      <span className="text-[8px] uppercase tracking-wider font-bold text-white/80">Clean<br />Sport</span>
-                    </div>
-                    <div className="flex flex-col items-center text-center gap-2">
-                      <svg className="w-[18px] h-[18px] text-[#C9A44A]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                      <span className="text-[8px] uppercase tracking-wider font-bold text-white/80">Global<br />Standards</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      {/* ------------------------------------------------------------- */}
-      {/* CHECKOUT MODAL (QR CODE & LINK PAYMENT OPTIONS + EVENTS LIST) */}
-      {/* ------------------------------------------------------------- */}
-      {isPaymentModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-md overflow-y-auto animate-in fade-in duration-200">
-          <div className="relative w-full max-w-4xl bg-[#080E1A] text-white rounded-2xl shadow-[0_25px_70px_rgba(0,0,0,0.8)] border border-[#C9A44A]/40 overflow-hidden my-auto max-h-[94vh] flex flex-col">
-
-            {/* Gold Top Accent Line */}
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] z-20"></div>
-
-            {/* Modal Header */}
-            <div className="bg-[#040A12] px-6 sm:px-8 py-5 border-b border-white/10 md:flex hidden items-center justify-between gap-4 shrink-0">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#C9A44A]/10 border border-[#C9A44A]/30 flex items-center justify-center text-[#C9A44A] shrink-0">
-                  <CreditCard size={20} />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#C9A44A]">WFF Official Portal</span>
-                    {successData?.registration_number && (
-                      <span className="bg-white/10 text-white/80 text-[10px] font-mono px-2 py-0.5 rounded">
-                        #{successData.registration_number}
-                      </span>
-                    )}
-                  </div>
-                  <h3 className="font-heading font-extrabold text-lg sm:text-xl uppercase tracking-wider text-white">
-                    Complete Checkout &amp; Payment
-                  </h3>
-                </div>
-              </div>
-
-              {/* Price Pill in Top Header */}
-              <div className="flex items-center gap-4">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-[#BF953F]/20 via-[#FCF6BA]/10 to-[#B38728]/20 border border-[#C9A44A]/50 rounded-lg text-right sm:text-left">
-                  <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-[0.2em] text-[#C9A44A]">Total Payable:</span>
-                  <span className="font-heading font-black text-lg sm:text-2xl text-transparent bg-clip-text bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]">
-                    ₹{pricing.total || successData?.total_amount}
-                  </span>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleRequestClosePaymentModal}
-                  className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-colors shrink-0"
-                  aria-label="Close Payment Modal"
-                >
-                  <X size={18} />
-                </button>
-              </div>
-            </div>
-
-            {/* Modal Body - 2 Columns */}
-            <div className="p-6 sm:p-8 overflow-y-auto grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
-
-              {/* LEFT COLUMN: ADDED EVENTS & ORDER BREAKDOWN */}
-              <div className="lg:col-span-5 flex flex-col justify-between space-y-5 bg-[#040A12]/70 p-5 sm:p-6 rounded-xl border border-white/5">
-                <div className="space-y-5">
-
-                  {/* Total Payable Box at TOP of Left Column */}
-                  <div className="bg-gradient-to-br from-[#1A263D] via-[#0F1829] to-[#040A12] p-4 sm:p-5 rounded-xl border border-[#C9A44A]/50 shadow-[0_8px_25px_rgba(0,0,0,0.5)] relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-[#C9A44A]/10 rounded-full blur-xl pointer-events-none"></div>
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <span className="text-[9px] uppercase tracking-[0.25em] font-bold text-[#C9A44A] block">
-                          Total Amount Payable
-                        </span>
-                        <div className="text-xs text-white/60 mt-0.5">
-                          {selectedCategories.length} {selectedCategories.length === 1 ? 'Category' : 'Categories'} {tanSprayRequested ? '+ Tan Spray' : ''}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <span className="font-heading font-black text-2xl sm:text-3xl text-transparent bg-clip-text bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]">
-                          ₹{pricing.total || successData?.total_amount}
-                        </span>
-                      </div>
-                    </div>
-
-                    {(pricing.discount > 0 || tanSprayRequested) && (
-                      <div className="border-t border-white/10 pt-2.5 mt-2 flex justify-between items-center text-[11px] text-white/60">
-                        <span>Base: ₹{pricing.base} {tanSprayRequested ? `+ Tan: ₹${pricing.tanSpray}` : ''}</span>
-                        {pricing.discount > 0 && (
-                          <span className="text-green-400 font-bold">Saved: ₹{pricing.discount}</span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Event Title */}
-                  <div className="border-b border-white/10 pb-4">
-                    <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-white/40">Event Details</span>
-                    <h4 className="font-heading font-bold text-base sm:text-lg uppercase text-white mt-1 leading-tight">
-                      {selectedEvent.event_name}
-                    </h4>
-                    <div className="mt-2 space-y-1 text-xs text-white/60">
-                      <div className="flex items-center gap-2">
-                        <Calendar size={13} className="text-[#C9A44A] shrink-0" />
-                        <span>{selectedEvent.event_date}</span>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <MapPin size={13} className="text-[#C9A44A] shrink-0 mt-0.5" />
-                        <span className="leading-snug">{selectedEvent.venue}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Athlete Info */}
-                  <div className="border-b border-white/10 pb-4 text-xs">
-                    <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-white/40">Athlete</span>
-                    <div className="font-bold text-sm text-white mt-0.5">{formData.athlete_name}</div>
-                    <div className="text-white/60 mt-0.5 font-medium">{formData.phone} &bull; {formData.email}</div>
-                  </div>
-
-                  {/* Added Events List */}
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#C9A44A]">
-                        Added Events ({selectedCategories.length})
-                      </span>
-                      <span className="text-[10px] uppercase font-bold text-white/40">Amount</span>
-                    </div>
-
-                    <div className="space-y-2.5 max-h-52 overflow-y-auto pr-1">
-                      {selectedCategories.map((cat, index) => {
-                        const fee = parseFloat(cat.entry_fee || '0');
-                        const finalFee = index === 0 ? fee : fee * 0.5;
-                        return (
-                          <div key={cat.id} className="bg-white/5 p-3 rounded-lg border border-white/5 flex items-center justify-between gap-3">
-                            <div className="min-w-0">
-                              <div className="font-heading font-bold text-xs uppercase text-white truncate">
-                                {decodeHtml(cat.name)}
-                              </div>
-                              <span className="inline-block mt-0.5 text-[9px] font-bold uppercase tracking-wider text-[#C9A44A]">
-                                {index === 0 ? 'Primary Category' : 'Additional (50% Off)'}
-                              </span>
-                            </div>
-                            <div className="font-heading font-bold text-sm text-white shrink-0">
-                              ₹{finalFee}
-                            </div>
-                          </div>
-                        );
-                      })}
-
-                      {tanSprayRequested && (
-                        <div className="bg-white/5 p-3 rounded-lg border border-white/5 flex items-center justify-between gap-3">
-                          <div>
-                            <div className="font-heading font-bold text-xs uppercase text-white">
-                              Tan Spray Service
-                            </div>
-                            <span className="text-[9px] text-white/50">Professional tanning service</span>
-                          </div>
-                          <div className="font-heading font-bold text-sm text-white shrink-0">
-                            ₹{pricing.tanSpray}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* RIGHT COLUMN: PAYMENT OPTIONS (QR CODE VS LINK) */}
-              <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
-                <div>
-                  {/* Two Payment Option Tabs */}
-                  <div className="grid grid-cols-2 gap-2 p-1 bg-white/5 rounded-xl border border-white/10 mb-6">
-                    <button
-                      onClick={() => setPaymentTab('qr')}
-                      className={`flex items-center justify-center gap-2 py-3 px-3 rounded-lg font-heading text-xs font-bold uppercase tracking-wider transition-all ${paymentTab === 'qr'
-                        ? 'bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] shadow-md'
-                        : 'text-white/70 hover:text-white hover:bg-white/5'
-                        }`}
-                    >
-                      <QrCode size={16} />
-                      <span>Pay using QR Code</span>
-                    </button>
-                    <button
-                      onClick={() => setPaymentTab('link')}
-                      className={`flex items-center justify-center gap-2 py-3 px-3 rounded-lg font-heading text-xs font-bold uppercase tracking-wider transition-all ${paymentTab === 'link'
-                        ? 'bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] shadow-md'
-                        : 'text-white/70 hover:text-white hover:bg-white/5'
-                        }`}
-                    >
-                      <Link2 size={16} />
-                      <span>Pay via Link</span>
-                    </button>
-                  </div>
-
-                  {/* TAB 1: PAY USING QR CODE */}
-                  {paymentTab === 'qr' && (
-                    <div className="space-y-4 animate-in fade-in duration-200">
-                      {/* QR Display Card */}
-                      <div className="bg-white rounded-xl p-4 text-center text-[#040A12] shadow-xl border border-black/10 flex flex-col items-center">
-                        <div className="w-68 h-auto p-1 bg-white rounded-lg">
-                          <img
-                            src="/assets/payment-qr.jpeg"
-                            alt="WFF Tamil Nadu UPI QR Code"
-                            className="w-full h-auto object-contain rounded-md"
-                          />
-                        </div>
-                        <p className="text-[11px] font-bold text-gray-500 mt-2 uppercase tracking-wider">
-                          Scan with GPay, PhonePe, Paytm, BHIM, or any UPI App
-                        </p>
-                      </div>
-
-
-                      {/* UPI ID Copy Card */}
-                      <div className="bg-white/5 p-4 rounded-xl border border-white/10 flex items-center justify-between gap-3">
-                        <div className="min-w-0">
-                          <div className="text-[9px] uppercase font-bold tracking-[0.2em] text-[#C9A44A]">
-                            UPI ID (Beneficiary: WFF TAMILNADU)
-                          </div>
-                          <div className="font-mono font-bold text-sm text-white mt-0.5 truncate select-all">
-                            nabbawffchennai@okicici
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => copyToClipboard('nabbawffchennai@okicici', 'upi')}
-                          className="shrink-0 flex items-center gap-1.5 px-3 py-2 bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs font-bold rounded-lg transition-colors"
-                        >
-                          {copiedField === 'upi' ? (
-                            <>
-                              <Check size={14} className="text-green-400" />
-                              <span className="text-green-400">Copied!</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy size={14} />
-                              <span>Copy UPI</span>
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* TAB 2: PAY VIA LINK */}
-                  {paymentTab === 'link' && (
-                    <div className="space-y-5 animate-in fade-in duration-200">
-                      <div className="bg-gradient-to-br from-[#0F1C2E] to-[#060D17] p-6 rounded-xl border border-[#C9A44A]/30 text-center space-y-5 shadow-lg">
-                        <div className="w-14 h-14 mx-auto rounded-full bg-[#C9A44A]/10 border border-[#C9A44A]/30 flex items-center justify-center text-[#C9A44A]">
-                          <Link2 size={28} />
-                        </div>
-
-                        <div>
-                          <div className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#C9A44A] mb-1">
-                            Razorpay Payment Link
-                          </div>
-                          <h4 className="font-heading font-bold text-lg text-white">
-                            Pay Directly via Razorpay
-                          </h4>
-                          <p className="text-xs text-white/60 mt-1 max-w-sm mx-auto leading-relaxed">
-                            Click below to open the official Razorpay payment page supporting Cards, NetBanking, UPI, and Wallets.
-                          </p>
-                        </div>
-
-                        {/* Link Box */}
-                        <div className="bg-black/40 p-3 rounded-lg border border-white/10 flex items-center justify-between gap-3 text-left">
-                          <span className="font-mono text-xs text-[#FCF6BA] truncate select-all">
-                            http://razorpay.me/@mohankumarnarasimalu
-                          </span>
-                          <button
-                            onClick={() => copyToClipboard('http://razorpay.me/@mohankumarnarasimalu', 'link')}
-                            className="shrink-0 text-white/70 hover:text-white p-1.5 rounded hover:bg-white/10 transition-colors"
-                            title="Copy Link"
-                          >
-                            {copiedField === 'link' ? <Check size={16} className="text-green-400" /> : <Copy size={16} />}
-                          </button>
-                        </div>
-
-                        {/* Action Link Button */}
-                        <a
-                          href="http://razorpay.me/@mohankumarnarasimalu"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-full inline-flex items-center justify-center gap-2 h-12 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-xs uppercase tracking-[0.15em] rounded-lg shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5"
-                        >
-                          <span>Open Razorpay Payment Link</span>
-                          <ExternalLink size={16} />
-                        </a>
-                      </div>
-
-                      <div className="text-center text-[11px] text-white/50">
-                        Accepted: Google Pay &bull; PhonePe &bull; Paytm &bull; Credit/Debit Cards &bull; Net Banking &bull; Wallets
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* BOTTOM CONFIRMATION / VERIFICATION SECTION */}
-                <div className="pt-5 border-t border-white/10 space-y-4">
-                  {/* UPLOAD PAYMENT SCREENSHOT */}
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <label className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#C9A44A] flex items-center gap-1.5">
-                        <Camera size={14} className="text-[#C9A44A]" />
-                        <span>Upload Payment Screenshot *</span>
-                      </label>
-                      <span className="text-[10px] text-white/40 font-medium">JPEG, PNG, WebP (Max 10MB)</span>
-                    </div>
-
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      onChange={handleFileChange}
-                      accept="image/png, image/jpeg, image/jpg, image/webp"
-                      className="hidden"
-                      id="payment-screenshot-input"
-                    />
-
-                    {paymentProofPreview ? (
-                      <div className="bg-white/5 border border-emerald-500/40 rounded-xl p-3.5 flex items-center justify-between gap-3 animate-in fade-in duration-200">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-14 h-14 rounded-lg bg-black/50 overflow-hidden border border-emerald-500/30 shrink-0 relative flex items-center justify-center">
-                            <img
-                              src={paymentProofPreview}
-                              alt="Payment Screenshot Preview"
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-bold truncate">
-                              <CheckCircle2 size={14} className="shrink-0" />
-                              <span className="truncate">{paymentProofFile?.name || 'Screenshot attached'}</span>
-                            </div>
-                            <span className="text-[10px] text-white/50 block mt-0.5">
-                              {paymentProofFile ? `${(paymentProofFile.size / 1024).toFixed(1)} KB &bull; Click complete below` : 'Ready to submit'}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2 shrink-0">
-                          <button
-                            type="button"
-                            onClick={() => fileInputRef.current?.click()}
-                            className="text-xs text-white/80 hover:text-white px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors font-medium border border-white/10 cursor-pointer"
-                          >
-                            Change
-                          </button>
-                          <button
-                            type="button"
-                            onClick={handleRemoveProof}
-                            className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
-                            title="Remove Screenshot"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div
-                        onClick={() => fileInputRef.current?.click()}
-                        className="border-2 border-dashed border-white/20 hover:border-[#C9A44A]/70 bg-white/5 hover:bg-white/10 rounded-xl p-4 text-center cursor-pointer transition-all duration-200 group flex flex-col items-center justify-center gap-2"
-                      >
-                        <div className="w-11 h-11 rounded-full bg-[#C9A44A]/10 border border-[#C9A44A]/30 flex items-center justify-center text-[#C9A44A] group-hover:scale-110 group-hover:bg-[#C9A44A]/20 transition-all">
-                          <Upload size={20} />
-                        </div>
-                        <div>
-                          <div className="text-xs font-bold text-white group-hover:text-[#C9A44A] transition-colors">
-                            Click here to upload your payment screenshot
-                          </div>
-                          <p className="text-[10px] text-white/40 mt-1 max-w-xs mx-auto leading-relaxed">
-                            Take a screenshot from GPay / PhonePe / Paytm showing the successful payment to WFF Tamil Nadu
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* TRANSACTION / UTR REFERENCE */}
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-[0.15em] text-white/50 mb-1.5">
-                      Transaction / UTR Reference (Optional)
-                    </label>
-                    <Input
-                      type="text"
-                      placeholder="e.g. 12-digit UTR No / UPI Ref / Order ID"
-                      value={transactionRef}
-                      onChange={(e) => setTransactionRef(e.target.value)}
-                      className="bg-white/5 border-white/10 text-white text-xs h-10 rounded-lg placeholder:text-white/30 focus:border-[#C9A44A]"
-                    />
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row gap-3 pt-1">
-                    <Button
-                      type="button"
-                      onClick={handleRequestClosePaymentModal}
-                      className="flex-1 bg-white/5 hover:bg-white/10 text-white border border-white/10 font-heading text-xs font-bold uppercase tracking-wider h-12 p-4 rounded-lg cursor-pointer"
-                    >
-                      Back to Form
-                    </Button>
-                    <Button
-                      type="button"
-                      onClick={confirmPaymentCompletion}
-                      disabled={verifying}
-                      className="flex-1 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-xs uppercase tracking-[0.15em] h-12 p-4 rounded-lg shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5 cursor-pointer disabled:opacity-60"
-                    >
-                      {verifying ? 'Uploading Proof & Verifying...' : 'Complete Registration & View Ticket →'}
-                    </Button>
-                  </div>
-
-                  <p className="text-[10px] text-white/40 text-center">
-                    Upload your payment screenshot to verify and immediately receive your official digital entry pass.
+                  <h4 className="font-heading font-extrabold text-base sm:text-lg text-[var(--text-primary)] uppercase break-words">
+                    Stage Pro Tan Spray Application (Optional)
+                  </h4>
+                  <p className="font-body text-xs sm:text-sm text-[var(--muted)] font-normal mt-0.5">
+                    Official backstage professional coat application before stage entrance.
                   </p>
                 </div>
               </div>
+              <div className="text-left sm:text-right pl-9 sm:pl-0 shrink-0">
+                <div className="font-heading font-black text-xl sm:text-2xl text-[var(--text-primary)]">
+                  ₹{selectedEvent.tan_spray_price || '1500'}
+                </div>
+                <div className="font-body text-[11px] font-semibold uppercase tracking-label text-[var(--gold)] mt-0.5">
+                  Single Fee
+                </div>
+              </div>
+            </div>
+
+            {/* Fee Breakdown Summary Card */}
+            {isTieredLeague ? (
+              <div className="p-5 sm:p-6 rounded-2xl bg-[var(--surface)] border-2 border-[var(--gold)]/40 shadow-sm space-y-4 box-border w-full min-w-0">
+                <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-3">
+                  <h3 className="font-heading font-extrabold text-base uppercase tracking-tight-heading text-[var(--text-primary)]">
+                    {selectedEvent?.event_name || 'Championship'} — Fee Breakdown
+                  </h3>
+                  <span className="font-heading font-bold text-xs uppercase px-2.5 py-0.5 rounded bg-[var(--gold)]/15 text-[var(--gold)] border border-[var(--gold)]/30">
+                    Official Championship Pricing
+                  </span>
+                </div>
+
+                <div className="space-y-3 font-body text-sm">
+                  {/* Category Tier Status */}
+                  <div className="flex justify-between items-center text-[var(--muted)]">
+                    <span>
+                      Selected Categories ({selectedCategories.length} of 3 max):
+                    </span>
+                    <span className="font-heading font-bold text-base text-[var(--text-primary)]">
+                      {selectedCategories.length === 0 ? (
+                        <span className="text-amber-500 text-xs">Select 1 to 3 categories</span>
+                      ) : (
+                        `${pricing.tierLabel} (₹${pricing.categoryFee})`
+                      )}
+                    </span>
+                  </div>
+
+                  {/* Mandatory Clinical Testing Charge Banner */}
+                  <div className="flex justify-between items-center bg-amber-500/10 p-3 sm:p-4 rounded-xl border border-amber-500/30">
+                    <div>
+                      <span className="font-heading font-extrabold text-xs sm:text-sm text-[var(--text-primary)] uppercase block tracking-wide">
+                        Mandatory Clinical Testing Charge
+                      </span>
+                      <span className="text-xs text-[var(--muted)]">
+                        Charged once per athlete &bull; Non-removable &bull; Mandatory for all participants
+                      </span>
+                    </div>
+                    <span className="font-heading font-black text-lg text-[var(--gold)] shrink-0 ml-3">
+                      ₹2,000
+                    </span>
+                  </div>
+
+                  {/* Optional Tan Spray */}
+                  {tanSprayRequested && (
+                    <div className="flex justify-between items-center text-[var(--muted)]">
+                      <span>Pro Tan Spray Application:</span>
+                      <span className="font-heading font-bold text-base text-[var(--text-primary)]">₹{pricing.tanSpray}</span>
+                    </div>
+                  )}
+
+                  {/* Final Payable */}
+                  <div className="pt-3 border-t border-[var(--border-color)] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                      <span className="font-heading font-extrabold text-sm sm:text-base uppercase tracking-tight-heading text-[var(--text-primary)] block">
+                        Total Payable Amount:
+                      </span>
+                      <span className="text-xs text-[var(--muted)]">
+                        {selectedCategories.length === 0 
+                          ? 'Please choose categories above' 
+                          : `₹${pricing.categoryFee} (Category Fee) + ₹2,000 (Clinical Charge) ${tanSprayRequested ? '+ ₹' + pricing.tanSpray + ' (Tan Spray)' : ''}`}
+                      </span>
+                    </div>
+                    <span className="font-heading font-black text-2xl sm:text-3xl text-[var(--gold)]">
+                      ₹{pricing.total}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-5 sm:p-6 rounded-2xl bg-[var(--surface)] border border-[var(--border-color)] shadow-xs space-y-4 box-border w-full min-w-0">
+                <h3 className="font-heading font-extrabold text-base uppercase tracking-tight-heading text-[var(--text-primary)] border-b border-[var(--border-color)] pb-3">
+                  Live Registration Fee Breakdown
+                </h3>
+
+                <div className="space-y-2.5 font-body text-sm">
+                  <div className="flex justify-between items-center text-[var(--muted)]">
+                    <span>First Division Entry Fee:</span>
+                    <span className="font-heading font-bold text-base text-[var(--text-primary)]">₹{pricing.firstCategoryFee}</span>
+                  </div>
+
+                  {selectedCategories.length > 1 && (
+                    <div className="flex justify-between items-center text-[var(--muted)]">
+                      <span>Additional Divisions ({selectedCategories.length - 1}):</span>
+                      <span className="font-heading font-bold text-base text-[var(--text-primary)]">₹{pricing.additionalFee}</span>
+                    </div>
+                  )}
+
+                  {pricing.discount > 0 && (
+                    <div className="flex justify-between items-center text-emerald-600 dark:text-emerald-400 font-semibold">
+                      <span>50% Multi-Category Discount:</span>
+                      <span className="font-heading font-bold text-base">- ₹{pricing.discount}</span>
+                    </div>
+                  )}
+
+                  {tanSprayRequested && (
+                    <div className="flex justify-between items-center text-[var(--muted)]">
+                      <span>Pro Tan Spray Service:</span>
+                      <span className="font-heading font-bold text-base text-[var(--text-primary)]">₹{pricing.tanSpray}</span>
+                    </div>
+                  )}
+
+                  <div className="pt-3 border-t border-[var(--border-color)] flex justify-between items-center">
+                    <span className="font-heading font-extrabold text-sm sm:text-base uppercase tracking-tight-heading text-[var(--text-primary)]">Final Payable:</span>
+                    <span className="font-heading font-black text-2xl sm:text-3xl text-[var(--gold)]">₹{pricing.total}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Navigation Actions */}
+            <div className="pt-4 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+              <Button
+                type="button"
+                onClick={() => setActiveStep(1)}
+                variant="secondary"
+                className="w-full sm:w-auto h-12 sm:h-13 px-6 border border-[var(--border-color)] text-[var(--text-primary)] font-heading font-bold text-sm uppercase tracking-btn rounded-xl cursor-pointer"
+              >
+                ← Back to Details
+              </Button>
+              <Button
+                type="button"
+                onClick={goToStep3}
+                disabled={selectedCategoryIds.length === 0}
+                className="w-full sm:w-auto h-12 sm:h-13 px-8 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-sm sm:text-base tracking-btn uppercase rounded-xl shadow-md cursor-pointer disabled:opacity-50"
+              >
+                Proceed to Payment (₹{pricing.total}) →
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================= */}
+        {/* STEP 3: UPI PAYMENT & PROOF UPLOAD (RESPONSIVE 2-COL / 1-COL) */}
+        {/* ========================================================= */}
+        {activeStep === 3 && (
+          <div className="space-y-6 animate-in fade-in duration-300 w-full min-w-0 box-border">
+            
+            {/* Header */}
+            <div className="border-b border-[var(--border-color)] pb-4 sm:pb-5">
+              <span className="font-heading font-bold text-xs uppercase tracking-tight-heading text-[var(--gold)]">Step 3 of 3</span>
+              <h1 className="font-heading font-black text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight-heading text-[var(--text-primary)] mt-1 break-words">
+                UPI PAYMENT &amp; VERIFICATION
+              </h1>
+              <p className="font-body text-sm sm:text-base text-[var(--muted)] mt-1 leading-relaxed">
+                Pay via the official UPI QR code or link, then upload your payment screenshot.
+              </p>
+            </div>
+
+            {/* RESPONSIVE LAYOUT CONTAINER */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start w-full min-w-0 box-border">
+
+              {/* RIGHT COLUMN ON DESKTOP / TOP ON MOBILE: Registration Fee Summary Card */}
+              <div className="lg:col-span-5 lg:order-2 lg:sticky lg:top-24 space-y-4 w-full min-w-0 box-border">
+                
+                {/* 1. Registration Amount Due Card */}
+                <div className="p-5 sm:p-6 rounded-2xl bg-[var(--surface)] border-2 border-[var(--gold)]/50 shadow-md space-y-4 box-border w-full min-w-0">
+                  <div className="flex items-center justify-between border-b border-[var(--border-color)] pb-3">
+                    <div className="flex items-center gap-2">
+                      <Receipt size={18} className="text-[var(--gold)]" />
+                      <span className="font-heading font-extrabold text-base uppercase tracking-tight-heading text-[var(--text-primary)]">
+                        Registration Fee Summary
+                      </span>
+                    </div>
+                    <span className="font-body text-[11px] font-semibold tracking-wide px-2 py-0.5 rounded bg-[var(--gold)]/15 text-[var(--gold)]">
+                      Official UPI
+                    </span>
+                  </div>
+
+                  {/* Total Highlight */}
+                  <div className="p-4 rounded-xl bg-[var(--gold-surface)] border border-[var(--gold)]/30 flex items-baseline justify-between">
+                    <div>
+                      <span className="font-body text-[11px] font-semibold uppercase tracking-label text-[var(--gold)] block">
+                        Total Payable Amount
+                      </span>
+                      <span className="font-heading font-black text-3xl sm:text-4xl text-[var(--text-primary)]">
+                        ₹{pricing.total}
+                      </span>
+                    </div>
+                    <span className="font-heading font-extrabold text-sm text-[var(--muted)]">INR</span>
+                  </div>
+
+                  {/* Athlete info summary */}
+                  <div className="space-y-2 font-body text-sm border-b border-[var(--border-color)] pb-3">
+                    <div className="flex justify-between items-center text-[var(--muted)]">
+                      <span>Athlete:</span>
+                      <strong className="text-[var(--text-primary)] truncate max-w-[180px] font-semibold">{formData.athlete_name}</strong>
+                    </div>
+                    <div className="flex justify-between items-center text-[var(--muted)]">
+                      <span>Mobile:</span>
+                      <span className="font-mono font-semibold text-[var(--text-primary)]">{formData.phone}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[var(--muted)]">
+                      <span>Championship:</span>
+                      <span className="text-[var(--text-primary)] truncate max-w-[180px] font-medium">{selectedEvent.event_name}</span>
+                    </div>
+                  </div>
+
+                  {/* Itemized Categories breakdown */}
+                  <div className="space-y-2 font-body text-sm">
+                    <span className="font-body text-[11px] font-semibold uppercase tracking-label text-[var(--muted)] block">
+                      Fee Breakdown:
+                    </span>
+                    <div className="space-y-2">
+                      {isTieredLeague ? (
+                        <>
+                          <div className="flex justify-between items-center text-[var(--text-primary)] text-xs sm:text-sm p-2 rounded-lg bg-[var(--bg)] border border-[var(--border-color)]">
+                            <div>
+                              <span className="font-bold block">{pricing.tierLabel} ({selectedCategories.length} {selectedCategories.length === 1 ? 'Division' : 'Divisions'})</span>
+                              <div className="text-[11px] text-[var(--muted)] max-h-16 overflow-y-auto mt-0.5">
+                                {selectedCategories.map(c => decodeHtml(c.name)).join(', ')}
+                              </div>
+                            </div>
+                            <span className="font-mono font-bold shrink-0 ml-2">₹{pricing.categoryFee}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-[var(--text-primary)] text-xs sm:text-sm p-2 rounded-lg bg-[var(--gold)]/10 border border-[var(--gold)]/20">
+                            <div>
+                              <span className="font-bold text-[var(--gold)] block">Mandatory Clinical Testing Charge</span>
+                              <span className="text-[11px] text-[var(--muted)]">Charged once per athlete</span>
+                            </div>
+                            <span className="font-mono font-bold text-[var(--gold)] shrink-0 ml-2">₹2,000</span>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
+                          {selectedCategories.map((cat, i) => (
+                            <div key={cat.id} className="flex justify-between items-center text-[var(--text-primary)] text-xs sm:text-sm">
+                              <span className="truncate pr-2 font-medium">• {decodeHtml(cat.name)}</span>
+                              <span className="font-mono font-bold shrink-0">
+                                {i === 0 ? `₹${cat.entry_fee}` : `₹${parseFloat(cat.entry_fee || '0') * 0.5} (50% Off)`}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {tanSprayRequested && (
+                        <div className="flex justify-between items-center text-[var(--gold)] text-xs sm:text-sm font-semibold p-1">
+                          <span>• Pro Tan Spray Application</span>
+                          <span className="font-mono font-bold shrink-0">₹{pricing.tanSpray}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Desktop Action Buttons inside right column */}
+                  <div className="hidden lg:block pt-3 border-t border-[var(--border-color)] space-y-3">
+                    <Button
+                      type="button"
+                      onClick={handleSubmitRegistration}
+                      disabled={loading || !paymentProofFile}
+                      className="w-full h-13 px-6 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-sm uppercase tracking-btn rounded-xl shadow-lg hover:brightness-110 cursor-pointer disabled:opacity-50"
+                    >
+                      {loading ? 'Submitting & Uploading Proof...' : 'Submit Registration & Payment Proof →'}
+                    </Button>
+
+                    <Button
+                      type="button"
+                      onClick={() => setActiveStep(2)}
+                      variant="secondary"
+                      className="w-full h-11 border border-[var(--border-color)] text-[var(--text-primary)] font-heading font-bold text-sm uppercase tracking-btn rounded-xl cursor-pointer"
+                    >
+                      ← Back to Categories
+                    </Button>
+                  </div>
+
+                </div>
+
+              </div>
+
+              {/* LEFT COLUMN ON DESKTOP / MAIN BODY ON MOBILE: Instructions, QR & Screenshot */}
+              <div className="lg:col-span-7 lg:order-1 space-y-6 w-full min-w-0 box-border">
+
+                {/* 2. UPI Payment Instructions Card */}
+                <div className="p-5 sm:p-6 rounded-2xl bg-[var(--surface)] border border-[var(--border-color)] shadow-xs space-y-3 box-border w-full min-w-0">
+                  <h3 className="font-heading font-extrabold text-base uppercase tracking-tight-heading text-[var(--text-primary)] flex items-center gap-2">
+                    <span>How to Complete Your UPI Payment:</span>
+                  </h3>
+                  <ol className="space-y-2 font-body text-sm text-[var(--muted)] list-decimal list-inside leading-relaxed">
+                    <li>Open any UPI application (Google Pay, PhonePe, Paytm, BHIM).</li>
+                    <li>Scan the official QR code below or tap the UPI payment link.</li>
+                    <li>Pay the exact displayed registration amount: <strong className="text-[var(--text-primary)]">₹{pricing.total}</strong>.</li>
+                    <li>Take a screenshot of the successful transaction confirmation.</li>
+                    <li>Upload the screenshot below and submit your registration.</li>
+                  </ol>
+                </div>
+
+                {/* 3 & 4. QR Code & UPI Links Card */}
+                <div className="p-5 sm:p-6 rounded-2xl bg-[var(--surface)] border border-[var(--border-color)] shadow-xs space-y-5 box-border w-full min-w-0">
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 items-center bg-[var(--bg)] p-4 sm:p-5 rounded-2xl border border-[var(--border-color)] box-border">
+                    {/* Official QR Display */}
+                    <div className="flex flex-col items-center text-center">
+                      <div className="max-w-[190px] w-full p-2 bg-white rounded-2xl border border-black/10 shadow-sm box-border">
+                        <img
+                          src="/assets/payment-qr.jpeg"
+                          alt="WFF Tamil Nadu Official UPI QR Code"
+                          className="w-full h-auto object-contain rounded-xl"
+                        />
+                      </div>
+                      <span className="font-body text-xs font-semibold text-[var(--muted)] mt-2">
+                        Official Beneficiary: WFF TAMILNADU
+                      </span>
+                    </div>
+
+                    {/* Official UPI ID & Intent Actions */}
+                    <div className="space-y-3.5 min-w-0">
+                      {/* Copy UPI ID Box */}
+                      <div className="p-3.5 bg-[var(--surface)] rounded-xl border border-[var(--border-color)] min-w-0">
+                        <span className="font-body text-[11px] font-semibold uppercase tracking-label text-[var(--gold)] block mb-1">
+                          Official UPI Payment ID
+                        </span>
+                        <div className="flex items-center justify-between gap-2 min-w-0">
+                          <span className="font-mono font-bold text-sm text-[var(--text-primary)] truncate select-all tracking-normal">
+                            nabbawffchennai@okicici
+                          </span>
+                          <button
+                            type="button"
+                            onClick={copyUpiToClipboard}
+                            className="px-2.5 py-1.5 bg-[var(--gold-surface)] text-[var(--gold)] hover:bg-[var(--gold)] hover:text-[#040A12] border border-[var(--gold)]/30 font-heading font-bold text-xs uppercase tracking-btn rounded-lg transition-colors shrink-0 cursor-pointer"
+                          >
+                            {copiedUpi ? 'Copied!' : 'Copy ID'}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Clickable Mobile UPI Intent Link */}
+                      <a
+                        href={`upi://pay?pa=nabbawffchennai@okicici&pn=WFF%20Tamil%20Nadu&am=${pricing.total}&cu=INR&tn=WFF%20Registration`}
+                        className="w-full flex items-center justify-center gap-2 h-12 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-xs sm:text-sm uppercase tracking-btn rounded-xl shadow-md hover:brightness-110 transition-all cursor-pointer text-center px-3 box-border"
+                      >
+                        <Smartphone size={16} className="shrink-0" />
+                        <span className="truncate">Pay via Mobile UPI App (GPay/PhonePe)</span>
+                      </a>
+
+                      {/* Web Fallback Link */}
+                      <a
+                        href="http://razorpay.me/@mohankumarnarasimalu"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full flex items-center justify-center gap-2 h-11 border border-[var(--border-color)] hover:border-[var(--gold)] text-[var(--text-primary)] font-heading font-bold text-xs sm:text-sm uppercase tracking-btn rounded-xl transition-all text-center px-3 box-border"
+                      >
+                        <ExternalLink size={14} className="shrink-0" />
+                        <span className="truncate">Web Payment Link (Cards/NetBanking)</span>
+                      </a>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* 5 & 6. Payment Screenshot Upload Card */}
+                <div className="p-5 sm:p-6 rounded-2xl bg-[var(--surface)] border border-[var(--border-color)] shadow-xs space-y-4 box-border w-full min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                    <div>
+                      <h4 className="font-heading font-extrabold text-base uppercase tracking-tight-heading text-[var(--text-primary)] flex items-center gap-2">
+                        <Camera size={18} className="text-[var(--gold)] shrink-0" />
+                        <span>Upload Payment Screenshot *</span>
+                      </h4>
+                      <p className="font-body text-xs sm:text-sm text-[var(--muted)] mt-0.5">
+                        Attach the transaction screenshot from your UPI app showing successful payment.
+                      </p>
+                    </div>
+                    <span className="font-body text-xs text-[var(--muted)] font-normal">
+                      JPG, PNG, WEBP (Max 10MB)
+                    </span>
+                  </div>
+
+                  <input
+                    type="file"
+                    ref={paymentProofInputRef}
+                    onChange={handlePaymentProofChange}
+                    accept="image/png, image/jpeg, image/jpg, image/webp"
+                    className="hidden"
+                    id="payment-screenshot-input"
+                  />
+
+                  {paymentProofPreview ? (
+                    <div className="p-4 rounded-2xl border border-emerald-500/40 bg-emerald-500/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 box-border w-full min-w-0">
+                      <div className="flex items-center gap-3.5 min-w-0 w-full sm:w-auto">
+                        <img
+                          src={paymentProofPreview}
+                          alt="Screenshot Preview"
+                          className="w-16 h-16 object-cover rounded-xl border border-emerald-500/30 shrink-0"
+                        />
+                        <div className="min-w-0">
+                          <div className="font-body text-sm font-bold text-[var(--text-primary)] truncate">
+                            {paymentProofFile?.name || 'Screenshot attached'}
+                          </div>
+                          <div className="font-body text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5 flex items-center gap-1">
+                            <CheckCircle2 size={13} className="shrink-0" />
+                            <span>Proof ready for verification ({(paymentProofFile ? (paymentProofFile.size / 1024).toFixed(1) : '0')} KB)</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                        <button
+                          type="button"
+                          onClick={() => paymentProofInputRef.current?.click()}
+                          className="px-3 py-1.5 rounded-lg border border-[var(--border-color)] font-heading font-bold text-xs uppercase tracking-btn hover:border-[var(--gold)] cursor-pointer"
+                        >
+                          Replace
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPaymentProofFile(null);
+                            setPaymentProofPreview(null);
+                            if (paymentProofInputRef.current) paymentProofInputRef.current.value = '';
+                          }}
+                          className="p-1.5 text-red-500 hover:text-red-600 cursor-pointer"
+                          title="Remove"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      onClick={() => paymentProofInputRef.current?.click()}
+                      className="border-2 border-dashed border-[var(--border-color)] hover:border-[var(--gold)] rounded-2xl p-6 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-2 group box-border w-full min-w-0"
+                    >
+                      <div className="w-12 h-12 rounded-full bg-[var(--gold-surface)] text-[var(--gold)] flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Upload size={22} />
+                      </div>
+                      <div className="font-body text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--gold)]">
+                        Click here to attach UPI Payment Screenshot
+                      </div>
+                      <p className="font-body text-xs sm:text-sm text-[var(--muted)] max-w-sm">
+                        Take a screenshot from GPay / PhonePe / Paytm confirming payment of ₹{pricing.total} to WFF TAMILNADU.
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Optional UTR Input */}
+                  <div>
+                    <label htmlFor="transaction_ref" className="block font-body text-xs sm:text-sm font-semibold tracking-label text-[var(--muted)] mb-1.5">
+                      UPI Transaction Reference / UTR Number (Optional)
+                    </label>
+                    <Input
+                      id="transaction_ref"
+                      type="text"
+                      value={transactionRef}
+                      onChange={(e) => setTransactionRef(e.target.value)}
+                      placeholder="e.g. 12-digit UTR No / UPI Reference (Optional)"
+                      className="h-11 bg-[var(--bg)] text-sm rounded-xl w-full"
+                    />
+                  </div>
+                </div>
+
+                {/* 7. Mobile Action Buttons (Visible only on < lg) */}
+                <div className="block lg:hidden pt-2 space-y-3">
+                  <Button
+                    type="button"
+                    onClick={handleSubmitRegistration}
+                    disabled={loading || !paymentProofFile}
+                    className="w-full h-12 sm:h-13 px-6 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-sm uppercase tracking-btn rounded-xl shadow-lg hover:brightness-110 cursor-pointer disabled:opacity-50 text-center"
+                  >
+                    {loading ? 'Submitting & Uploading Proof...' : 'Submit Registration & Payment Proof →'}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    onClick={() => setActiveStep(2)}
+                    variant="secondary"
+                    className="w-full h-11 border border-[var(--border-color)] text-[var(--text-primary)] font-heading font-bold text-sm uppercase tracking-btn rounded-xl cursor-pointer text-center"
+                  >
+                    ← Back to Categories
+                  </Button>
+                </div>
+
+              </div>
 
             </div>
 
           </div>
-        </div>
-      )}
+        )}
 
-      {/* ------------------------------------------------------------- */}
-      {/* CANCEL PAYMENT CONFIRMATION POPUP MODAL */}
-      {/* ------------------------------------------------------------- */}
-      {isCancelConfirmOpen && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="relative w-full max-w-md bg-[#0C1422] text-white rounded-2xl shadow-[0_25px_70px_rgba(0,0,0,0.9)] border border-red-500/30 overflow-hidden animate-in zoom-in-95 duration-200 p-6 sm:p-7 text-center">
-            {/* Red Accent Top */}
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-red-600 via-amber-500 to-red-600"></div>
-
-            <div className="w-16 h-16 mx-auto rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400 mb-5 shadow-inner">
-              <AlertTriangle size={32} className="animate-pulse" />
-            </div>
-
-            <h3 className="font-heading font-extrabold text-xl sm:text-2xl uppercase tracking-wider text-white mb-2">
-              Cancel Payment Process?
-            </h3>
-
-            <p className="text-sm text-white/70 leading-relaxed mb-6">
-              Do you really want to cancel the payment process? If you cancel now, your registration will not be completed and <strong className="text-red-400 font-semibold">you cannot join or participate in this event</strong>.
-            </p>
-
-            <div className="bg-white/5 border border-white/10 rounded-xl p-3.5 mb-6 text-left space-y-1.5 text-xs">
-              <div className="flex justify-between items-center">
-                <span className="text-white/40 uppercase tracking-wider text-[10px] font-bold">Event:</span>
-                <span className="text-white font-bold truncate max-w-[220px]">{selectedEvent?.event_name}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-white/40 uppercase tracking-wider text-[10px] font-bold">Athlete:</span>
-                <span className="text-white font-bold">{formData.athlete_name || 'Athlete'}</span>
-              </div>
-              <div className="flex justify-between items-center border-t border-white/5 pt-1.5 mt-1.5">
-                <span className="text-white/40 uppercase tracking-wider text-[10px] font-bold">Total Payable:</span>
-                <span className="text-[#C9A44A] font-bold text-sm">₹{pricing.total || successData?.total_amount}</span>
-              </div>
-            </div>
-
-            <div className="flex flex-col-reverse sm:flex-row gap-3">
-              <Button
-                type="button"
-                onClick={handleConfirmCancelPayment}
-                className="flex-1 bg-transparent hover:bg-red-500/10 text-red-400 hover:text-red-300 border border-red-500/30 font-heading text-xs font-bold uppercase tracking-wider h-12 rounded-lg transition-colors cursor-pointer p-3"
-              >
-                Yes, Cancel &amp; Exit
-              </Button>
-              <Button
-                type="button"
-                onClick={handleContinuePayment}
-                className="flex-1 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-extrabold text-xs uppercase tracking-[0.15em] h-12 rounded-lg shadow-lg hover:brightness-110 transition-all hover:-translate-y-0.5 cursor-pointer p-3"
-              >
-                Continue Payment
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
+      </div>
     </div>
   );
 }

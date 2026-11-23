@@ -58,16 +58,16 @@ export function GallerySection({ images }: GallerySectionProps) {
           <div>
             <div className="flex items-center gap-3 mb-3 sm:mb-4">
               <div className="w-8 h-px bg-wff-gold" />
-              <span className="font-heading font-semibold text-xs sm:text-sm tracking-[0.2em] uppercase text-wff-gold">
+              <span className="font-heading font-bold text-[11px] sm:text-[13px] tracking-[2px] leading-[1.4] uppercase text-wff-gold">
                 Archive
               </span>
             </div>
-            <h2 className="font-heading font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl uppercase text-white leading-[1] tracking-tight">
+            <h2 className="font-heading font-extrabold text-[clamp(32px,3.5vw,48px)] uppercase text-white leading-[1.05] tracking-tight">
               Championship<br />
               <span className="text-wff-gold">Gallery</span>
             </h2>
           </div>
-          <Link href="/gallery" className="inline-flex items-center gap-2 font-heading font-bold text-xs sm:text-sm tracking-[0.15em] uppercase text-white hover:text-wff-gold transition-colors pb-1 border-b-2 border-transparent hover:border-wff-gold group w-fit">
+          <Link href="/gallery" className="inline-flex items-center gap-2 font-heading font-extrabold text-[13px] sm:text-[15px] tracking-[1px] uppercase text-white hover:text-wff-gold transition-colors pb-1 border-b-2 border-transparent hover:border-wff-gold group w-fit">
             Explore Full Gallery <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>

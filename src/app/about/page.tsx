@@ -39,10 +39,10 @@ export default async function AboutPage() {
         </div>
 
         <Container className="relative z-10 text-center">
-          <div className="inline-block mb-8 rounded-full bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-bold px-8 py-2.5 text-[12px] tracking-[0.25em] uppercase shadow-[0_4px_15px_rgba(198,161,91,0.2)] animate-fade-up">
+          <div className="inline-block mb-6 rounded-full bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] font-heading font-bold px-6 py-2 text-[11px] sm:text-[13px] tracking-[2px] uppercase shadow-[0_4px_15px_rgba(198,161,91,0.2)] animate-fade-up leading-[1.4]">
             Official State Chapter
           </div>
-          <h1 className="font-heading text-4xl md:text-7xl lg:text-[80px] text-white uppercase leading-[0.95] tracking-tight mb-6 drop-shadow-2xl animate-fade-up [animation-delay:100ms] max-w-5xl mx-auto font-bold">
+          <h1 className="font-heading text-[clamp(42px,5.5vw,88px)] text-white uppercase leading-[0.92] tracking-[-1px] mb-6 drop-shadow-2xl animate-fade-up [animation-delay:100ms] max-w-5xl mx-auto font-black">
             {(() => {
               const text = data.heroTitle || 'About World Fitness Federation Tamil Nadu';
               const words = text.split(' ');
@@ -56,7 +56,7 @@ export default async function AboutPage() {
               );
             })()}
           </h1>
-          <h2 className="font-heading text-lg md:text-xl text-[#C9A44A] uppercase tracking-[0.3em] font-bold animate-fade-up [animation-delay:200ms]">
+          <h2 className="font-heading text-[15px] sm:text-[18px] text-[#C9A44A] uppercase tracking-[2px] font-bold animate-fade-up [animation-delay:200ms] leading-[1.4]">
             {data.heroSubtitle}
           </h2>
         </Container>
@@ -67,12 +67,12 @@ export default async function AboutPage() {
         <div className="max-w-5xl mx-auto text-center md:mb-32 mb-12 relative">
           <div className="absolute -top-12 left-1/2 -translate-x-1/2 text-[120px] text-[#040A12]/5 font-heading leading-none z-0 hidden md:block">STORY</div>
           <div className="relative z-10">
-            <h3 className="text-[#C9A44A] font-bold tracking-[0.3em] text-xs uppercase mb-4">The Federation</h3>
-            <h2 className="font-heading text-4xl md:text-5xl text-[#040A12] uppercase tracking-wide mb-10">Our Story</h2>
+            <h3 className="text-[#C9A44A] font-heading font-bold tracking-[2px] text-[11px] sm:text-[13px] uppercase mb-3 leading-[1.4]">The Federation</h3>
+            <h2 className="font-heading font-extrabold text-[clamp(32px,3.5vw,48px)] text-[#040A12] uppercase leading-[1.05] tracking-tight mb-8">Our Story</h2>
 
-            <div className="bg-white p-10 md:p-14 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-black/5 relative">
+            <div className="bg-white p-8 md:p-14 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-black/5 relative">
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]"></div>
-              <p className="text-lg md:text-2xl text-[#040A12]/80 leading-[1.8] font-medium max-w-4xl mx-auto">
+              <p className="font-body text-[16px] sm:text-[18px] text-[#040A12]/80 leading-[1.7] font-normal max-w-[650px] mx-auto">
                 {data.introduction}
               </p>
             </div>
@@ -89,8 +89,8 @@ export default async function AboutPage() {
                 <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-8 shadow-sm border border-white/10 group-hover:scale-110 group-hover:bg-[#C9A44A]/10 group-hover:border-[#C9A44A]/30 transition-all duration-500">
                   {item.icon}
                 </div>
-                <h3 className="font-heading text-3xl text-white uppercase tracking-wider mb-5 group-hover:text-[#C9A44A] transition-colors">{item.title}</h3>
-                <p className="text-white/70 leading-[1.8] font-medium text-lg">
+                <h3 className="font-heading font-bold text-[clamp(24px,2.5vw,32px)] text-white uppercase leading-[1.1] mb-4 group-hover:text-[#C9A44A] transition-colors">{item.title}</h3>
+                <p className="font-body text-white/70 leading-[1.6] font-normal text-[15px] sm:text-[16px] max-w-[650px]">
                   {item.description}
                 </p>
               </div>
@@ -104,36 +104,36 @@ export default async function AboutPage() {
         {/* Values */}
         <div className="md:mb-32 mb-12">
           <div className="text-center md:mb-16 mb-8">
-            <h3 className="text-[#C9A44A] font-bold tracking-[0.3em] text-xs uppercase mb-4">What We Stand For</h3>
-            <h2 className="font-heading text-4xl md:text-5xl text-[#040A12] uppercase tracking-wide">Core Values</h2>
+            <h3 className="text-[#C9A44A] font-heading font-bold tracking-[2px] text-[11px] sm:text-[13px] uppercase mb-3 leading-[1.4]">What We Stand For</h3>
+            <h2 className="font-heading font-extrabold text-[clamp(32px,3.5vw,48px)] text-[#040A12] uppercase leading-[1.05] tracking-tight">Core Values</h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {data.values.map((value: any, idx: number) => (
-              <div key={value.id || idx} className="bg-white border border-black/5 p-10 rounded-xl text-center shadow-[0_15px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_50px_rgba(198,161,91,0.15)] transition-all duration-500 hover:-translate-y-2 group">
+              <div key={value.id || idx} className="bg-white border border-black/5 p-8 md:p-10 rounded-xl text-center shadow-[0_15px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_50px_rgba(198,161,91,0.15)] transition-all duration-500 hover:-translate-y-2 group">
                 <div className="flex justify-center mb-6">
                   <div className="w-16 h-16 rounded-full bg-[#040A12] flex items-center justify-center group-hover:bg-gradient-to-br from-[#BF953F] to-[#B38728] transition-colors duration-500">
                     <Star size={24} className="text-[#C9A44A] group-hover:text-white transition-colors" />
                   </div>
                 </div>
-                <h4 className="font-heading text-2xl text-[#040A12] uppercase tracking-wide mb-4">{value.title}</h4>
-                <p className="text-[15px] text-[#040A12]/60 font-medium leading-[1.7]">{value.description}</p>
+                <h4 className="font-heading font-bold text-[clamp(20px,2vw,24px)] text-[#040A12] uppercase leading-[1.2] mb-3">{value.title}</h4>
+                <p className="font-body text-[14px] sm:text-[15px] text-[#040A12]/70 font-normal leading-[1.6]">{value.description}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Leadership Snippet */}
-        <div className="bg-[#040A12] rounded-2xl p-6 md:p-20 shadow-[0_30px_60px_rgba(0,0,0,0.4)] relative overflow-hidden mb-8">
+        <div className="bg-[#040A12] rounded-2xl p-6 md:p-16 shadow-[0_30px_60px_rgba(0,0,0,0.4)] relative overflow-hidden mb-8">
           <div className="absolute inset-0 bg-gradient-to-br from-[#BF953F]/10 via-transparent to-transparent opacity-50 z-0"></div>
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]"></div>
 
           <div className="relative z-10 text-center max-w-4xl mx-auto">
-            <User size={48} className="text-[#C9A44A] mx-auto mb-8 opacity-90" />
-            <h3 className="font-heading text-3xl md:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] uppercase tracking-wider mb-8 drop-shadow-sm">
+            <User size={48} className="text-[#C9A44A] mx-auto mb-6 opacity-90" />
+            <h3 className="font-heading font-extrabold text-[clamp(28px,3vw,42px)] text-transparent bg-clip-text bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] uppercase leading-[1.1] mb-6 drop-shadow-sm">
               Championship Philosophy
             </h3>
-            <p className="text-xl md:text-3xl text-white/90 font-medium leading-[1.6] italic tracking-wide">
+            <p className="font-body text-[17px] sm:text-[20px] text-white/90 font-normal leading-[1.6] italic max-w-[650px] mx-auto">
               "{data.philosophy}"
             </p>
           </div>

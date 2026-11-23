@@ -76,7 +76,7 @@ export async function Footer() {
 
           {/* Col 2 — About & Events (Col-span 2) */}
           <div className="lg:col-span-2">
-            <h4 className="font-heading font-bold text-[12.5px] sm:text-[13px] md:text-[14px] tracking-[0.18em] uppercase text-[#C9A44A] mb-4 sm:mb-6 flex items-center gap-2">
+            <h4 className="font-heading font-bold text-[13px] tracking-[2px] uppercase text-[#C9A44A] mb-4 sm:mb-6 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-[#C9A44A]"></span>
               About &amp; Events
             </h4>
@@ -96,7 +96,7 @@ export async function Footer() {
 
           {/* Col 3 — Legal & Policies (Col-span 3) */}
           <div className="lg:col-span-3">
-            <h4 className="font-heading font-bold text-[12.5px] sm:text-[13px] md:text-[14px] tracking-[0.18em] uppercase text-[#C9A44A] mb-4 sm:mb-6 flex items-center gap-2">
+            <h4 className="font-heading font-bold text-[13px] tracking-[2px] uppercase text-[#C9A44A] mb-4 sm:mb-6 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-[#C9A44A]"></span>
               Legal &amp; Policies
             </h4>
@@ -116,7 +116,7 @@ export async function Footer() {
 
           {/* Col 4 — Support & Contact (Col-span 3) */}
           <div className="lg:col-span-3">
-            <h4 className="font-heading font-bold text-[12.5px] sm:text-[13px] md:text-[14px] tracking-[0.18em] uppercase text-[#C9A44A] mb-4 sm:mb-6 flex items-center gap-2">
+            <h4 className="font-heading font-bold text-[13px] tracking-[2px] uppercase text-[#C9A44A] mb-4 sm:mb-6 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-[#C9A44A]"></span>
               Support &amp; Contact
             </h4>

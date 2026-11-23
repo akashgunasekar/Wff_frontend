@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://api.wfftamilnadu.in';
 
+const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
@@ -9,11 +10,11 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'https://api.wfftamilnadu.in/api/:path*',
+        destination: `${backendUrl}/api/:path*`,
       },
       {
         source: '/uploads/:path*',
-        destination: 'https://api.wfftamilnadu.in/uploads/:path*',
+        destination: `${backendUrl}/uploads/:path*`,
       },
     ];
   },

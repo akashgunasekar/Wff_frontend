@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Container } from '@/components/ui/Container';
 import { ImageIcon, Calendar, ArrowLeft, X } from 'lucide-react';
 import { GalleryAlbum, GalleryImage } from '@/types';
+import { API_BASE, resolveImageUrl } from '@/lib/api';
 
 export default function GalleryClient({ albums }: { albums: GalleryAlbum[] }) {
   const [activeAlbum, setActiveAlbum] = useState<any | null>(null);
@@ -13,7 +14,6 @@ export default function GalleryClient({ albums }: { albums: GalleryAlbum[] }) {
   const openAlbum = async (album: GalleryAlbum) => {
     setLoading(true);
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/gallery/show.php?id=${album.id}`);
       const json = await res.json();
       if (json.success) {
@@ -50,15 +50,15 @@ export default function GalleryClient({ albums }: { albums: GalleryAlbum[] }) {
         <Container>
           <button
             onClick={() => setActiveAlbum(null)}
-            className="flex items-center gap-2 text-wff-gold font-bold uppercase tracking-widest mb-10 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-wff-gold font-heading font-bold uppercase tracking-[1px] text-[13px] mb-10 hover:text-white transition-colors cursor-pointer"
           >
-            <ArrowLeft size={20} /> Back to Albums
+            <ArrowLeft size={18} /> Back to Albums
           </button>
 
           <div className="mb-12">
-            <h2 className="font-heading text-4xl md:text-5xl text-white uppercase tracking-wider mb-4">{activeAlbum.title}</h2>
-            <div className="flex items-center gap-2 text-wff-muted font-medium">
-              <Calendar size={18} className="text-wff-gold" />
+            <h2 className="font-heading font-extrabold text-[clamp(28px,3vw,42px)] text-white uppercase leading-[1.05] mb-3">{activeAlbum.title}</h2>
+            <div className="flex items-center gap-2 text-wff-muted font-body font-medium text-[14px]">
+              <Calendar size={16} className="text-wff-gold" />
               {activeAlbum.date}
             </div>
           </div>
@@ -72,12 +72,12 @@ export default function GalleryClient({ albums }: { albums: GalleryAlbum[] }) {
                 onClick={() => setLightboxImage(image)}
               >
                 <div className="absolute inset-0 bg-wff-deep-navy/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex flex-col items-center justify-center p-4 text-center backdrop-blur-sm">
-                  <span className="text-white font-heading text-xl uppercase tracking-widest translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                  <span className="text-white font-heading font-bold text-lg uppercase tracking-[1px] translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                     {image.caption || "View Image"}
                   </span>
                 </div>
                 <img
-                  src={image.image || '/assets/wff_hero_banner.png'}
+                  src={resolveImageUrl(image.image) || '/assets/wff_hero_banner.png'}
                   alt={image.caption || "Gallery Image"}
                   className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
                 />
@@ -86,7 +86,7 @@ export default function GalleryClient({ albums }: { albums: GalleryAlbum[] }) {
           </div>
 
           {(!activeAlbum.images || activeAlbum.images.length === 0) && (
-            <div className="text-center py-20 text-wff-muted">
+            <div className="text-center py-20 text-wff-muted font-body text-[15px]">
               <p>This album has no images yet.</p>
             </div>
           )}
@@ -97,16 +97,16 @@ export default function GalleryClient({ albums }: { albums: GalleryAlbum[] }) {
           <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 animate-in fade-in duration-300">
             <button
               onClick={() => setLightboxImage(null)}
-              className="absolute top-6 right-6 p-2 rounded-full bg-white/10 hover:bg-wff-gold text-white transition-colors"
+              className="absolute top-6 right-6 p-2 rounded-full bg-white/10 hover:bg-wff-gold text-white transition-colors cursor-pointer"
             >
               <X size={32} />
             </button>
             <img
-              src={lightboxImage.image || '/assets/wff_hero_banner.png'}
+              src={resolveImageUrl(lightboxImage.image) || '/assets/wff_hero_banner.png'}
               alt={lightboxImage.caption || "Gallery"}
               className="max-w-full max-h-[85vh] object-contain rounded shadow-2xl border border-white/10"
             />
-            {lightboxImage.caption && <h3 className="text-wff-gold font-heading text-2xl uppercase tracking-widest mt-6">{lightboxImage.caption}</h3>}
+            {lightboxImage.caption && <h3 className="text-wff-gold font-heading font-bold text-[clamp(20px,2vw,24px)] uppercase tracking-[1px] mt-6">{lightboxImage.caption}</h3>}
           </div>
         )}
       </div>
@@ -129,7 +129,7 @@ export default function GalleryClient({ albums }: { albums: GalleryAlbum[] }) {
               <div className="h-64 relative overflow-hidden">
                 {album.cover_image ? (
                   <img
-                    src={album.cover_image || '/assets/wff_hero_banner.png'}
+                    src={resolveImageUrl(album.cover_image) || '/assets/wff_hero_banner.png'}
                     alt={album.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100"
                   />
@@ -148,8 +148,8 @@ export default function GalleryClient({ albums }: { albums: GalleryAlbum[] }) {
               </div>
 
               <div className="p-6 bg-wff-surface">
-                <h3 className="font-heading text-2xl text-wff-text-primary uppercase tracking-wide mb-2 group-hover:text-gold-gradient transition-colors">{album.title}</h3>
-                <div className="flex items-center gap-2 text-wff-muted font-medium text-sm">
+                <h3 className="font-heading font-bold text-[19px] sm:text-[22px] text-wff-text-primary uppercase leading-[1.2] mb-2 group-hover:text-gold-gradient transition-colors">{album.title}</h3>
+                <div className="flex items-center gap-2 text-wff-muted font-body font-medium text-[14px]">
                   <Calendar size={16} className="text-wff-gold" />
                   {album.date}
                 </div>

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Loader2, Plus, Trophy, Edit, Trash2 } from 'lucide-react';
 import Image from 'next/image';
-import { resolveImageUrl } from '@/lib/api';
+import { resolveImageUrl, API_BASE } from '@/lib/api';
 
 interface Champion {
   id: number;
@@ -44,7 +44,6 @@ export default function AdminChampionsPage() {
     setLoading(true);
     setError('');
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/admin/champions/index.php`, {
         credentials: 'include'
       });
@@ -72,7 +71,6 @@ export default function AdminChampionsPage() {
     setFormError('');
     
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const endpoint = modalMode === 'create' ? '/admin/champions/create.php' : '/admin/champions/update.php';
       const res = await fetch(`${API_BASE}${endpoint}`, {
         method: 'POST',
@@ -97,7 +95,6 @@ export default function AdminChampionsPage() {
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure you want to delete this champion?')) return;
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/admin/champions/delete.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

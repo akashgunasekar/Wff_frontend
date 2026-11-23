@@ -77,42 +77,42 @@ export default function ContactForm() {
         </div>
       )}
 
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="space-y-3">
-          <label className="text-[11px] font-bold text-wff-muted uppercase tracking-[0.2em]">Full Name *</label>
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="space-y-2">
+          <label className="text-[13px] font-body font-semibold text-wff-text-primary tracking-normal">Full Name *</label>
           <input 
             type="text" 
             name="name"
             value={formData.name}
             onChange={handleChange}
             className={cn(
-              "w-full bg-wff-bg border rounded-sm px-5 py-4 text-[15px] font-medium text-wff-text-primary focus:outline-none focus:ring-1 focus:ring-wff-gold/80 focus:border-wff-gold transition-all shadow-inner",
+              "w-full bg-wff-bg border rounded-xl px-4 py-3.5 text-[15px] font-body font-normal text-wff-text-primary focus:outline-none focus:ring-1 focus:ring-wff-gold/80 focus:border-wff-gold transition-all shadow-inner",
               errors.name ? "border-red-500" : "border-wff-border"
             )}
             placeholder="John Doe"
           />
-          {errors.name && <p className="text-red-500 text-xs font-bold tracking-wide">{errors.name}</p>}
+          {errors.name && <p className="text-red-500 text-xs font-body font-medium">{errors.name}</p>}
         </div>
 
-        <div className="space-y-3">
-          <label className="text-[11px] font-bold text-wff-muted uppercase tracking-[0.2em]">Phone Number *</label>
+        <div className="space-y-2">
+          <label className="text-[13px] font-body font-semibold text-wff-text-primary tracking-normal">Phone Number *</label>
           <input 
             type="tel" 
             name="phone"
             value={formData.phone}
             onChange={handleChange}
             className={cn(
-              "w-full bg-wff-bg border rounded-sm px-5 py-4 text-[15px] font-medium text-wff-text-primary focus:outline-none focus:ring-1 focus:ring-wff-gold/80 focus:border-wff-gold transition-all shadow-inner",
+              "w-full bg-wff-bg border rounded-xl px-4 py-3.5 text-[15px] font-body font-normal text-wff-text-primary focus:outline-none focus:ring-1 focus:ring-wff-gold/80 focus:border-wff-gold transition-all shadow-inner",
               errors.phone ? "border-red-500" : "border-wff-border"
             )}
             placeholder="+91 98765 43210"
           />
-          {errors.phone && <p className="text-red-500 text-xs font-bold tracking-wide">{errors.phone}</p>}
+          {errors.phone && <p className="text-red-500 text-xs font-body font-medium">{errors.phone}</p>}
         </div>
       </div>
 
-      <div className="space-y-3">
-        <label className="text-[11px] font-bold text-wff-muted uppercase tracking-[0.2em]">Email Address *</label>
+      <div className="space-y-2">
+        <label className="text-[13px] font-body font-semibold text-wff-text-primary tracking-normal">Email Address *</label>
         <input 
           type="email" 
           name="email"
@@ -120,57 +120,57 @@ export default function ContactForm() {
           onChange={handleChange}
           suppressHydrationWarning={true}
           className={cn(
-            "w-full bg-wff-bg border rounded-sm px-5 py-4 text-[15px] font-medium text-wff-text-primary focus:outline-none focus:ring-1 focus:ring-wff-gold/80 focus:border-wff-gold transition-all shadow-inner",
+            "w-full bg-wff-bg border rounded-xl px-4 py-3.5 text-[15px] font-body font-normal text-wff-text-primary focus:outline-none focus:ring-1 focus:ring-wff-gold/80 focus:border-wff-gold transition-all shadow-inner",
             errors.email ? "border-red-500" : "border-wff-border"
           )}
           placeholder="athlete@example.com"
         />
-        {errors.email && <p className="text-red-500 text-xs font-bold tracking-wide">{errors.email}</p>}
+        {errors.email && <p className="text-red-500 text-xs font-body font-medium">{errors.email}</p>}
       </div>
 
-      <div className="space-y-3">
-        <label className="text-[11px] font-bold text-wff-muted uppercase tracking-[0.2em]">Subject</label>
+      <div className="space-y-2">
+        <label className="text-[13px] font-body font-semibold text-wff-text-primary tracking-normal">Subject</label>
         <select 
           name="subject"
           value={formData.subject}
           onChange={handleChange}
-          className="w-full bg-wff-bg border border-wff-border rounded-sm px-5 py-4 text-[15px] font-medium text-wff-text-primary focus:outline-none focus:ring-1 focus:ring-wff-gold/80 focus:border-wff-gold transition-all appearance-none cursor-pointer shadow-inner"
+          className="w-full bg-wff-bg border border-wff-border rounded-xl px-4 py-3.5 text-[15px] font-body font-normal text-wff-text-primary focus:outline-none focus:ring-1 focus:ring-wff-gold/80 focus:border-wff-gold transition-all appearance-none cursor-pointer shadow-inner"
         >
           <option value="">Select a topic...</option>
           <option value="Championship Registration">Championship Registration</option>
           <option value="WFF Membership">WFF Membership</option>
           <option value="Sponsorship">Sponsorship Inquiry</option>
-          <option value="Judging/Officials">Judging & Officials</option>
+          <option value="Judging/Officials">Judging &amp; Officials</option>
           <option value="Other">Other</option>
         </select>
       </div>
 
-      <div className="space-y-3">
-        <label className="text-[11px] font-bold text-wff-muted uppercase tracking-[0.2em]">Message *</label>
+      <div className="space-y-2">
+        <label className="text-[13px] font-body font-semibold text-wff-text-primary tracking-normal">Message *</label>
         <textarea 
           name="message"
-          rows={6}
+          rows={5}
           value={formData.message}
           onChange={handleChange}
           className={cn(
-            "w-full bg-wff-bg border rounded-sm px-5 py-4 text-[15px] font-medium text-wff-text-primary focus:outline-none focus:ring-1 focus:ring-wff-gold/80 focus:border-wff-gold transition-all resize-none shadow-inner",
+            "w-full bg-wff-bg border rounded-xl px-4 py-3.5 text-[15px] font-body font-normal text-wff-text-primary focus:outline-none focus:ring-1 focus:ring-wff-gold/80 focus:border-wff-gold transition-all resize-none shadow-inner",
             errors.message ? "border-red-500" : "border-wff-border"
           )}
           placeholder="How can we help you?"
         ></textarea>
-        {errors.message && <p className="text-red-500 text-xs font-bold tracking-wide">{errors.message}</p>}
+        {errors.message && <p className="text-red-500 text-xs font-body font-medium">{errors.message}</p>}
       </div>
 
-      <div className="pt-4 border-t border-wff-border/50">
+      <div className="pt-2">
         <Button 
           type="submit" 
           variant="gold" 
-          className="w-full h-16 shadow-[0_4px_20px_rgba(198,161,91,0.2)] text-[15px] tracking-[0.2em] font-bold uppercase flex items-center justify-center gap-3"
+          className="w-full h-14 shadow-lg text-[13px] sm:text-[15px] font-heading font-extrabold uppercase tracking-[1px] flex items-center justify-center gap-2 rounded-xl cursor-pointer"
           disabled={status === 'submitting'}
         >
           {status === 'submitting' ? (
             <>
-              <Loader2 size={24} className="animate-spin" />
+              <Loader2 size={20} className="animate-spin" />
               Sending...
             </>
           ) : (

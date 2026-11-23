@@ -2,67 +2,51 @@ import { Event } from '../types';
 
 export const events: Event[] = [
   {
-    id: 1,
-    slug: "wff-natural-league-2026",
-    event_name: "WFF Natural League Tamil Nadu 2026",
-    subtitle: "Strictly Drug-Tested Natural Championship",
-    event_date: "2026-09-20",
+    id: 11,
+    slug: "south-india-natural-league-2027",
+    event_name: "South India Natural League 2027",
+    subtitle: "A Celebration of Natural Fitness, Strength & Championship Excellence",
+    event_date: "2027-01-10",
+    event_end_date: null,
+    date_type: "single",
     event_day: "Sunday",
     registration_time: "8:00 AM TO 10:00 AM",
     show_time: "11:00 AM onwards",
-    venue: "Kalaivanar Arangam",
+    venue: "Chennai, Tamil Nadu, India",
     location: "Chennai",
-    banner_image: "/assets/wff_hero_banner_2.png",
+    banner_image: "/assets/south-india-natural-league-2027.jpg",
     status: "open",
-    description: "<p>The WFF Natural League Tamil Nadu 2026 is the premier platform for natural athletes to showcase their hard work on a drug-free stage. Athletes will be subjected to rigorous testing to ensure a 100% natural lineup.</p><br/><p>Winners will receive a direct qualification to the WFF Natural Universe.</p>",
-    organizer: "World Fitness Federation India",
-    prize_pool: "₹2,00,000 Total Cash Prize",
-    registration_deadline: "2026-09-10",
-    eligibility: "Open to all natural athletes (drug-free for a minimum of 5 years).",
-    registration_fee: "2000",
-    categories: [
-      { id: 1, name: "Junior Men Physique", age_group: "Under 23", gender: "Male", entry_fee: "₹2,000", eligibility: "Born after 2003", availability: "open", sort_order: 1 },
-      { id: 2, name: "Senior Men Physique", age_group: "Open", gender: "Male", entry_fee: "₹2,000", eligibility: "Open", availability: "open", sort_order: 2 },
-      { id: 3, name: "Sports Model", age_group: "Open", gender: "Female", entry_fee: "₹2,000", eligibility: "Open", availability: "open", sort_order: 3 }
-    ],
-    terms_and_conditions: [
-      "All athletes must possess a valid WFF India Membership.",
-      "Polygraph/Urinalysis testing may be randomly conducted.",
-      "No refunds will be provided under any circumstances after registration.",
-      "Athletes must report exactly during the registration window."
-    ]
+    description: "A Celebration of Natural Fitness, Strength & Championship Excellence. World Fitness Federation Tamil Nadu presents South India Natural League 2027 in Chennai, Tamil Nadu.",
+    organizer: "World Fitness Federation Tamil Nadu",
+    prize_pool: "Grand Trophy & Awards",
+    registration_deadline: "2027-01-05",
+    eligibility: "Open to all natural athletes under strict drug-free standards.",
+    registration_fee: "3000",
+    tan_spray_price: "1000",
+    cash_enabled: true
   },
   {
-    id: 2,
-    slug: "wff-rudra-classic-mr-tamil-nadu-2026",
-    event_name: "WFF Rudra Classic Mr. Tamil Nadu 2026",
-    subtitle: "Open Bodybuilding & Fitness Championship",
-    event_date: "2026-10-15",
-    event_day: "Thursday",
+    id: 12,
+    slug: "india-natural-2027",
+    event_name: "INDIA NATURAL 2027",
+    subtitle: "Natural National Championship & Fashion Show",
+    event_date: "2027-02-27",
+    event_end_date: "2027-02-28",
+    date_type: "multi",
+    event_day: "Saturday & Sunday",
     registration_time: "8:00 AM TO 10:00 AM",
     show_time: "11:00 AM onwards",
-    venue: "Nehru Indoor Stadium",
+    venue: "Chennai, Tamil Nadu, India",
     location: "Chennai",
-    banner_image: "/assets/wff_hero_banner.png",
+    banner_image: "/assets/india-natural-2027.png",
     status: "upcoming",
-    description: "<p>The legendary WFF Rudra Classic returns in 2026. Step onto the stage of champions in the most prestigious open natural bodybuilding championship in Tamil Nadu.</p><br/><p>With top-tier judging panels, massive prize pools, and incredible stage production, this is the ultimate battleground for elite physiques.</p>",
-    organizer: "Rudra Fitness & WFF Tamil Nadu",
-    prize_pool: "₹5,00,000 Total Cash Prize",
-    registration_deadline: "2026-10-05",
-    eligibility: "Open to all athletes resident in Tamil Nadu.",
-    registration_fee: "1500",
-    categories: [
-      { id: 4, name: "Classic Bodybuilding", age_group: "Open", gender: "Male", entry_fee: "₹1,500", eligibility: "Height to weight ratio applies", availability: "open", sort_order: 1 },
-      { id: 5, name: "Men's Fitness", age_group: "Open", gender: "Male", entry_fee: "₹1,500", eligibility: "Open", availability: "open", sort_order: 2 }
-    ],
-    terms_and_conditions: [
-      "All athletes must possess a valid WFF India Membership.",
-      "Music for posing routines must be submitted on a USB drive during registration.",
-      "Dream Tan or other messy tanning products are strictly prohibited.",
-      "The judges' decision is final and binding."
-    ],
-    special_guests: [
-      { id: 1, name: "VIP Guest", designation: "WFF International President", photo: "/assets/wff-international.png" }
-    ]
+    description: "WFF Natural League presents India Natural 2027 — Natural National Championship & Fashion Show in Chennai, Tamil Nadu on February 27 & 28, 2027.",
+    organizer: "WFF Natural League India",
+    prize_pool: "National Championship Titles & Trophies",
+    registration_deadline: "2027-02-20",
+    eligibility: "Open to all natural athletes and models under strict drug-free clinical testing.",
+    registration_fee: "3000",
+    tan_spray_price: "1000",
+    cash_enabled: true
   }
 ];

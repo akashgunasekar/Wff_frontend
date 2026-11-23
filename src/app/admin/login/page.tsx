@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { useAdminAuth } from '../AdminAuthProvider';
+import { API_BASE } from '@/lib/api';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -29,7 +30,6 @@ export default function AdminLoginPage() {
     }
 
     setLoading(true);
-    const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
     try {
       const res = await fetch(`${API_BASE}/admin/auth/login.php`, {
         method: 'POST',

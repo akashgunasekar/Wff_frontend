@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Event } from '@/types';
 import { Calendar, MapPin, ArrowRight } from 'lucide-react';
+import { formatEventDateRange } from '@/lib/utils';
 
 interface FeaturedEventSectionProps {
   events: Event[];
@@ -19,11 +20,6 @@ export function FeaturedEventSection({ events }: FeaturedEventSectionProps) {
   }
   const featured = events[0];
   const secondary = events.slice(1, 3);
-  
-  const formatDate = (dateStr: string) => {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-  };
   const statusLabel = (status: string) => {
     if (status === 'open') return 'Registration Open';
     if (status === 'upcoming') return 'Coming Soon';
@@ -32,7 +28,7 @@ export function FeaturedEventSection({ events }: FeaturedEventSectionProps) {
   };
 
   return (
-    <section className="py-20 lg:py-24 bg-white">
+    <section className="py-20 lg:py-24 bg-[var(--surface)] border-t border-[var(--border-color)] transition-colors">
       <div className="max-w-[1500px] mx-auto px-6 sm:px-10 lg:px-16">
         
         {/* TOP: FEATURED CHAMPIONSHIP */}
@@ -53,36 +49,38 @@ export function FeaturedEventSection({ events }: FeaturedEventSectionProps) {
           {/* Info — 5 cols */}
           <div className="lg:col-span-5 flex flex-col justify-center px-0 lg:px-10 xl:px-14 py-8 lg:py-6">
             <div className="flex items-center gap-3 mb-4">
-              <span className="font-display font-bold text-sm text-[var(--gold)] tracking-[0.12em]">01</span>
+              <span className="font-heading font-bold text-sm text-[var(--gold)] tracking-[1px]">01</span>
               <div className="w-6 h-px bg-[var(--gold)]" />
-              <span className="font-display font-medium text-[10px] tracking-[0.18em] uppercase text-[var(--muted)]">Featured Championship</span>
+              <span className="font-heading font-bold text-[11px] sm:text-[13px] tracking-[2px] leading-[1.4] uppercase text-[var(--muted)]">Featured Championship</span>
             </div>
-            <h2 className="font-display font-bold text-3xl md:text-4xl lg:text-[2.5rem] uppercase text-[var(--text-primary)] leading-[0.95] tracking-[0.01em] mb-4">
+            <h2 className="font-heading font-extrabold text-[clamp(32px,3.5vw,48px)] uppercase text-[var(--text-primary)] leading-[1.05] tracking-tight mb-4">
               {featured.event_name}
             </h2>
             <div className="grid grid-cols-2 gap-y-5 gap-x-6 mb-10 mt-4">
               <div>
-                <span className="font-display font-medium text-[11px] tracking-[0.16em] uppercase text-[var(--muted)] block mb-1">Date</span>
-                <span className="font-body font-semibold text-[14px] text-[var(--text-primary)]">{formatDate(featured.event_date)}</span>
+                <span className="font-heading font-bold text-[11px] tracking-[1px] uppercase text-[var(--muted)] block mb-1">Date</span>
+                <span className="font-body font-bold text-[15px] sm:text-[16px] text-[var(--text-primary)]">
+                  {formatEventDateRange(featured.event_date, featured.event_end_date, featured.date_type)}
+                </span>
               </div>
               <div>
-                <span className="font-display font-medium text-[11px] tracking-[0.16em] uppercase text-[var(--muted)] block mb-1">Location</span>
-                <span className="font-body font-semibold text-[14px] text-[var(--text-primary)]">{featured.venue}, {featured.location}</span>
+                <span className="font-heading font-bold text-[11px] tracking-[1px] uppercase text-[var(--muted)] block mb-1">Location</span>
+                <span className="font-body font-medium text-[14px] leading-[1.5] text-[var(--text-primary)]">{featured.venue}, {featured.location}</span>
               </div>
               <div>
-                <span className="font-display font-medium text-[11px] tracking-[0.16em] uppercase text-[var(--muted)] block mb-1">Category</span>
-                <span className="font-body font-semibold text-[14px] text-[var(--text-primary)]">Open & Natural</span>
+                <span className="font-heading font-bold text-[11px] tracking-[1px] uppercase text-[var(--muted)] block mb-1">Category</span>
+                <span className="font-body font-medium text-[14px] text-[var(--text-primary)]">Open & Natural</span>
               </div>
               <div>
-                <span className="font-display font-medium text-[11px] tracking-[0.16em] uppercase text-[var(--muted)] block mb-1">Status</span>
-                <span className="font-body font-semibold text-[14px] text-[var(--gold)] uppercase">{statusLabel(featured.status)}</span>
+                <span className="font-heading font-bold text-[11px] tracking-[1px] uppercase text-[var(--muted)] block mb-1">Status</span>
+                <span className="font-body font-bold text-[14px] text-[var(--gold)] uppercase">{statusLabel(featured.status)}</span>
               </div>
             </div>
             <div className="flex flex-wrap gap-4">
-              <Link href={`/events/${featured.slug}`} className="inline-flex items-center justify-center h-[50px] px-8 bg-[var(--navy)] text-white font-display font-bold text-[13px] tracking-[0.10em] uppercase rounded-sm hover:bg-[var(--gold)] hover:text-[var(--navy)] transition-all">
+              <Link href={`/events/${featured.slug}`} className="inline-flex items-center justify-center h-[50px] px-8 bg-[var(--navy)] text-white font-heading font-extrabold text-[13px] sm:text-[15px] tracking-[1px] uppercase rounded-sm hover:bg-[var(--gold)] hover:text-[var(--navy)] transition-all">
                 Register Now
               </Link>
-              <Link href={`/events/${featured.slug}`} className="inline-flex items-center justify-center h-[50px] px-8 border border-[var(--border-color)] text-[var(--text-body)] font-display font-bold text-[13px] tracking-[0.10em] uppercase rounded-sm hover:border-[var(--gold)] hover:text-[var(--gold)] transition-all">
+              <Link href={`/events/${featured.slug}`} className="inline-flex items-center justify-center h-[50px] px-8 border border-[var(--border-color)] text-[var(--text-body)] font-heading font-extrabold text-[13px] sm:text-[15px] tracking-[1px] uppercase rounded-sm hover:border-[var(--gold)] hover:text-[var(--gold)] transition-all">
                 View Event
               </Link>
             </div>
@@ -92,7 +90,7 @@ export function FeaturedEventSection({ events }: FeaturedEventSectionProps) {
         {/* BOTTOM: SECONDARY EVENTS */}
         {secondary.length > 0 && (
           <div>
-            <h3 className="font-display font-semibold text-[12px] tracking-[0.16em] uppercase text-[var(--muted)] mb-5">Secondary Events</h3>
+            <h3 className="font-heading font-bold text-[13px] tracking-[2px] uppercase text-[var(--muted)] mb-5">Secondary Events</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {secondary.map((event) => (
                 <Link href={`/events/${event.slug}`} key={event.id} className="group block">
@@ -101,10 +99,12 @@ export function FeaturedEventSection({ events }: FeaturedEventSectionProps) {
                       <Image src={event.banner_image || '/assets/wff_hero_banner.png'} alt={event.event_name} fill className="object-cover group-hover:scale-[1.05] transition-transform duration-700" sizes="150px" loading="lazy" />
                     </div>
                     <div>
-                      <h4 className="font-display font-bold text-lg sm:text-xl uppercase text-[var(--text-primary)] group-hover:text-[var(--gold)] transition-colors leading-tight mb-2">
+                      <h4 className="font-heading font-bold text-[19px] sm:text-[22px] uppercase text-[var(--text-primary)] group-hover:text-[var(--gold)] transition-colors leading-[1.2] mb-2">
                         {event.event_name}
                       </h4>
-                      <p className="font-body text-[13px] text-[var(--muted)]">{formatDate(event.event_date)} • {event.location}</p>
+                      <p className="font-body text-[14px] text-[var(--muted)]">
+                        {formatEventDateRange(event.event_date, event.event_end_date, event.date_type)} • {event.location}
+                      </p>
                     </div>
                   </div>
                 </Link>

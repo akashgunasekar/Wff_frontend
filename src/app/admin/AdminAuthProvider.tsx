@@ -3,6 +3,7 @@
 import { useEffect, useState, createContext, useContext, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
+import { API_BASE } from '@/lib/api';
 
 interface AdminUser {
   id: number;
@@ -66,7 +67,6 @@ export default function AdminAuthProvider({ children }: { children: React.ReactN
   const pathname = usePathname();
 
   const checkAuth = useCallback(async () => {
-    const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
     try {
       const res = await fetch(`${API_BASE}/admin/auth/me.php`, {
         credentials: 'include',

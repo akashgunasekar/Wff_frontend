@@ -3,12 +3,26 @@ import Image from 'next/image';
 import { Container } from '@/components/ui/Container';
 import { Reveal } from '@/components/ui/Reveal';
 import { ArrowRight } from 'lucide-react';
+import { decodeHtml } from '@/lib/utils';
 
 export function CtaSection({ section }: { section?: any }) {
   let ctaData = { label: 'REGISTER NOW', destination: '/register' };
   try {
-    if (section && section.content) ctaData = JSON.parse(section.content);
+    if (section && section.content) {
+      const parsed = typeof section.content === 'object' ? section.content : JSON.parse(section.content);
+      if (parsed && typeof parsed === 'object') {
+        ctaData = {
+          label: parsed.label || 'REGISTER NOW',
+          destination: parsed.destination || '/register'
+        };
+      }
+    }
   } catch (e) { }
+
+  const title = section?.title ? decodeHtml(section.title) : "Ready To Compete?";
+  const subtitle = section?.subtitle ? decodeHtml(section.subtitle) : "Your discipline deserves a professional stage. Step onto the WFF Tamil Nadu championship platform and compete alongside the finest natural athletes in the state.";
+  const label = ctaData.label ? decodeHtml(ctaData.label) : "Register Now";
+  const destination = ctaData.destination || "/register";
 
   return (
     <section className="relative w-full bg-wff-deep-navy overflow-hidden flex items-center md:min-h-[500px] min-h-[350px]">
@@ -35,13 +49,13 @@ export function CtaSection({ section }: { section?: any }) {
             <Reveal direction="left">
               <div className="flex items-center gap-3 mb-4 sm:mb-6">
                 <div className="w-8 h-px bg-wff-gold" />
-                <span className="font-heading font-semibold text-[11px] sm:text-[13px] tracking-[0.2em] uppercase text-wff-gold">
+                <span className="font-heading font-bold text-[11px] sm:text-[13px] tracking-[2px] leading-[1.4] uppercase text-wff-gold">
                   Next Step
                 </span>
               </div>
 
-              <h2 className="font-heading font-bold text-3xl xs:text-4xl sm:text-5xl lg:text-6xl xl:text-7xl uppercase text-white leading-[0.98] sm:leading-[0.95] tracking-tight">
-                {section?.title || "Ready To Compete?"}
+              <h2 className="font-heading font-extrabold text-[clamp(32px,3.5vw,48px)] uppercase text-white leading-[1.05] tracking-tight">
+                {title}
               </h2>
             </Reveal>
           </div>
@@ -49,17 +63,17 @@ export function CtaSection({ section }: { section?: any }) {
           {/* RIGHT - 6 Cols */}
           <div className="lg:col-span-6 lg:pl-12 xl:pl-20 lg:border-l border-white/10">
             <Reveal direction="up" delay={200}>
-              <p className="font-body text-white/70 text-[13.5px] sm:text-[15px] md:text-[16px] leading-[1.6] mb-6 sm:mb-10 max-w-[55ch]">
-                {section?.subtitle || "Your discipline deserves a professional stage. Step onto the WFF Tamil Nadu championship platform and compete alongside the finest natural athletes in the state."}
+              <p className="font-body font-normal text-white/80 text-[15px] sm:text-[16px] leading-[1.6] mb-6 sm:mb-10 max-w-[650px] tracking-normal">
+                {subtitle}
               </p>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-5">
                 <Link
-                  href={ctaData.destination || "/register"}
-                  className="group relative inline-flex w-full sm:w-auto items-center justify-center rounded-[2px] font-heading font-bold tracking-[0.15em] uppercase transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] hover:brightness-110 hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(201,164,74,0.4)] h-12 sm:h-[56px] px-6 sm:px-10 text-[12.5px] sm:text-[13px] md:text-[14px] whitespace-nowrap"
+                  href={destination}
+                  className="group relative inline-flex w-full sm:w-auto items-center justify-center rounded-[2px] font-heading font-extrabold tracking-[1px] uppercase transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-[#040A12] hover:brightness-110 hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(201,164,74,0.4)] h-12 sm:h-[56px] px-6 sm:px-10 text-[13px] sm:text-[15px] whitespace-nowrap"
                 >
                   <span className="relative z-10 flex items-center">
-                    {ctaData.label || "Register Now"}
+                    {label}
                     <ArrowRight size={16} className="ml-2 sm:ml-3 transition-transform duration-300 ease-out group-hover:translate-x-1" />
                   </span>
                   {/* Subtle shine effect on hover */}

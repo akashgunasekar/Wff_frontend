@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Loader2, Plus, Users, Edit, Trash2, Upload, Image as ImageIcon, X } from 'lucide-react';
 import Image from 'next/image';
-import { resolveImageUrl } from '@/lib/api';
+import { resolveImageUrl, API_BASE } from '@/lib/api';
 
 interface Official {
   id: number;
@@ -51,7 +51,6 @@ export default function AdminOfficialsPage() {
     setLoading(true);
     setError('');
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/admin/officials/index.php`, {
         credentials: 'include'
       });
@@ -83,7 +82,6 @@ export default function AdminOfficialsPage() {
     setFormLoading(true);
     setFormError('');
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/admin/officials/upload-photo.php`, {
         method: 'POST',
         credentials: 'include',
@@ -108,7 +106,6 @@ export default function AdminOfficialsPage() {
     setFormError('');
     
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const endpoint = modalMode === 'create' ? '/admin/officials/create.php' : '/admin/officials/update.php';
       const res = await fetch(`${API_BASE}${endpoint}`, {
         method: 'POST',
@@ -133,7 +130,6 @@ export default function AdminOfficialsPage() {
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure you want to delete this official?')) return;
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/admin/officials/delete.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

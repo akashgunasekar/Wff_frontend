@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import AdminShell from '@/components/admin/AdminShell';
 import { Button } from '@/components/ui/Button';
 import { Loader2, ArrowLeft, Upload, Trash2, Image as ImageIcon, Star, CheckCircle2, XCircle, X } from 'lucide-react';
-import { resolveImageUrl } from '@/lib/api';
+import { resolveImageUrl, API_BASE } from '@/lib/api';
 import { use } from 'react';
 
 interface UploadItem {
@@ -30,7 +30,6 @@ export default function AdminGalleryDetailPage({ params }: { params: Promise<{ i
 
   const fetchAlbum = useCallback(async () => {
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/admin/gallery/show.php?id=${resolvedParams.id}`, { credentials: 'include' });
       const json = await res.json();
       if (json.success) setAlbum(json.data);
@@ -50,7 +49,6 @@ export default function AdminGalleryDetailPage({ params }: { params: Promise<{ i
   }, [fetchAlbum]);
 
   const processQueue = async (queue: UploadItem[]) => {
-    const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
     let refreshNeeded = false;
 
     for (const item of queue) {
@@ -138,7 +136,6 @@ export default function AdminGalleryDetailPage({ params }: { params: Promise<{ i
   const handleDeleteImage = async (imageId: number) => {
     if (!confirm("Permanently delete this image?")) return;
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const res = await fetch(`${API_BASE}/admin/gallery/images/delete.php`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -155,7 +152,6 @@ export default function AdminGalleryDetailPage({ params }: { params: Promise<{ i
 
   const handleSetCover = async (imageUrl: string) => {
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.wfftamilnadu.in/api';
       const payload = {
         id: album.id,
         title: album.title,
